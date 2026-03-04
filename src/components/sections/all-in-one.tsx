@@ -71,13 +71,13 @@ export default function AllInOne() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-4 md:h-[600px]"
+        className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-4 md:h-[960px]"
       >
 
         {/* 卡片 A: AI 生成过程展示 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-1 md:col-span-8 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/95 backdrop-blur-xl border border-zinc-700/50 rounded-3xl overflow-hidden relative group hover:border-purple-500/30 transition-all duration-500"
+          className="col-span-1 md:col-span-7 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/95 backdrop-blur-xl border border-zinc-700/50 rounded-3xl overflow-hidden relative group hover:border-purple-500/30 transition-all duration-500"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
           <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full"></div>
@@ -133,7 +133,7 @@ export default function AllInOne() {
         {/* 卡片 B: 产品界面展示 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-1 md:col-span-4 md:row-span-2 bg-gradient-to-br from-zinc-900 via-zinc-900/95 to-zinc-800/90 border border-zinc-700/50 rounded-3xl overflow-hidden relative group hover:border-blue-500/30 transition-all duration-500"
+          className="col-span-1 md:col-span-5 md:row-span-2 bg-gradient-to-br from-zinc-900 via-zinc-900/95 to-zinc-800/90 border border-zinc-700/50 rounded-3xl overflow-hidden relative group hover:border-blue-500/30 transition-all duration-500"
         >
           <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/20 blur-[120px] rounded-full"></div>
           <div className="absolute bottom-0 left-0 w-60 h-60 bg-purple-500/10 blur-[100px] rounded-full"></div>
@@ -173,33 +173,37 @@ export default function AllInOne() {
           </div>
         </motion.div>
 
-        {/* 卡片 C1: 用户数据 */}
+        {/* 卡片 C1: 开发周期 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-1 md:col-span-3 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/95 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-yellow-500/30 transition-all duration-500"
+          className="col-span-1 md:col-span-4 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/40 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-purple-500/30 transition-all duration-500"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-yellow-500/10 blur-[60px] rounded-full"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
           <div className="relative z-10 h-full flex flex-col justify-between">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500/30" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                  <Zap className="w-4 h-4 text-purple-400" />
+                </div>
+                <span className="text-xs font-mono text-zinc-500 tracking-wider">TIMELINE</span>
               </div>
-              <span className="text-xs font-mono text-zinc-500 tracking-wider">USERS</span>
+              <div className="px-2.5 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
+                <span className="text-xs font-semibold text-green-400">快速上线</span>
+              </div>
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-white group-hover:text-yellow-400 transition-colors duration-300 mb-2">181</div>
-              <div className="text-sm text-zinc-400">活跃用户</div>
+              <div className="text-5xl font-bold text-white group-hover:text-purple-400 transition-colors duration-300 mb-2">8</div>
+              <div className="text-sm text-zinc-400">有效工期</div>
             </div>
           </div>
         </motion.div>
-
-        {/* 卡片 C2: 版本迭代 */}
+        
+        {/* 卡片 C3: 版本迭代 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-1 md:col-span-2 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/95 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-500"
+          className="col-span-1 md:col-span-3 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/40 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-500"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -218,48 +222,35 @@ export default function AllInOne() {
           </div>
         </motion.div>
 
-        {/* 卡片 C3: 开发周期 */}
+        {/* 卡片 C2: 用户数据 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-1 md:col-span-3 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/95 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-purple-500/30 transition-all duration-500"
+          className="col-span-1 md:col-span-4 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/40 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-yellow-500/30 transition-all duration-500"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-yellow-500/10 blur-[60px] rounded-full"></div>
 
           <div className="relative z-10 h-full flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                  <Zap className="w-4 h-4 text-purple-400" />
-                </div>
-                <span className="text-xs font-mono text-zinc-500 tracking-wider">TIMELINE</span>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500/30" />
               </div>
-              <div className="px-2.5 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
-                <span className="text-xs font-semibold text-green-400">快速交付</span>
-              </div>
+              <span className="text-xs font-mono text-zinc-500 tracking-wider">USERS</span>
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-white group-hover:text-purple-400 transition-colors duration-300 mb-2">14</div>
-              <div className="text-sm text-zinc-400">天有效工期</div>
+              <div className="text-5xl font-bold text-white group-hover:text-yellow-400 transition-colors duration-300 mb-2">181</div>
+              <div className="text-sm text-zinc-400">活跃用户</div>
             </div>
           </div>
         </motion.div>
-
-      </motion.div>
-
-      {/* 第二行：卡片 D 功能展示 */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="max-w-7xl mx-auto w-full mt-4"
-      >
+        
+        {/* 卡片 D: 功能展示 */}
         <motion.div
           variants={itemVariants}
-          className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 border border-blue-400/30 rounded-3xl p-8 text-white relative overflow-hidden group"
+          className="col-span-1 md:col-span-8 bg-gradient-to-br from-blue-800/50 via-blue-700/10 to-indigo-800/10 border border-blue-400/20 rounded-3xl p-8 text-white relative overflow-hidden group hover:border-blue-500/40 transition-all duration-500"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(225, 0, 255, 1),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           <div className="absolute -bottom-10 -right-10 text-white/5 group-hover:text-white/10 transition-colors duration-500">
             <Cpu className="w-48 h-48 rotate-12" />
           </div>
@@ -276,35 +267,32 @@ export default function AllInOne() {
               <div className="text-sm text-blue-100/80">强大功能</div>
             </div>
 
-            <div className="md:col-span-9 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="md:col-span-9 grid grid-cols-2 md:grid-cols-3 gap-3">
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">一键导出 PPT</div>
+                <div className="text-md text-blue-100/90 font-medium al">一键导出 PPT</div>
               </div>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">组件命名规范化</div>
+                <div className="text-md text-blue-100/90 font-medium">组件命名规范化</div>
               </div>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">超级选择工具</div>
+                <div className="text-md text-blue-100/90 font-medium">超级选择工具</div>
               </div>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">文本查找替换</div>
+                <div className="text-md text-blue-100/90 font-medium">文本查找替换</div>
               </div>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">AI 内容生成</div>
+                <div className="text-md text-blue-100/90 font-medium">AI 内容生成</div>
               </div>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">中英文切换</div>
-              </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">明暗模式</div>
-              </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
-                <div className="text-xs text-blue-100/90 font-medium">精简模式</div>
+                <div className="text-md text-blue-100/90 font-medium">简易工具集合</div>
               </div>
             </div>
           </div>
         </motion.div>
+
       </motion.div>
+
+
     </section>
   );
 }

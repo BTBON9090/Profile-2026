@@ -109,7 +109,7 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8"
+              className="bg-white/4 backdrop-blur-2xl border border-zinc-800 rounded-3xl p-8"
             >
               <h3 className="text-sm font-mono text-zinc-500 mb-6 uppercase tracking-widest">Tech Stack & Arsenal</h3>
               

@@ -15,7 +15,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-transparent py-20 border-t border-zinc-900 overflow-hidden relative">
+    <footer className="bg-white/4 backdrop-blur-2xl py-20 border-t border-zinc-900 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
         
         {/* 顶部标题区 */}
