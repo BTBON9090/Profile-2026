@@ -26,7 +26,7 @@ const itemVariants = {
 
 export default function AllInOne() {
   return (
-    <section className="min-h-screen w-full bg-transparent py-20 px-4 md:px-8 flex flex-col justify-center relative overflow-hidden">
+    <section id="all-in-one" className="min-h-screen w-full bg-transparent py-40 px-4 md:px-8 flex flex-col justify-center relative overflow-hidden">
       
       {/* 1. 标题区 */}
       <div className="max-w-7xl mx-auto w-full mb-12">
@@ -49,11 +49,11 @@ export default function AllInOne() {
                 href="https://browseradmin.netlify.app" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-purple-500/50 hover:bg-purple-500/10 transition-all duration-300 cursor-pointer"
+                className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-purple-500/50 hover:bg-purple-500/10 transition-all duration-300 cursor-pointer"
             >
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span className="text-xs font-mono text-zinc-300 group-hover:text-white uppercase tracking-wider">Live Demo</span>
-                <ArrowUpRight className="w-3 h-3 text-zinc-500 group-hover:text-purple-400 transition-colors" />
+                <span className="text-xl font-mono text-zinc-300 group-hover:text-white uppercase tracking-wider">Get Project</span>
+                <ArrowUpRight className="w-6 h-6 text-zinc-500 group-hover:text-purple-400 transition-colors" />
                 
                 {/* 底部发光条装饰 */}
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>

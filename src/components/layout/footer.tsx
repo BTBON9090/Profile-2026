@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Copy, Check, Smartphone, MessageCircle, Mail, FileText, QrCode } from "lucide-react";
+import { Copy, Check, Smartphone, MessageCircle, Mail, FileText, QrCode, Download, ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -15,7 +15,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-white/4 backdrop-blur-2xl py-20 border-t border-zinc-900 overflow-hidden relative">
+    <footer id="footer" className="bg-white/4 backdrop-blur-2xl py-20 border-t border-zinc-900 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
         
         {/* 顶部标题区 */}
@@ -44,12 +44,12 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-20"
+          className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-10"
         >
           {/* 手机号卡片 */}
           <button 
             onClick={() => handleCopy("17611231055", "phone")}
-            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-lg transition-all duration-300 font-mono text-sm text-zinc-300"
+            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300"
           >
             <div className="flex items-center gap-3">
               <Smartphone className="w-4 h-4 text-zinc-500" />
@@ -68,7 +68,7 @@ export default function Footer() {
 
           {/* 微信卡片 (带二维码悬停) */}
           <div className="relative group w-full md:w-auto">
-            <div className="flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-lg transition-all duration-300 font-mono text-sm text-zinc-300 cursor-default">
+            <div className="flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300 cursor-default">
               <div className="flex items-center gap-3">
                 <MessageCircle className="w-4 h-4 text-zinc-500" />
                 <span>WeChat: Aiden0032</span>
@@ -92,7 +92,7 @@ export default function Footer() {
           {/* 邮箱卡片 */}
           <button 
             onClick={() => handleCopy("nc0032@qq.com", "email")}
-            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-lg transition-all duration-300 font-mono text-sm text-zinc-300"
+            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300"
           >
             <div className="flex items-center gap-3">
               <Mail className="w-4 h-4 text-zinc-500" />
@@ -108,17 +108,18 @@ export default function Footer() {
               )}
             </div>
           </button>
+        </motion.div>
 
-          {/* 简历下载按钮 */}
+        {/* 简历下载按钮 */}
           <a 
             href="/resume.pdf" 
             download="倪城_Resume.pdf"
-            className="w-full md:w-auto flex items-center justify-center gap-3 px-6 py-3 bg-white text-black hover:bg-zinc-200 border border-transparent rounded-lg transition-all duration-300 font-mono text-sm font-semibold"
+            className=" mb-20  md:w-auto flex items-center justify-center gap-3 px-6 py-3  text-white hover:text-blue-500 border border-transparent rounded-full transition-all duration-300 font-mono text-sm font-semibold"
           >
-            <FileText className="w-4 h-4" />
-            <span>Download Resume</span>
+            🍀
+            <span>记得下载简历和作品集呦！</span>
+            <Download className="w-4 h-4" />
           </a>
-        </motion.div>
 
         {/* 底部版权与社交链接 */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-zinc-900 text-zinc-600 font-mono text-xs md:text-sm">
@@ -133,6 +134,7 @@ export default function Footer() {
             >
               <img src="/小红书.png" alt="小红书" className="w-7 h-7" />
               <span>小红书</span>
+              <ArrowUpRight className="w-4 h-4 group-hover:text-white transition-colors" />
             </a>
           </div>
         </div>

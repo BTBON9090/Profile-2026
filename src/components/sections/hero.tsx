@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section className="h-screen w-full flex items-center justify-center bg-transparent antialiased bg-grid-white/[0.02] relative overflow-hidden">
+    <section id="hero" className="h-screen w-full flex items-center justify-center bg-transparent antialiased bg-grid-white/[0.02] relative overflow-hidden">
       {/* 1. 聚光灯背景特效 */}
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
       
@@ -33,7 +33,7 @@ export default function Hero() {
 
           {/* 副标题：你的 Slogan */}
           <p className="mt-4 font-normal text-base text-neutral-300 max-w-2xl mx-auto font-mono leading-relaxed">
-            Designing Systems. Building Tools. <span className="text-blue-400">Empowered by AI.</span>
+            Designing Systems. Building Tools. <span className="text-blue-500">Empowered by AI.</span>
             <br />
             Constructing logical beauty from pixels to code.
           </p>

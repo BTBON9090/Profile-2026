@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 @layer base {
+  /* 针对整个网页隐藏滚动条，但保留滚动功能 */
+  html, body {
+    /* 1. 针对 Firefox 浏览器 */
+    scrollbar-width: none; 
+    
+    /* 2. 针对 IE 和 Edge 浏览器 */
+    -ms-overflow-style: none; 
+  }
+
+  /* 3. 针对 Chrome, Safari 和 Opera 等 WebKit 内核浏览器 */
+  html::-webkit-scrollbar, 
+  body::-webkit-scrollbar {
+    display: none;
+  }
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -48,6 +62,10 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
   * {
     border-color: var(--border);
   }

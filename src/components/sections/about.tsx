@@ -1,7 +1,7 @@
 // src/components/sections/about.tsx
 "use client";
 import { motion } from "framer-motion";
-import { Download, Terminal, Layers, ArrowUpRight, GitCommit } from "lucide-react";
+import { Download, Terminal, Layers, ArrowUpRight, GitCommit, FileText } from "lucide-react";
 
 const stack =[
   { category: "Design & Systems", items: ["Figma", "Design Tokens", "Prototyping", "Design Systems"] },
@@ -68,11 +68,12 @@ export default function About() {
               {/* 简历下载按钮 (高亮 CTA) */}
               <a 
                 href="/resume.pdf" // 请确保 public 目录下有你的简历 PDF
-                target="_blank"
-                className="group inline-flex items-center gap-3 px-6 py-4 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors"
+                download="倪城_Resume.pdf"
+                className="group inline-flex items-center gap-3 px-6 py-4 bg-white text-black rounded-full hover:bg-zinc-200 transition-colors"
               >
-                <span>Download Resume</span>
-                <Download className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+                <FileText className="w-5 h-5 group-hover:text-blue-600" />
+                <span className="text-xl font-mono uppercase group-hover:text-blue-600">Download Resume</span>
+                <Download className="w-4 h-4 group-hover:translate-y-0.5 group-hover:text-blue-600 transition-transform" />
               </a>
             </motion.div>
           </div>
@@ -164,7 +165,7 @@ export default function About() {
 
                     <div className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-4 mb-3">
                       {/* 职位 */}
-                      <h4 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                      <h4 className="text-xl font-bold text-white group-hover:text-blue-500 transition-colors">
                         {exp.role}
                       </h4>
                       {/* 日期 */}

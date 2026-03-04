@@ -2,7 +2,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { ShieldCheck, Layers, Bot, LayoutTemplate } from "lucide-react";
+import { ShieldCheck, Layers, Bot, LayoutTemplate, ArrowUpRight, Globe } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ export default function SnowEcosystem() {
   const [activeFeature, setActiveFeature] = useState(0);
 
   return (
-    <section className="bg-transparent py-20 relative">
+    <section id="snow-ecosystem" className="bg-transparent py-40 relative">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         
         {/* 标题区 */}
@@ -73,7 +73,20 @@ export default function SnowEcosystem() {
           <p className="text-zinc-400 max-w-2xl text-lg font-light">
             A comprehensive zero-trust security solution. Rebuilding the enterprise workspace from the ground up.
           </p>
+          {/* CTA 按钮（可选，如果有 Github 或上架链接） */}
+          <div className="mt-10">
+            <a 
+            href="https://www.snowtech.com.cn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex group items-center gap-2 px-6 py-3 rounded-full bg-white text-black hover:bg-zinc-200 transition-colors">
+              <Globe className="w-5 h-5 group-hover:text-blue-600" />
+              <span className="text-xl font-mono uppercase group-hover:text-blue-600">View Project</span>
+              <ArrowUpRight className="w-6 h-6  group-hover:text-blue-600" />
+            </a>
+          </div>
         </div>
+        
 
         {/* 核心布局：左侧滚动文字，右侧固定画面 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative">
