@@ -174,11 +174,12 @@ export default function WorkGallery() {
               {/* 分类标题 */}
               <div className="flex items-center gap-4 mb-10 border-b border-zinc-800 pb-4">
                 <span className="text-4xl font-mono font-bold text-blue-500 tracking-widest uppercase">0{sectionIdx + 1}</span>
-                <h2 className="text-2xl font-semibold text-white">{section.category}</h2>
+                <h2 className="text-4xl font-semibold text-white">{section.category}</h2>
               </div>
 
               {/* 网格卡片区 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* 修改 1: grid-cols-2 (手机双列), gap-3 (手机小间距) -> md:gap-8 (桌面大间距) */}
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
                 {section.items.map((project, idx) => (
                   <motion.div
                     key={project.id}
@@ -188,38 +189,48 @@ export default function WorkGallery() {
                     transition={{ delay: idx * 0.1, duration: 0.5 }}
                   >
                     <Link href={project.link} className="block group">
-                      <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-600 transition-colors duration-300">
+                      {/* 修改 2: 手机端圆角减小 rounded-xl -> 桌面端 rounded-2xl */}
+                      <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl md:rounded-2xl overflow-hidden hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col">
                         
-                        {/* 1. 封面图区域 (支持 Hover 放大) */}
-                        <div className="relative h-64 w-full bg-zinc-950 overflow-hidden">
+                        {/* 1. 封面图区域 */}
+                        {/* 修改 3: 手机高度 h-32 (128px) -> 桌面高度 h-64 (256px) */}
+                        <div className="relative h-32 md:h-64 w-full bg-zinc-950 overflow-hidden flex-shrink-0">
                           <Image
                             src={project.image}
                             alt={project.title}
                             fill
                             className="object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                           />
-                          {/* Hover 时右上角出现的箭头指示 */}
-                          <div className="absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                          {/* Hover 箭头只在电脑端显示 (手机没 hover 状态，且箭头会挡住小图) */}
+                          <div className="hidden md:flex absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 rounded-full items-center justify-center opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                             <ArrowUpRight className="w-5 h-5 text-white" />
                           </div>
                         </div>
 
                         {/* 2. 信息区域 */}
-                        <div className="p-6">
-                          <div className="flex justify-between items-start mb-4">
-                            <div>
-                              <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                        {/* 修改 4: 手机内边距 p-3 -> 桌面 p-6 */}
+                        <div className="p-3 md:p-6 flex-1 flex flex-col">
+                          <div className="flex justify-between items-start mb-2 md:mb-4">
+                            <div className="min-w-0 pr-1"> {/* min-w-0 防止 flex 子项撑破容器 */}
+                              {/* 修改 5: 标题字号 text-sm -> text-xl, 增加 truncate 防止换行太丑 */}
+                              <h3 className="text-sm md:text-xl font-bold text-white group-hover:text-blue-400 transition-colors truncate md:whitespace-normal">
                                 {project.title}
                               </h3>
-                              <p className="text-xs font-mono text-zinc-500 mt-1">
+                              {/* 修改 6: 副标题更小 text-[10px] -> text-xs */}
+                              <p className="text-[10px] md:text-xs font-mono text-zinc-500 mt-0.5 md:mt-1 truncate">
                                 {project.subtitle}
                               </p>
                             </div>
-                            <span className="text-xs font-mono text-zinc-600 bg-zinc-900 px-2 py-1 rounded">
+                            {/* 修改 7: 日期标签缩小 */}
+                            <span className="hidden md:inline-block text-[10px] md:text-xs font-mono text-zinc-600 bg-zinc-900 px-1.5 py-0.5 md:px-2 md:py-1 rounded flex-shrink-0">
                               {project.date}
                             </span>
                           </div>
-                          <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3">
+                          
+                          {/* 修改 8: 手机端直接隐藏描述文字 (hidden)，只在 md 以上显示。
+                              原因：手机卡片太小，放描述会显得极度拥挤且参差不齐。
+                           */}
+                          <p className="hidden md:block text-zinc-400 text-sm leading-relaxed line-clamp-3 mt-auto">
                             {project.description}
                           </p>
                         </div>

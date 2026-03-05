@@ -21,8 +21,15 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-6 bg-black/50 backdrop-blur-md border-b border-white/5"
     >
       {/* 左侧 Logo：点击永远回到首页 */}
-      <Link href="/" className="font-mono text-sm tracking-widest font-bold text-zinc-300 hover:text-white transition-colors">
-        AIDEN<span className="text-blue-500">.</span>DESIGN
+      <Link 
+        href="/" 
+        className="font-mono text-sm tracking-widest font-bold text-zinc-300 hover:text-white transition-colors uppercase"
+      >
+        AIDEN
+        <span className="text-blue-500">.</span>
+        D
+        {/* 👇 核心魔法：默认隐藏 ESIGN，只在 md (平板/桌面) 以上尺寸显示 */}
+        <span className="hidden md:inline">ESIGN</span>
       </Link>
 
       {/* 右侧导航 */}

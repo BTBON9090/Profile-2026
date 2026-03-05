@@ -203,10 +203,9 @@ export default function AllInOne() {
         {/* 卡片 C3: 版本迭代 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-1 md:col-span-3 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/40 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-500"
+          className="col-span-6 md:col-span-3 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/40 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-500"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 bg-blue-500/10 rounded-lg border border-blue-500/20">
@@ -225,15 +224,13 @@ export default function AllInOne() {
         {/* 卡片 C2: 用户数据 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-1 md:col-span-4 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/40 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-yellow-500/30 transition-all duration-500"
+          className="col-span-6 md:col-span-4 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/40 border border-zinc-700/50 rounded-3xl p-6 relative overflow-hidden group hover:border-yellow-500/30 transition-all duration-500"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-yellow-500/10 blur-[60px] rounded-full"></div>
-
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500/30" />
+                <Star className="w-4 h-4 text-yellow-500" />
               </div>
               <span className="text-xs font-mono text-zinc-500 tracking-wider">USERS</span>
             </div>
@@ -248,7 +245,7 @@ export default function AllInOne() {
         {/* 卡片 D: 功能展示 */}
         <motion.div
           variants={itemVariants}
-          className="col-span-2 md:col-span-8 bg-gradient-to-br from-blue-800/50 via-blue-700/10 to-indigo-800/10 border border-blue-400/20 rounded-3xl p-8 text-white relative overflow-hidden group hover:border-blue-500/40 transition-all duration-500"
+          className="col-span-12 md:col-span-8 bg-gradient-to-br from-blue-800/50 via-blue-700/10 to-indigo-800/10 border border-blue-400/20 rounded-3xl p-8 text-white relative overflow-hidden group hover:border-blue-500/40 transition-all duration-500"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(225, 0, 255, 1),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           <div className="absolute -bottom-10 -right-10 text-white/5 group-hover:text-white/10 transition-colors duration-500">

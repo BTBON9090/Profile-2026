@@ -74,7 +74,7 @@ export default function SnowEcosystem() {
             A comprehensive zero-trust security solution. Rebuilding the enterprise workspace from the ground up.
           </p>
           {/* CTA 按钮（可选，如果有 Github 或上架链接） */}
-          <div className="mt-10">
+          <div className="mt-10 mb-10">
               <a 
                 href="https://www.snowtech.com.cn/" 
                 target="_blank"
