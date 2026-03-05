@@ -76,7 +76,7 @@ export default function AITranslate() {
             </div>
 
             {/* CTA 按钮（可选，如果有 Github 或上架链接） */}
-            <div className="mt-10">
+            <div className="mt-10 mb-10">
               <a 
                 href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/01071636.zip" 
                 download="AI-Translate.zip"

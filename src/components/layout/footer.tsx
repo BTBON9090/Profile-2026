@@ -49,7 +49,7 @@ export default function Footer() {
           {/* 手机号卡片 */}
           <button 
             onClick={() => handleCopy("17611231055", "phone")}
-            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300"
+            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-4 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300"
           >
             <div className="flex items-center gap-3">
               <Smartphone className="w-4 h-4 text-zinc-500" />
@@ -67,13 +67,21 @@ export default function Footer() {
           </button>
 
           {/* 微信卡片 (带二维码悬停) */}
-          <div className="relative group w-full md:w-auto">
-            <div className="flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300 cursor-default">
-              <div className="flex items-center gap-3">
-                <MessageCircle className="w-4 h-4 text-zinc-500" />
-                <span>WeChat: Aiden0032</span>
-              </div>
-              <QrCode className="w-4 h-4 text-zinc-600 group-hover:text-blue-500 transition-colors" />
+          <button 
+            onClick={() => handleCopy("Aiden0032", "wechat")}
+            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-4 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300 cursor-default">
+            <div className="flex items-center gap-3">
+              <MessageCircle className="w-4 h-4 text-zinc-500" />
+              <span>WeChat: Aiden0032</span>
+            </div>
+            {copiedField === "wechat" ? <Check className="w-4 h-4 text-blue-500" /> : <QrCode className="w-4 h-4 text-zinc-600 group-hover:text-blue-500 transition-colors" />}
+            {/* 极客风的复制提示气泡 */}
+            <div className="z-100 absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-zinc-300 px-3 py-1 rounded-full text-xs font-mono whitespace-nowrap">
+              {copiedField === "wechat" ? (
+                <><Check className="w-3 h-3 text-blue-500" /> Copied</>
+              ) : (
+                <><QrCode className="w-3 h-3" /> Click to copy</>
+              )}
             </div>
             
             {/* 二维码悬停弹窗 */}
@@ -87,12 +95,12 @@ export default function Footer() {
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-zinc-900 border-b border-r border-zinc-800 rotate-45"></div>
               </div>
             </div>
-          </div>
+          </button> 
 
           {/* 邮箱卡片 */}
           <button 
             onClick={() => handleCopy("nc0032@qq.com", "email")}
-            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300"
+            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-4 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300"
           >
             <div className="flex items-center gap-3">
               <Mail className="w-4 h-4 text-zinc-500" />
@@ -114,7 +122,7 @@ export default function Footer() {
           <a 
             href="/resume.pdf" 
             download="倪城_Resume.pdf"
-            className=" mb-20  md:w-auto flex items-center justify-center gap-3 px-6 py-3  text-white hover:text-blue-500 border border-transparent rounded-full transition-all duration-300 font-mono text-sm font-semibold"
+            className=" mb-20  md:w-auto flex items-center justify-center gap-3 px-6 py-4  text-white hover:text-blue-500 border border-transparent rounded-full transition-all duration-300 font-mono text-sm font-semibold"
           >
             🍀
             <span>记得下载简历和作品集呦！</span>

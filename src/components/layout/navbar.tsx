@@ -38,7 +38,7 @@ export default function Navbar() {
           href="/" 
           className={`relative group transition-colors ${pathname === '/' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
         >
-          HOME
+          SHOWCASE
           {/* 如果当前在首页，底部线条常亮 */}
           <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
         </Link>
@@ -46,7 +46,7 @@ export default function Navbar() {
           href="/work" 
           className={`relative group transition-colors ${pathname === '/work' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
         >
-          Gallery
+          GALLERY
           {/* 如果当前在 /work 页面，底部线条常亮 */}
           <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/work' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
         </Link>
@@ -54,7 +54,7 @@ export default function Navbar() {
           href="/about" 
           className={`relative group transition-colors ${pathname === '/about' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
         >
-          ABOUT
+          PROFILE
           {/* 如果当前在 /about 页面，底部线条常亮 */}
           <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
         </Link>
