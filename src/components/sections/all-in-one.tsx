@@ -46,7 +46,7 @@ export default function AllInOne() {
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 flex items-center flex-wrap gap-4">
             AllinOne <span className="text-zinc-500">Figma Plugin</span>
             <a 
-                href="https://browseradmin.netlify.app" 
+                href="https://allinone-plugin.netlify.app/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-purple-500/50 hover:bg-purple-500/10 transition-all duration-300 cursor-pointer"
