@@ -225,7 +225,7 @@ export default function AboutPage() {
         initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
           className="mb-24 flex justify-end"
         >
-            <span className="text-sm font-medium text-white/60 tracking-tight">📒 Tips：元婴就是牛逼的意思，筑基比练气牛逼一点，练气期就是刚刚入门。当然，元婴之上还有化神，即人界巅峰。</span>
+            <span className="text-sm font-medium text-white/60 tracking-tight">Tips：元婴就是牛逼的意思，筑基比练气牛逼一点，练气期则是刚刚入门，元婴之上还有化神，即人界巅峰。诚然，人外有人，天外有天...</span>
         </motion.div>
 
         {/* ==========================================
