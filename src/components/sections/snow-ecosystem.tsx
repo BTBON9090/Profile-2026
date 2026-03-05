@@ -76,8 +76,9 @@ export default function SnowEcosystem() {
           {/* CTA 按钮（可选，如果有 Github 或上架链接） */}
           <div className="mt-10">
               <a 
-                href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/01071636.zip" 
-                download="AI-Translate.zip"
+                href="https://www.snowtech.com.cn/" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 cursor-pointer"
             >
                 <Globe className="w-4 h-4 text-white/60" />
