@@ -17,7 +17,7 @@ const projects = [
         subtitle: "B-End System & Browser",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         date: "2024 - 2026",
-        image: "/images/snow-admin.png", // 替换为你的封面图
+        image: "/images/AI-NEWTAB.png", // 替换为你的封面图
         link: "/#snow-ecosystem", // 点击后跳转到首页的对应锚点
       },
       {
@@ -161,8 +161,7 @@ export default function WorkGallery() {
             All <span className="text-zinc-600">Work.</span>
           </h1>
           <p className="text-zinc-400 text-lg max-w-2xl font-light">
-            A comprehensive gallery of my professional and independent endeavors. 
-            From enterprise architecture to AI-empowered tools.
+            我的专业和独立项目的综合展示。从企业架构到AI赋能的工具。
           </p>
         </motion.div>
 
