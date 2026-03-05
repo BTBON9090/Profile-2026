@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils"
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean
+  variant?: string
+  size?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
