@@ -1,6 +1,6 @@
 // src/components/sections/all-in-one.tsx
 "use client";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Code2, Cpu, Zap, Star, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
@@ -15,7 +15,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
     y: 0,
@@ -51,9 +51,9 @@ export default function AllInOne() {
                 rel="noopener noreferrer"
                 className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-purple-500/50 hover:bg-purple-500/10 transition-all duration-300 cursor-pointer"
             >
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span className="text-xl font-mono text-zinc-300 group-hover:text-white uppercase tracking-wider">Get Project</span>
-                <ArrowUpRight className="w-6 h-6 text-zinc-500 group-hover:text-purple-400 transition-colors" />
+                <Code2 className="w-4 h-4 text-white/60" />
+                <span className="text-xl font-mono text-zinc-300 group-hover:text-white uppercase tracking-wider">View Project</span>
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 
                 {/* 底部发光条装饰 */}
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>

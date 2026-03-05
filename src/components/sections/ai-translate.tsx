@@ -1,7 +1,7 @@
 // src/components/sections/ai-translate.tsx
 "use client";
-import { motion } from "framer-motion";
-import { Globe2, SplitSquareHorizontal, Key, MousePointer2, ArrowUpRight } from "lucide-react";
+import { motion, type Variants } from "framer-motion";
+import { Globe2, SplitSquareHorizontal, Key, MousePointer2, ArrowUpRight, Download, Puzzle } from "lucide-react";
 import Image from "next/image";
 
 const features =[
@@ -37,10 +37,18 @@ export default function AITranslate() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 mb-6">
-              <Globe2 className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-mono text-blue-300">Browser Extension</span>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="flex items-center gap-2 mb-4"
+            >
+              <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+              <span className="text-blue-400 font-mono text-sm tracking-wider uppercase">
+                Chrome Extension
+              </span>
+            </motion.div>
             
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               AI Translate <span className="text-zinc-600">
@@ -70,14 +78,13 @@ export default function AITranslate() {
             {/* CTA 按钮（可选，如果有 Github 或上架链接） */}
             <div className="mt-10">
               <a 
-                href="https://browseradmin.netlify.app" 
-                target="_blank" 
-                rel="noopener noreferrer"
+                href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/01071636.zip" 
+                download="AI-Translate.zip"
                 className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 cursor-pointer"
             >
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span className="text-xl font-mono text-zinc-300 group-hover:text-white uppercase tracking-wider">Get Project</span>
-                <ArrowUpRight className="w-6 h-6 text-zinc-500 group-hover:text-blue-500 transition-colors" />
+                <Puzzle className="w-4 h-4 text-white/60" />
+                <span className="text-xl font-mono font-bold text-zinc-300 group-hover:text-white uppercase tracking-wider">Download Puzzle</span>
+                <Download className="w-4 h-4 group-hover:translate-y-0.5 group-hover:text-blue-600 transition-transform" />
                 
                 {/* 底部发光条装饰 */}
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>

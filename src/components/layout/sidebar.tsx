@@ -27,10 +27,12 @@ const aboutSections =[
 
 export default function Sidebar() {
   const pathname = usePathname(); // 获取当前路由路径
-  
+  // 👇 新增：如果是 /about 页面，直接返回 null (不渲染侧边栏)
+  if (pathname === "/about") {
+    return null;
+  }
   // 2. 动态决定当前使用哪套导航
   const currentSections = 
-    pathname === "/about" ? aboutSections : 
     pathname === "/work" ? workSections : 
     homeSections;
   

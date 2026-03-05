@@ -147,7 +147,7 @@ const projects = [
 
 export default function WorkGallery() {
   return (
-    <div className="bg-black min-h-screen pt-32 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200">
+    <div className="relative z-10  min-h-screen pt-32 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200">
       <div className="max-w-7xl mx-auto">
         
         {/* 页面头部 */}

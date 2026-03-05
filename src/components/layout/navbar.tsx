@@ -22,7 +22,7 @@ export default function Navbar() {
     >
       {/* 左侧 Logo：点击永远回到首页 */}
       <Link href="/" className="font-mono text-sm tracking-widest font-bold text-zinc-300 hover:text-white transition-colors">
-        YOUR NAME<span className="text-blue-500">.</span>DESIGN
+        AIDEN<span className="text-blue-500">.</span>DESIGN
       </Link>
 
       {/* 右侧导航 */}

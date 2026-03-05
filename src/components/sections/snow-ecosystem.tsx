@@ -75,16 +75,19 @@ export default function SnowEcosystem() {
           </p>
           {/* CTA 按钮（可选，如果有 Github 或上架链接） */}
           <div className="mt-10">
-            <a 
-            href="https://www.snowtech.com.cn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex group items-center gap-2 px-6 py-3 rounded-full bg-white text-black hover:bg-zinc-200 transition-colors">
-              <Globe className="w-5 h-5 group-hover:text-blue-600" />
-              <span className="text-xl font-mono uppercase group-hover:text-blue-600">View Project</span>
-              <ArrowUpRight className="w-6 h-6  group-hover:text-blue-600" />
+              <a 
+                href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/01071636.zip" 
+                download="AI-Translate.zip"
+                className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 cursor-pointer"
+            >
+                <Globe className="w-4 h-4 text-white/60" />
+                <span className="text-xl font-mono font-bold text-zinc-300 group-hover:text-white uppercase tracking-wider">VISIT WEBSITE</span>
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                
+                {/* 底部发光条装饰 */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </a>
-          </div>
+            </div>
         </div>
         
 
@@ -165,7 +168,7 @@ function TextBlock({ feature, index, setActive }: { feature: any, index: number,
   }
 
   return (
-    <div ref={ref} className="min-h-[50vh] flex flex-col justify-center p-6 rounded-2xl transition-colors duration-500 hover:bg-zinc-900/30 border border-transparent hover:border-zinc-800/50">
+    <div ref={ref} className="min-h-[50vh] flex flex-col justify-center p-6 rounded-2xl transition-colors duration-500 hover:bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-800/80 hover:backdrop-blur-sm">
        <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6">
          <feature.icon className="w-6 h-6 text-blue-400" />
        </div>

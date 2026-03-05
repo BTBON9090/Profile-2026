@@ -1,6 +1,6 @@
 // src/app/about/page.tsx
 "use client";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import Image from "next/image";
 import { 
   MapPin, GraduationCap, Briefcase, Mail, 
@@ -47,9 +47,14 @@ const skillMatrix =[
 ];
 
 // --- 动画变体 ---
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease:[0.22, 1, 0.36, 1] } }
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+        duration: 0.7, 
+        ease:[0.22, 1, 0.36, 1] } }
 };
 
 export default function AboutPage() {
@@ -61,7 +66,7 @@ export default function AboutPage() {
     setTimeout(() => setCopiedText(""), 2000); // 2秒后恢复原图标
   };
   return (
-    <div className="bg-black min-h-screen pt-40 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200 relative overflow-hidden">
+    <div className="relative z-10  min-h-screen pt-40 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200 relative overflow-hidden">
       
       {/* 极度克制的背景光晕 */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
