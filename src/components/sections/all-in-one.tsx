@@ -151,7 +151,7 @@ export default function AllInOne() {
               </div>
 
               <a
-                href="https://browseradmin.netlify.app"
+                href="https://allinone-plugin.netlify.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 border border-zinc-700/50 hover:bg-blue-600 hover:border-blue-500 hover:text-white text-zinc-400 transition-all duration-300 group/btn backdrop-blur-sm"
@@ -161,7 +161,7 @@ export default function AllInOne() {
               </a>
             </div>
 
-            <div className="relative flex-1 bg-black/40 backdrop-blur-sm rounded-2xl border border-zinc-800/80 overflow-hidden group-hover:scale-[1.02] group-hover:border-zinc-700 transition-all duration-500 shadow-2xl">
+            <div className="relative flex-1 min-h-[360px] bg-black/40 backdrop-blur-sm rounded-2xl border border-zinc-800/80 overflow-hidden group-hover:scale-[1.02] group-hover:border-zinc-700 transition-all duration-500 shadow-2xl">
               <Image
                 src="/images/plugin-ui.png"
                 alt="AllinOne Plugin UI"
