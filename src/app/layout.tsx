@@ -26,8 +26,8 @@ const jetbrainsMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name | Product & Engineering Designer",
-  description: "Designing Systems. Building Tools. Empowered by AI.",
+  title: "倪城 | 10 年 B 端产品 UI/UX 设计师",
+  description: "设计系统构建 0-1. 设计工程化思维. AI 赋能. SaaS. Native.",
 };
 
 export default function RootLayout({
