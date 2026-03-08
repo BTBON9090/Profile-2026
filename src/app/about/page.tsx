@@ -8,73 +8,7 @@ import {
   TerminalSquare, Palette, Cpu, Check, Phone
 } from "lucide-react";
 import { useState } from "react";
-
-// --- 数据字典 ---
-const experiences =[
-  {
-    id: 1,
-    role: "Product Designer",
-    company: "北京雪诺科技-SnowTech",
-    logo: "/images/snowtech.png",
-    time: "2024.08 - Present",
-    description: [
-      "主导了从 0 到 1 的企业安全浏览器及工作空间控制台的全链路设计",
-      "建立和维护双侧组件库，利用 AI 辅助设计提效",
-      "负责公司日常宣发、品牌推广与安全竞赛等活动的平面设计工作"
-    ],
-    tech:["浏览器设计", "管理后台", "0-1", "VibeCoding", "AI Native", "平面设计", "办公安全"]
-  },
-  {
-    id: 2,
-    role: "Product Designer",
-    company: "快手-商业化",
-    logo: "/images/快手.png",
-    time: "2021.08 - 2023.04",
-    description:[
-      "负责磁力聚星用户端与客户端，及双端业务系统设计与维护",
-      "主导了商业化移动端与 Web 端产品的 UI 规范化与 Figma 组件库建设",
-      "商业化部门内的 Figma 设计培训与 Figma 插件设计开发",
-      "负责 2023 年快手春节招商活动品牌坑位相关跨团队协作设计任务"
-    ],
-    tech:["Figma Teaching", "磁力聚星", "CNY Marketing", "Team Collaboration"]
-  },
-  {
-    id: 3,
-    role: "UI/UX Designer",
-    company: "中国航空工业-中航金网",
-    logo: "/images/航空工业.png",
-    time: "2018.08 - 2021.08",
-    description: [
-      "主导了集团办公工具“商网办公” App 及其 SaaS 应用从 0 到 1 的全链路设计。建立双端组件库",
-      "负责航空工业集团电商平台 UI 设计与维护"
-    ],
-    tech:["商网办公", "IM System", "SaaS", "G-End"]
-  },
-  {
-    id: 4,
-    role: "UI/UX Designer",
-    company: "好未来-励步英语",
-    logo: "/images/好未来.png",
-    time: "2018.06 - 2018.08",
-    description: 
-      "负责旗下励步英语的移动端与客户管理后台设计与维护任务",
-    tech:["Team Collaboration", "CRM", "C-End"]
-  },
-  {
-    id: 5,
-    role: "UI/UX Designer",
-    company: "云深互联",
-    logo: "/images/云深互联.png",
-    time: "2016.06 - 2018.04",
-    description: [
-      "负责双端企业浏览器、原生开发者工具交互 UI 设计",
-      "负责比亚迪、南粤银行、江西银行、华夏银行、北京机场等多款 SaaS 应用适配的交互与视觉设计",
-      "负责产品 UI 组件库升级（Amaze UI 2.0），提升设计转化率",
-      "负责品牌 Logo 与视觉物料输出、兼顾公司室内设计与装修"
-    ],
-    tech:["Web/App", "Native Design", "Sketch", "PS/AI/C4D", "客户服务", "品牌设计", "B-End"]
-  }
-];
+import { useI18n } from "@/lib/i18n";
 
 const skillMatrix =[
   {
@@ -105,12 +39,12 @@ const fadeUp: Variants = {
 };
 
 export default function AboutPage() {
-    // 👇 1. 新增：控制“复制成功”状态的逻辑
+  const { t } = useI18n();
   const[copiedText, setCopiedText] = useState("");
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedText(text);
-    setTimeout(() => setCopiedText(""), 2000); // 2秒后恢复原图标
+    setTimeout(() => setCopiedText(""), 2000);
   };
   return (
     <div className="relative z-10  min-h-screen pt-32 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200 relative overflow-hidden">
@@ -178,7 +112,7 @@ export default function AboutPage() {
                     title="点击复制微信号"
                   >
                     {copiedText === "NiCheng_Design" ? <Check className="w-4 h-4 text-green-400" /> : <MessageCircle className="w-4 h-4 text-green-400" />}
-                    <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">Aiden0032</span>
+                    <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">WECHAT：Aiden0032</span>
                   </button>
 
                   {/* 电话 */}
@@ -290,12 +224,12 @@ export default function AboutPage() {
 
           <div className="relative ml-3 space-y-16 pb-10">
             {/* 隐藏的贯穿线 */}
-            <div className="absolute top-2 bottom-0 left-[3px] w-px bg-gradient-to-b from-zinc-800 via-zinc-800 to-transparent"></div>
+            <div className="absolute top-2 bottom-0 left-[7px] w-px bg-gradient-to-b from-zinc-800 via-zinc-800 to-transparent"></div>
 
-            {experiences.map((exp) => (
+            {t.about.experience.items.map((exp: any) => (
               <div key={exp.id} className="relative pl-10 md:pl-16 group">
                 {/* 精致的节点指示器 */}
-                <div className="absolute left-[-2px] top-1.5 w-[11px] h-[11px] rounded-full bg-black border-2 border-zinc-600 group-hover:border-blue-400 group-hover:shadow-[0_0_10px_rgba(96,165,250,0.5)] transition-all duration-300"></div>
+                <div className="absolute left-[2px] top-1.5 w-[11px] h-[11px] rounded-full bg-black border-2 border-zinc-600 group-hover:border-blue-400 group-hover:shadow-[0_0_10px_rgba(96,165,250,0.5)] transition-all duration-300"></div>
                 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
                   <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors flex items-center gap-3">
@@ -318,7 +252,7 @@ export default function AboutPage() {
                 <div className="text-zinc-400 text-sm leading-relaxed mb-6 max-w-3xl">
                   {Array.isArray(exp.description) ? (
                     <ol className="list-decimal list-inside space-y-1.5 pl-2">
-                      {exp.description.map((item, index) => (
+                      {exp.description.map((item: string, index: number) => (
                         <li key={index}>{item}</li>
                       ))}
                     </ol>
@@ -327,9 +261,8 @@ export default function AboutPage() {
                   )}
                 </div>
                 
-                {/* Tech Stack 标签流 */}
                 <div className="flex flex-wrap gap-2">
-                  {exp.tech.map((t, i) => (
+                  {exp.tech.map((t: string, i: number) => (
                     <span key={i} className="px-3 py-1.5 bg-zinc-900/50 border border-zinc-800/50 rounded-lg text-xs font-mono text-zinc-500 hover:text-white hover:border-zinc-600 transition-colors cursor-default backdrop-blur-sm">
                       {t}
                     </span>

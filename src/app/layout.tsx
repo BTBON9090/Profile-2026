@@ -3,10 +3,10 @@ import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
-// 👇 1. 改回标准引用 (Standard Import)
 import Navbar from "@/components/layout/navbar";
 import Sidebar from "@/components/layout/sidebar";
 import DotMatrixBackground from "@/components/visual/dot-matrix";
+import { I18nProvider } from "@/lib/i18n";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrainsMono = localFont({
@@ -38,19 +38,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <body className={`${inter.variable} ${jetbrainsMono.variable} bg-black text-white antialiased overflow-x-hidden selection:bg-blue-500/30 selection:text-blue-200`}>
-        {/* 全局点阵背景 (z-0) */}
-        <DotMatrixBackground />
-        {/* 确保主内容区域有更高的层级，使用 z-10 */}
-        <div className="relative z-10 flex flex-col min-h-screen">
-          {/* 👇 2. 直接使用组件 */}
-          <Navbar />
-          <Sidebar />
-        
-          <main className="relative z-10">
-            {children}
-          </main>
+        <I18nProvider>
+          <DotMatrixBackground />
+          <div className="relative z-10 flex flex-col min-h-screen">
+            <Navbar />
+            <Sidebar />
+          
+            <main className="relative z-10">
+              {children}
+            </main>
 
-        </div>
+          </div>
+        </I18nProvider>
       </body>
     </html>
   );

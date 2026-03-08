@@ -3,16 +3,13 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation"; 
-
-const scrollToSection = (id: string) => {
-  const element = document.getElementById(id);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth" });
-  }
-};
+import { useI18n } from "@/lib/i18n";
+import LanguageSwitcher from "@/components/ui/language-switcher"; 
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { t } = useI18n();
+  
   return (
     <motion.nav 
       initial={{ y: -100, opacity: 0 }}
@@ -20,7 +17,6 @@ export default function Navbar() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-6 bg-black/50 backdrop-blur-md border-b border-white/5"
     >
-      {/* 左侧 Logo：点击永远回到首页 */}
       <Link 
         href="/" 
         className="font-mono text-sm tracking-widest font-bold text-zinc-300 hover:text-white transition-colors uppercase"
@@ -28,36 +24,35 @@ export default function Navbar() {
         AIDEN
         <span className="text-blue-500">.</span>
         D
-        {/* 👇 核心魔法：默认隐藏 ESIGN，只在 md (平板/桌面) 以上尺寸显示 */}
         <span className="hidden md:inline">ESIGN</span>
       </Link>
 
-      {/* 右侧导航 */}
-      <div className="flex gap-8 font-mono text-sm">
-        <Link 
-          href="/" 
-          className={`relative group transition-colors ${pathname === '/' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
-        >
-          SHOWCASE
-          {/* 如果当前在首页，底部线条常亮 */}
-          <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-        </Link>
-        <Link 
-          href="/work" 
-          className={`relative group transition-colors ${pathname === '/work' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
-        >
-          GALLERY
-          {/* 如果当前在 /work 页面，底部线条常亮 */}
-          <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/work' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-        </Link>
-        <Link 
-          href="/about" 
-          className={`relative group transition-colors ${pathname === '/about' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
-        >
-          PROFILE
-          {/* 如果当前在 /about 页面，底部线条常亮 */}
-          <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-        </Link>
+      <div className="flex items-center gap-8">
+        <div className="flex gap-8 font-mono text-sm">
+          <Link 
+            href="/" 
+            className={`relative group transition-colors ${pathname === '/' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
+          >
+            {t.nav.showcase}
+            <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+          </Link>
+          <Link 
+            href="/work" 
+            className={`relative group transition-colors ${pathname === '/work' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
+          >
+            {t.nav.gallery}
+            <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/work' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+          </Link>
+          <Link 
+            href="/about" 
+            className={`relative group transition-colors ${pathname === '/about' ? 'text-white' : 'text-zinc-500 hover:text-white'}`}
+          >
+            {t.nav.profile}
+            <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+          </Link>
+        </div>
+        
+        <LanguageSwitcher />
       </div>
     </motion.nav>
   );

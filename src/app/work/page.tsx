@@ -9,7 +9,7 @@ import { ArrowUpRight } from "lucide-react";
 const projects = [
   {
     sectionId: "company",
-    category: "Company Projects",
+    category: "COMPANY PROJECTS",
     items:[
       {
         id: "snow-ecosystem",
@@ -69,7 +69,7 @@ const projects = [
   },
   {
     sectionId: "personal",
-    category: "Personal Projects",
+    category: "PERSONAL PROJECTS",
     items:[
       {
         id: "all-in-one",
@@ -111,7 +111,7 @@ const projects = [
   },
   {
     sectionId: "others",
-    category: "Others & Infrastructure",
+    category: "FURTHER WORKS",
     items:[
       {
         id: "design-system",
