@@ -45,7 +45,7 @@ export default function About() {
               <a 
                 href="/resume.pdf"
                 download="倪城_Resume.pdf"
-                className="group inline-flex items-center gap-3 px-6 py-4 bg-white text-black rounded-full hover:bg-zinc-200 transition-colors"
+                className="group inline-flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full hover:bg-zinc-200 transition-colors"
               >
                 <FileText className="w-4 h-4 group-hover:text-blue-600" />
                 <span className="text-xl font-mono font-bold uppercase group-hover:text-blue-600">{t.about.downloadResume}</span>

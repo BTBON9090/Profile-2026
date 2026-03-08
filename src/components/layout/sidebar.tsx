@@ -30,10 +30,13 @@ export default function Sidebar() {
   // 👇 新增：如果是 /about 页面，直接返回 null (不渲染侧边栏)
   //if (pathname === "/about") { return null;}
 
+  if (pathname.startsWith("/work/")) { 
+    return null; 
+  }
   // 2. 动态决定当前使用哪套导航
   const currentSections = 
-    pathname === "/work" ? workSections : 
-    pathname === "/about" ? aboutSections :
+    pathname === "/work" ? workSections : // 工作页面
+    pathname === "/about" ? aboutSections : // About 页面
     homeSections;
   
   // 默认激活当前路由的第一个 section

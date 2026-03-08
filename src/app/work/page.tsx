@@ -17,8 +17,8 @@ const projects = [
         subtitle: "B-End System & Browser",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         date: "2024 - 2026",
-        image: "/images/AI-NEWTAB.png", // 替换为你的封面图
-        link: "/#snow-ecosystem", // 点击后跳转到首页的对应锚点
+        image: "/images/AI-NEWTAB.png",
+        link: "/work/snow-ecosystem",
       },
       {
         id: "snow-ecosystem",
@@ -26,8 +26,8 @@ const projects = [
         subtitle: "B-End System & Browser",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         date: "2024 - 2026",
-        image: "/images/snow-admin.png", // 替换为你的封面图
-        link: "/#snow-ecosystem", // 点击后跳转到首页的对应锚点
+        image: "/images/snow-admin.png",
+        link: "/work/all-in-one",
       },
       {
         id: "snow-ecosystem",
@@ -35,8 +35,8 @@ const projects = [
         subtitle: "B-End System & Browser",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         date: "2024 - 2026",
-        image: "/images/snow-admin.png", // 替换为你的封面图
-        link: "/#snow-ecosystem", // 点击后跳转到首页的对应锚点
+        image: "/images/snow-admin.png",
+        link: "/work/snow-ecosystem",
       },
       {
         id: "snow-ecosystem",
@@ -44,8 +44,8 @@ const projects = [
         subtitle: "B-End System & Browser",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         date: "2024 - 2026",
-        image: "/images/snow-admin.png", // 替换为你的封面图
-        link: "/#snow-ecosystem", // 点击后跳转到首页的对应锚点
+        image: "/images/snow-admin.png",
+        link: "/work/snow-ecosystem",
       },
       {
         id: "snow-ecosystem",
@@ -53,8 +53,8 @@ const projects = [
         subtitle: "B-End System & Browser",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         date: "2024 - 2026",
-        image: "/images/snow-admin.png", // 替换为你的封面图
-        link: "/#snow-ecosystem", // 点击后跳转到首页的对应锚点
+        image: "/images/snow-admin.png",
+        link: "/work/snow-ecosystem",
       },
       {
         id: "snow-ecosystem",
@@ -62,8 +62,8 @@ const projects = [
         subtitle: "B-End System & Browser",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         date: "2024 - 2026",
-        image: "/images/snow-admin.png", // 替换为你的封面图
-        link: "/#snow-ecosystem", // 点击后跳转到首页的对应锚点
+        image: "/images/snow-admin.png",
+        link: "/work/snow-ecosystem",
       },
     ]
   },
@@ -78,7 +78,7 @@ const projects = [
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
         date: "2025",
         image: "/images/plugin-ui.png",
-        link: "/#all-in-one",
+        link: "/work/all-in-one",
       },
       {
         id: "ai-translate",
@@ -87,7 +87,7 @@ const projects = [
         description: "支持 BYOK 模型配置的极简悬浮翻译插件，提供沉浸式双语对照与划词翻译体验。",
         date: "2026",
         image: "/images/ai-translate.png",
-        link: "/#ai-translate",
+        link: "/work/ai-translate",
       },
       {
         id: "all-in-one",
@@ -96,7 +96,7 @@ const projects = [
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
         date: "2025",
         image: "/images/plugin-ui.png",
-        link: "/#all-in-one",
+        link: "/work/all-in-one",
       },
       {
         id: "ai-translate",
@@ -105,7 +105,7 @@ const projects = [
         description: "支持 BYOK 模型配置的极简悬浮翻译插件，提供沉浸式双语对照与划词翻译体验。",
         date: "2026",
         image: "/images/ai-translate.png",
-        link: "/#ai-translate",
+        link: "/work/ai-translate",
       },
     ]
   },
@@ -120,7 +120,7 @@ const projects = [
         description: "建立并维护桌面端与 Web 端两套独立组件库，保障全域产品视觉基因统一。",
         date: "Ongoing",
         image: "/images/snow-system.png",
-        link: "/#snow-ecosystem", // 也可以指向关于组件库的锚点
+        link: "/work/design-system",
       },
       {
         id: "design-system",
@@ -129,7 +129,7 @@ const projects = [
         description: "建立并维护桌面端与 Web 端两套独立组件库，保障全域产品视觉基因统一。",
         date: "Ongoing",
         image: "/images/snow-system.png",
-        link: "/#snow-ecosystem", // 也可以指向关于组件库的锚点
+        link: "/work/design-system",
       },
       {
         id: "design-system",
@@ -138,9 +138,8 @@ const projects = [
         description: "建立并维护桌面端与 Web 端两套独立组件库，保障全域产品视觉基因统一。",
         date: "Ongoing",
         image: "/images/snow-system.png",
-        link: "/#snow-ecosystem", // 也可以指向关于组件库的锚点
+        link: "/work/design-system",
       },
-      // 未来你可以继续在这里添加 Logo 设计、宣传册等
     ]
   }
 ];
