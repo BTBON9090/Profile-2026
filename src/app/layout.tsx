@@ -5,6 +5,8 @@ import "./globals.css";
 
 import Navbar from "@/components/layout/navbar";
 import Sidebar from "@/components/layout/sidebar";
+// 👇 1. 引入刚刚写的 BGM 播放器
+import BgmPlayer from "@/components/ui/bgm-player"; 
 import DotMatrixBackground from "@/components/visual/dot-matrix";
 import { I18nProvider } from "@/lib/i18n";
 
@@ -43,7 +45,8 @@ export default function RootLayout({
           <div className="relative z-10 flex flex-col min-h-screen">
             <Navbar />
             <Sidebar />
-          
+            {/* 👇 2. 渲染 BGM 播放器 */}
+            <BgmPlayer /> 
             <main className="relative z-10">
               {children}
             </main>
