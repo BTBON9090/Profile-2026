@@ -332,7 +332,7 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
 
       {/*[结构 4] Editorial Reading 单列阅读 */}
       {data.overview && (
-      <div className="max-w-3xl mx-auto px-6 md:px-12 pb-32 text-lg text-zinc-400 leading-relaxed font-light space-y-16">
+      <div className="max-w-3xl  mx-auto px-6 md:px-12 pb-32 text-lg text-zinc-400 leading-relaxed font-light space-y-16">
         <section>
           <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-4">01 // Context</div>
           <p className="text-white text-xl">{data.overview}</p>
