@@ -10,169 +10,11 @@ import {
   Route, XCircle, MessageSquareQuote, LayoutGrid, Check, X, Lightbulb, Box, GitMerge, Globe, Eye, ZapOff, 
   BotMessageSquare, BarChart3, MonitorSmartphone, 
   History, Activity, PenTool, SunMoon, Flame, 
-  Lock, Keyboard, Database, RefreshCcw, Map, Terminal, Shield, Layers  
+  Lock, Keyboard, Database, RefreshCcw, Map, Terminal, Shield, Layers
 } from "lucide-react";
+// 引入你的数据获取方法
+import { getProjectBySlug } from "@/data/projects";
 
-// ==========================================
-// 1. 全维数据库 (注入了 10 种结构体所需的数据)
-// ==========================================
-const caseStudies = {
-  "snow-ecosystem": {
-    // 结构 1 & 2: 基础信息
-    title: "SnowTech Ecosystem",
-    subtitle: "Enterprise Zero-Trust Security Workspace",
-    role: "Lead Product Designer",
-    timeline: "2024 - 2026",
-    platform: "Web / Desktop Chrome",
-    heroImage: "/images/snow-admin.png", // 替换为真实大图
-    
-    // 结构 3: 核心洞察引语
-    quote: "“B 端设计的最高境界，是让复杂的业务逻辑在极简的界面中隐形。”",
-    
-    // 结构 4: 单列沉浸阅读
-    overview: "雪诺科技的零信任生态是替代传统 VDI 的新一代架构。作为唯一体验负责人，我主导了从底层逻辑重构到高保真界面落地的全过程。",
-    challenge: "B端安全后台通常伴随着反人类的长表单和复杂的层级嵌套。PM 提供的初始原型试图将所有配置项平铺，这会导致新手管理员极高的认知负荷和出错率。",
-    
-    // [新增 11] Persona 角色画像
-    personas:[
-      { role: "IT 管理员", pain: "部署 VPN 极其繁琐，员工经常报障，排错成本极高。" },
-      { role: "普通员工", pain: "每天需要输入十几次密码，远程办公时访问内网奇慢无比。" }
-    ],
-
-    // [新增 17] User Journey 旅程
-    journey:[
-      { step: "Discovery", desc: "管理员在控制台一键创建企业应用策略。" },
-      { step: "Distribution", desc: "策略通过云端毫秒级下发至全员浏览器。" },
-      { step: "Access", desc: "员工免密单点登录，直接安全访问内网 SaaS。" }
-    ],
-
-    // 结构 5: 左字右图粘性叙事 (分解复杂流程)
-    stickySteps:[
-      { title: "分步渐进式架构", desc: "将原本包含上百个字段的长表单，拆解为基础配置、策略绑定、发布上线三个逻辑闭环，极大降低填写阻力。" },
-      { title: "Draft vs Publish 机制", desc: "引入发布状态机，解耦前端表单状态与后端真实数据，管理员可中途保存草稿，消除了表单丢失的焦虑。" },
-      { title: "实时脱敏预览", desc: "不再让用户盲猜脱敏规则，右侧提供所见即所得的正则匹配高亮预览区域。" }
-    ],
-
-    // 结构 6: 滑块对比
-    beforeImage: "/images/snow-wireframe.png", 
-    afterImage: "/images/snow-admin.png",      
-    
-    // 结构 7: Mac Window 微交互展示
-    interactionMockup: "/images/snow-browser.png", // 放一张浏览器 AI 侧边栏的图
-    interactionDesc: "AI 侧边栏上下文感知交互，支持拖拽网页内容直接生成摘要。",
-
-    // [新增 12] UI Anatomy 界面解剖
-    anatomyImage: "/images/snow-admin.png",
-    anatomySpots:[
-      { x: "20%", y: "30%", title: "全局工作台", desc: "将最高频的数据看板前置" },
-      { x: "80%", y: "15%", title: "状态发布开关", desc: "解决前后端草稿逻辑冲突的核心机制" }
-    ],
-
-    // [新增 13] Trade-offs 设计权衡
-    tradeoffs: {
-      rejected: { title: "Plan A: 弹窗流", desc: "通过无限弹窗配置规则。缺点：遮挡底层视野，极易迷失层级。" },
-      adopted: { title: "Plan B: 抽屉与分步表单", desc: "右侧抽屉滑出，保留父级上下文，空间利用率提升 40%。" }
-    },
-
-    //[新增 14] Edge Cases 边界态
-    edgeCases:[
-      { state: "空状态 (Empty)", desc: "新注册企业无应用时，提供清晰的 Onboarding 引导动画。" },
-      { state: "极限值 (Limits)", desc: "当应用名称超过 50 字符，自动折叠并提供 Tooltip。" }
-    ],
-
-    // [新增 15] Micro-details 像素深潜
-    microZoom: { image: "/images/snow-admin.png", desc: "复杂的权限穿梭框 Hover 态与拖拽阴影的像素级打磨。" },
-
-    // [新增 16] Design to Code 工程协同
-    codeBridge: {
-      ui: "/images/snow-admin.png",
-      code: `{\n  "component": "SnowButton",\n  "variant": "primary",\n  "state": "disabled",\n  "tokens": {\n    "bg": "var(--snow-blue-500)",\n    "opacity": 0.4\n  }\n}`
-    },
-
-    // [新增 18] Graveyard 废弃方案
-    graveyard: { image: "/images/snow-wireframe.png", reason: "早期试图模仿传统的防火墙配置界面，被业务线否决，因为我们的受众是普通 IT 而非顶级极客。" },
-
-    // [新增 19] Testimonials 业务原声
-    testimonials:[
-      { text: "“这套全新的后台让我们的客户交付时间从 2 周缩短到了 3 天。”", author: "VP of Product" },
-      { text: "“非常严谨的组件规范，前端研发成本肉眼可见地降低了。”", author: "Frontend Lead" }
-    ],
-
-    // 结构 8: 设计系统资产
-    designSystem: {
-      colors:["#2563EB", "#7C3AED", "#10B981", "#EF4444", "#F59E0B"],
-      typography: { heading: "Inter / JetBrains Mono", body: "14px Regular / 1.5 Leading" }
-    },
-
-    // 结构 9: 收益看板
-    impacts:[
-      { value: "90%", label: "部署成本降低" },
-      { value: "40%", label: "配置效率提升" },
-      { value: "0 to 1", label: "设计规范基建" }
-    ],
-
-    // ... 保留之前的 1-20 的数据 ...
-
-    // [新增 21] Aha Moment
-    ahaMoment: "在深入调研后我发现，管理员根本不关心‘策略怎么配’，他们只关心‘员工能不能连上’。我们将配置逻辑从‘基于规则’彻底转向了‘基于意图’。",
-    // [新增 22] Atomic Anatomy
-    anatomyComponent: { name: "Policy Card", padding: "16px", radius: "12px", gap: "8px" },
-    // [新增 23] Information Architecture
-    iaNodes: ["Global Dashboard", "Access Policies", "User Identity", "Audit Logs"],
-    // [新增 24] I18n
-    i18n: { en: "Deploy Secure Gateway", ar: "نشر البوابة الآمنة" },
-    // [新增 25] A11y
-    a11y: { contrast: "7.1:1 (AAA)", focusRing: "2px Solid Blue" },
-    //[新增 26] Optimistic UI
-    performance: "针对百万级日志拉取，设计了带微光扫视的 Skeleton Loading，降低了用户 40% 的等待焦虑感。",
-    //[新增 27] AI State Machine
-    aiStates:["Idle", "Analyzing DOM...", "Streaming Payload...", "Action Suggestions"],
-    // [新增 28] Data Viz
-    dataViz: "将复杂的网络连通性数据，抽象为简单的‘桑基图 (Sankey Diagram)’，流量走向一目了然。",
-    // [新增 29] Responsive
-    responsive:["1440px (Desktop)", "1024px (Tablet)", "390px (Mobile)"],
-    // [新增 30] Iterations
-    iterations:[
-      { ver: "v1.0", desc: "基础可用，但表单过长。" },
-      { ver: "v2.0", desc: "引入抽屉组件，但上下文易丢失。" },
-      { ver: "v3.0", desc: "最终采用分步式弹层，完美闭环。" }
-    ],
-    // [新增 31] Easing Curve
-    easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-    // [新增 32] Microcopy
-    microcopy: { bad: "Error 404: Gateway not found", good: "网关未响应，请检查连接器状态或重试" },
-    // [新增 33] Cold Start
-    coldStart: "新租户注册后，提供 3 分钟极速‘向导模式’，完成首个应用发布。",
-    // [新增 34] RBAC
-    rbac: ["Super Admin", "Security Auditor", "Department Manager"],
-    //[新增 35] Cmd+K
-    shortcuts:["Cmd + K (Global Search)", "Cmd + / (Shortcuts Help)"],
-    // [新增 36] Backend Constraints
-    apiConstraint: "由于后端 WebSocket 连接建立需要 800ms，我在按钮上增加了‘连接中’的过渡态，避免了用户的重复点击引发的数据脏写。",
-    // [新增 37] Roadmap
-    roadmap:["Q3: AI Copilot Integration", "Q4: Automated Threat Response"],
-    // [新增 38] X-Ray Spotlight 数据
-    xray: { baseImage: "/images/snow-admin.png", overlayImage: "/images/snow-admin.png", codeSpot1: "<SidebarNavigation />", codeSpot2: "<DataGrid virtualized={true} />" },
-    
-    //[新增 39] 3D Exploded 数据
-    explodedView: { layer1: "BASE_LAYER / Canvas", layer2: "Glassmorphism UI", layer3: "ACTION_BUTTON" },
-    
-    //[新增 40] SVG Circuit 数据
-    topology: { source: "PostgreSQL", middleware: "LLM Engine", client: "Client UI" },
-    
-    // [新增 41] Magnetic Terminal 数据
-    terminal: { logs:["✔ Compiled successfully in 1432ms", "Wait until bundle finished...", "Injecting Magnetic Physics...", "[framer-motion] useSpring initialized"] },
-    
-    // ... 保持原来的 nextProject 在最下面
-
-    // 结构 10: 全景大图与下一篇
-    fullWidthImage: "/images/snow-admin.png",
-    masonryImages:["/images/snow-admin.png", "/images/snow-browser.png", "/images/plugin-ui.png", "/images/ai-translate.png"],
-    nextProject: { slug: "all-in-one", name: "AllinOne Figma Plugin" },
-
-    
-  }
-};
 
 // ==========================================
 // 结构体组件: 滑块对比 (Structure 6)
@@ -300,20 +142,114 @@ const MagneticTerminalModule = ({ data }: { data: any }) => {
 };
 
 // ==========================================
+// Template V3: Behance Style (Light Mode)
+// ==========================================
+const TemplateV3 = ({ data }: { data: any }) => {
+  return (
+    <div className="bg-white min-h-screen text-zinc-900 selection:bg-black/10 selection:text-black">
+      
+      {/* 适配白底的返回按钮 */}
+      <Link href="/work" className="fixed top-8 left-8 z-50 w-12 h-12 bg-white/80 backdrop-blur-md border border-zinc-200 shadow-xl rounded-full flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-all group">
+        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+      </Link>
+
+      {/* Behance 核心画框容器：居中、限制最大最小宽度 */}
+      <div className="w-full min-w-[375px] max-w-[1400px] mx-auto flex flex-col bg-white">
+        {data.behanceSlices.map((sliceUrl: string, index: number) => (
+          // 使用原生 img 确保上下切片绝对无缝衔接 (block 去除底部默认空白)
+          <img 
+            key={index} 
+            src={sliceUrl} 
+            alt={`${data.title} - Slice ${index + 1}`} 
+            loading={index === 0 ? "eager" : "lazy"} // 首屏立即加载，后面的懒加载提升性能
+            className="w-full h-auto block m-0 p-0" 
+          />
+        ))}
+      </div>
+
+      {/* Footer Next Project (白底版) */}
+      {data.nextProject && (
+        <Link href={`/work/${data.nextProject.slug}`} className="block w-full py-32 bg-zinc-50 hover:bg-zinc-100 transition-colors text-center border-t border-zinc-200 group">
+          <div className="text-sm font-mono text-zinc-400 tracking-widest uppercase mb-4 group-hover:text-black transition-colors">Next Project</div>
+          <h2 className="text-4xl md:text-6xl font-bold text-zinc-900 group-hover:translate-y-2 transition-transform duration-500">
+            {data.nextProject.name}
+          </h2>
+        </Link>
+      )}
+    </div>
+  );
+};
+
+// ==========================================
+// Template V4: Behance Style (Dark Mode)
+// ==========================================
+const TemplateV4 = ({ data }: { data: any }) => {
+  return (
+    <div className="bg-[#050505] min-h-screen text-zinc-100 selection:bg-white/20 selection:text-white">
+      
+      {/* 适配黑底的返回按钮 */}
+      <Link href="/work" className="fixed top-8 left-8 z-50 w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 shadow-2xl rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all group">
+        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+      </Link>
+
+      {/* Behance 核心画框容器：黑底 */}
+      <div className="w-full min-w-[375px] max-w-[1400px] mx-auto flex flex-col bg-[#050505]">
+        {data.behanceSlices.map((sliceUrl: string, index: number) => (
+          <img 
+            key={index} 
+            src={sliceUrl} 
+            alt={`${data.title} - Slice ${index + 1}`} 
+            loading={index === 0 ? "eager" : "lazy"} 
+            className="w-full h-auto block m-0 p-0" 
+          />
+        ))}
+      </div>
+
+      {/* Footer Next Project (黑底版) */}
+      {data.nextProject && (
+        <Link href={`/work/${data.nextProject.slug}`} className="block w-full py-32 bg-[#020202] hover:bg-zinc-900 transition-colors text-center border-t border-zinc-900 group">
+          <div className="text-sm font-mono text-zinc-600 tracking-widest uppercase mb-4 group-hover:text-white transition-colors">Next Project</div>
+          <h2 className="text-4xl md:text-6xl font-bold text-white group-hover:translate-y-2 transition-transform duration-500">
+            {data.nextProject.name}
+          </h2>
+        </Link>
+      )}
+    </div>
+  );
+};
+
+// ==========================================
 // 主页面入口
 // ==========================================
 export default function UniversalCaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params); // Next.js 15 解包
-  const data = caseStudies[slug as keyof typeof caseStudies];
+  // 👇 把原来报错的那行删掉，换成这句极其优雅的代码！
+  const data = getProjectBySlug(slug);
+  console.log("当前读取到的数据hhh:", data); // 打开控制台看是否有输出 
 
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 1000], [0, 250]); 
   const opacity1 = useTransform(scrollY, [0, 600],[1, 0]);
 
+  // 检查项目配置是否存在
   if (!data) return <div className="min-h-screen bg-black flex justify-center items-center text-white font-mono">Project Configuration Missing</div>;
 
+  // =======================================================
+  // 👇 3. 核心修改：就在这里加上拦截器！
+  // =======================================================
+  
+  // 如果你在数据里写了 template: "v3"，它就会在这里停下，渲染白底长图！
+  if (data.template === "v3") {
+    return <TemplateV3 data={data} />;
+  }
+
+  // 如果你在数据里写了 template: "v4"，它就会渲染黑底长图！
+  if (data.template === "v4") {
+    return <TemplateV4 data={data} />;
+  }
+
   return (
-    <div className="bg-[#050505] min-h-screen selection:bg-blue-500/30 selection:text-blue-200">
+    <div className="bg-[#050505] min-h-screen selection:bg-blue-500/30 selection:text-blue-200"> 
       
       {/* 顶部返回键 */}
       <Link href="/work" className="fixed top-8 left-8 z-50 w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all group shadow-2xl">
@@ -321,6 +257,7 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
       </Link>
 
       {/* [结构 1] Cinematic Hero 巨幕 */}
+      {data.heroImage && (
       <div className="relative w-full h-[85vh] overflow-hidden bg-black border-b border-zinc-900">
         <motion.div style={{ y: y1, opacity: opacity1 }} className="absolute inset-0 w-full h-full">
           <Image src={data.heroImage} alt={data.title} fill className="object-cover object-top opacity-70" priority />
@@ -333,8 +270,11 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
-
+      )}
+      
+    
       {/* [结构 2] Metadata Grid 元信息矩阵 */}
+      {data.role && ( 
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-16 border-b border-zinc-900">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
           {Object.entries({ Role: data.role, Timeline: data.timeline, Platform: data.platform, Output: "UX / UI / Strategy" }).map(([key, val]) => (
@@ -345,16 +285,20 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           ))}
         </div>
       </div>
-
+      )}
+      
       {/* [结构 3] The Insight Quote 核心洞察 */}
+      {data.quote && (
       <div className="max-w-4xl mx-auto px-6 md:px-12 py-32 text-center">
         <ShieldCheck className="w-12 h-12 text-blue-500/50 mx-auto mb-8" />
         <h2 className="text-3xl md:text-4xl text-white font-medium leading-relaxed italic tracking-wide">
           {data.quote}
         </h2>
       </div>
+      )}
 
       {/* [结构 11] Persona 角色画像 (新增) */}
+      {data.personas && (
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-32">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">User Personas</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -366,8 +310,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           ))}
         </div>
       </div>
+      )}
 
       {/* [结构 17] User Journey 旅程穿梭 (新增) */}
+      {data.journey && (
       <div className="w-full bg-zinc-950 border-y border-zinc-900 py-24 mb-32">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12">Core Workflow</div>
@@ -382,8 +328,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/*[结构 4] Editorial Reading 单列阅读 */}
+      {data.overview && (
       <div className="max-w-3xl mx-auto px-6 md:px-12 pb-32 text-lg text-zinc-400 leading-relaxed font-light space-y-16">
         <section>
           <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-4">01 // Context</div>
@@ -396,13 +344,16 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </section>
       </div>
+      )}
+
 
       {/* [结构 5] Sticky Scroll 粘性叙事 */}
+      {data.stickySteps && (
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-32 border-t border-zinc-900">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-16 text-center">03 // Logic Refactoring</div>
         <div className="flex flex-col md:flex-row gap-16 relative">
           <div className="md:w-1/2 space-y-[40vh] pb-[40vh]">
-            {data.stickySteps.map((step, i) => (
+            {data.stickySteps.map((step: any, i: number) => (
               <div key={i} className="min-h-[30vh] flex flex-col justify-center">
                 <div className="text-5xl font-mono font-bold text-zinc-800 mb-6">0{i+1}</div>
                 <h3 className="text-3xl font-bold text-white mb-6">{step.title}</h3>
@@ -421,8 +372,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/* [结构 12] UI Anatomy 界面解剖雷达 (新增) */}
+      {data.anatomyImage && (
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-32">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">Interface Anatomy</div>
         <div className="relative w-full h-[60vh] rounded-[2rem] border border-zinc-800 overflow-hidden bg-zinc-900">
@@ -439,8 +392,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
            ))}
         </div>
       </div>
+      )}
 
       {/* [结构 13] Trade-offs 方案权衡 (新增) */}
+      {data.tradeoffs && (
       <div className="max-w-6xl mx-auto px-6 md:px-12 pb-32">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">Design Trade-offs</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -456,8 +411,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
            </div>
         </div>
       </div>
+      )}
 
       {/* [结构 14] Edge Cases 异常态展厅 (新增) */}
+      {data.edgeCases && (
       <div className="w-full bg-zinc-950 py-24 mb-32 border-y border-zinc-900">
         <div className="max-w-6xl mx-auto px-6 md:px-12">
           <div className="flex items-center gap-4 mb-12"><AlertTriangle className="w-6 h-6 text-yellow-500" /><h2 className="text-2xl font-bold text-white">Edge Cases & Empty States</h2></div>
@@ -468,14 +425,18 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/* [结构 6] Slider 破局对比 */}
+      {data.beforeImage && data.afterImage && ( 
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-32 border-t border-zinc-900">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">04 // Visual Execution</div>
         <ImageCompareSlider before={data.beforeImage} after={data.afterImage} />
       </div>
+      )}
 
       {/* [结构 15] Micro-details Zoom 像素级微观深潜 (新增) */}
+      {data.microZoom && (  
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-32 flex flex-col md:flex-row gap-16 items-center">
         <div className="md:w-1/2">
           <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-6">Pixel Perfection</div>
@@ -488,13 +449,17 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
            <div className="absolute inset-0 border-[20px] border-[#050505] rounded-full pointer-events-none"></div>
         </div>
       </div>
+      )}
 
       {/* [结构 16] Design to Code 工程协同桥梁 (新增) */}
+      {data.codeBridge && (
       <div className="w-full bg-black py-32 border-y border-zinc-900">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
            <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">Design Engineering</div>
            <div className="flex flex-col lg:flex-row rounded-3xl overflow-hidden border border-zinc-800">
-              <div className="lg:w-1/2 h-[400px] relative bg-zinc-900"><Image src={data.codeBridge.ui} alt="UI Component" fill className="object-cover opacity-80" /></div>
+              <div className="lg:w-1/2 h-[400px] relative bg-zinc-900">
+              <Image src={data.codeBridge.ui} alt="UI Component" fill className="object-cover opacity-80" />
+              </div>
               <div className="lg:w-1/2 bg-[#0D0D0D] p-8 md:p-12 flex flex-col justify-center">
                  <div className="flex items-center gap-2 mb-6 text-zinc-600 font-mono text-xs"><Braces className="w-4 h-4"/> Design Tokens & JSON Payload</div>
                  <pre className="text-blue-400 font-mono text-sm leading-loose overflow-x-auto"><code>{data.codeBridge.code}</code></pre>
@@ -502,8 +467,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
            </div>
         </div>
       </div>
+      )}
 
       {/*[结构 18] The Graveyard 废弃方案墓地 (新增) */}
+      {data.graveyard && (
       <div className="max-w-4xl mx-auto px-6 md:px-12 py-32 text-center">
          <h2 className="text-2xl font-bold text-zinc-600 mb-12">The Graveyard (Rejected Concept)</h2>
          <div className="relative w-full h-[400px] rounded-3xl border-2 border-dashed border-zinc-800 overflow-hidden mb-8 opacity-40 grayscale">
@@ -512,8 +479,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
          </div>
          <p className="text-zinc-500 text-sm font-mono max-w-2xl mx-auto">Reasoning: {data.graveyard.reason}</p>
       </div>
+      )}
 
       {/*[结构 19] Testimonials 高管原声 (新增) */}
+      {data.testimonials && (
       <div className="w-full bg-gradient-to-b from-[#050505] to-[#0a0a0a] py-32 border-t border-zinc-900">
          <div className="max-w-6xl mx-auto px-6 md:px-12">
             <MessageSquareQuote className="w-12 h-12 text-blue-500/20 mb-12 mx-auto" />
@@ -527,8 +496,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
             </div>
          </div>
       </div>
+      )}
 
       {/* [结构 20] Deliverables Masonry 瀑布流全景墙 (新增) */}
+      {data.masonryImages && (
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-32">
          <div className="flex items-center justify-between mb-12">
             <div className="text-sm font-mono text-blue-500 uppercase tracking-widest">Deliverables Gallery</div>
@@ -542,8 +513,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
             ))}
          </div>
       </div>
-      
+      )}
+
       {/* [结构 7] Mac Window Mockup 交互模拟器 */}
+      {data.interactionMockup && (
       <div className="max-w-5xl mx-auto px-6 md:px-12 pb-32">
          <div className="w-full bg-[#111] border border-zinc-800 rounded-[2rem] overflow-hidden shadow-[0_20px_50px_-15px_rgba(0,0,0,0.8)]">
            <div className="h-12 bg-[#1A1A1A] border-b border-zinc-800 flex items-center px-6 gap-2">
@@ -561,8 +534,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
            </div>
          </div>
       </div>
+      )}
 
       {/* [结构 8] Design System Bento 基建资产 */}
+      {data.designSystem && (
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-32 border-t border-zinc-900">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">05 // Foundation</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -583,8 +558,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
            </div>
         </div>
       </div>
+      )}
 
       {/* [结构 9] Impact Metrics 业务收益 */}
+      {data.impacts && (
       <div className="w-full bg-gradient-to-b from-[#050505] to-[#0A0A0A] py-32 border-y border-zinc-900">
         <div className="max-w-6xl mx-auto px-6 md:px-12">
           <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-16 text-center">06 // The Impact</div>
@@ -599,18 +576,22 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/* [结构 10] Edge-to-Edge Reveal 无界大图 */}
+      {data.fullWidthImage && (
       <div className="w-full h-[80vh] relative mt-32">
         <Image src={data.fullWidthImage} alt="Full View" fill className="object-cover object-top" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"></div>
       </div>
+      )}
 
       {/* ==========================================
           进阶结构体 (21 - 40)
       ========================================== */}
 
       {/*[结构 21] The "Aha!" Moment 顿悟时刻 */}
+      {data.ahaMoment && (
       <div className="w-full bg-blue-600/10 border-y border-blue-500/20 py-24 my-32">
         <div className="max-w-4xl mx-auto px-6 md:px-12 text-center">
           <Lightbulb className="w-12 h-12 text-yellow-500 mb-8 mx-auto animate-pulse" />
@@ -620,8 +601,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </p>
         </div>
       </div>
+      )}
 
       {/* [结构 22] Atomic Anatomy 原子解剖 */}
+      {data.anatomyComponent && ( 
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-32 flex flex-col md:flex-row items-center gap-16">
         <div className="md:w-1/2">
           <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-6">Atomic Design</div>
@@ -635,8 +618,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
            </div>
         </div>
       </div>
+      )}
 
       {/* [结构 23] Information Architecture 拓扑树 */}
+      {data.iaNodes && (
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-32 text-center">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12">Information Architecture</div>
         <div className="flex flex-col md:flex-row items-center justify-center gap-8">
@@ -651,8 +636,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/*[结构 24] I18n & Localization 国际化 */}
+      {data.i18n && (
       <div className="w-full bg-[#111] py-24 mb-32 border-y border-zinc-900">
         <div className="max-w-6xl mx-auto px-6 md:px-12">
           <div className="flex items-center gap-3 mb-12"><Globe className="w-6 h-6 text-zinc-400" /><h2 className="text-2xl font-bold text-white">Global Scalability (I18n)</h2></div>
@@ -662,8 +649,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/* [结构 25] A11y Accessibility 无障碍 */}
+      {data.a11y && ( 
       <div className="max-w-6xl mx-auto px-6 md:px-12 pb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border border-zinc-800 rounded-3xl p-10 bg-gradient-to-br from-zinc-900 to-black">
           <div>
@@ -677,8 +666,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/* [结构 26] Performance UX (Optimistic UI) */}
+      {data.performance && (  
       <div className="max-w-5xl mx-auto px-6 md:px-12 pb-32 text-center">
         <ZapOff className="w-8 h-8 text-yellow-500 mx-auto mb-6" />
         <h2 className="text-2xl font-bold text-white mb-6">Perceived Performance (感知性能)</h2>
@@ -689,8 +680,11 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           <div className="w-full h-4 bg-zinc-800 rounded-full animate-pulse delay-150"></div>
         </div>
       </div>
+      )}
+
 
       {/* [结构 27] AI State Machine 大模型状态机 */}
+      {data.aiStates && (
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-32">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">AI Copilot State Machine</div>
         <div className="flex justify-between items-center bg-zinc-900/50 p-8 rounded-3xl border border-zinc-800 overflow-x-auto">
@@ -705,8 +699,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           ))}
         </div>
       </div>
+      )}
 
       {/* [结构 30] Iterative Changelog 迭代日志 */}
+      {data.iterations && (
       <div className="max-w-4xl mx-auto px-6 md:px-12 pb-32">
         <div className="flex items-center gap-3 mb-12"><History className="w-6 h-6 text-zinc-400" /><h2 className="text-2xl font-bold text-white">The Evolution</h2></div>
         <div className="space-y-8 pl-4 border-l border-zinc-800">
@@ -719,8 +715,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           ))}
         </div>
       </div>
+      )}
 
       {/* [结构 31] Motion Easing 动效曲线 */}
+      {data.easing && (
       <div className="w-full bg-black py-24 border-y border-zinc-900 mb-32">
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-16">
           <div className="md:w-1/2">
@@ -734,8 +732,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           </div>
         </div>
       </div>
+      )}
 
       {/* [结构 32] UX Microcopy 文案重构 */}
+      {data.microcopy && (
       <div className="max-w-5xl mx-auto px-6 md:px-12 pb-32">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">UX Microcopy</div>
         <div className="flex flex-col md:flex-row gap-8">
@@ -743,8 +743,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           <div className="flex-1 bg-green-500/5 border border-green-500/20 p-8 rounded-3xl"><div className="text-green-400 font-mono text-xs mb-4">AFTER (Human Tone)</div><div className="text-zinc-300 font-medium">"{data.microcopy.good}"</div></div>
         </div>
       </div>
+      )}
 
       {/* [结构 34] Light/Dark Mode 双主题映射 */}
+      {data.colors && (
       <div className="max-w-7xl mx-auto px-6 md:px-12 pb-32">
         <div className="flex items-center gap-3 mb-12"><SunMoon className="w-6 h-6 text-zinc-400" /><h2 className="text-2xl font-bold text-white">Semantic Color Tokens</h2></div>
         <div className="flex h-64 rounded-3xl overflow-hidden border border-zinc-800 shadow-2xl">
@@ -752,8 +754,10 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           <div className="flex-1 bg-[#09090b] p-8 flex flex-col justify-between"><div className="text-white font-bold text-2xl">Dark Mode</div><div className="flex gap-2"><div className="w-8 h-8 bg-zinc-900 rounded border border-zinc-800"></div><div className="w-8 h-8 bg-blue-500 rounded"></div></div></div>
         </div>
       </div>
+      )}
 
       {/* [结构 35] Cmd+K Command Palette */}
+      {data.shortcuts && (  
       <div className="max-w-4xl mx-auto px-6 md:px-12 pb-32 text-center">
         <Keyboard className="w-12 h-12 text-zinc-600 mx-auto mb-6" />
         <h2 className="text-2xl font-bold text-white mb-6">Power User Shortcuts</h2>
@@ -761,16 +765,20 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           {data.shortcuts.map((sc: string, i: number) => <div key={i} className="px-4 py-2 bg-zinc-900 border border-zinc-700 rounded-lg font-mono text-sm text-zinc-300 shadow-inner">{sc}</div>)}
         </div>
       </div>
+      )}
 
       {/* [结构 36] Backend Constraints 后端限制妥协 */}
+      {data.apiConstraint && (
       <div className="w-full bg-orange-500/5 border-y border-orange-500/10 py-24 mb-32">
         <div className="max-w-5xl mx-auto px-6 md:px-12">
           <div className="flex items-center gap-3 mb-6"><Database className="w-6 h-6 text-orange-400" /><h2 className="text-2xl font-bold text-orange-400">Design vs Engineering Constraints</h2></div>
           <p className="text-zinc-300 text-lg leading-relaxed">{data.apiConstraint}</p>
         </div>
       </div>
+      )}
 
       {/* [结构 37] Future Roadmap 未来路线图 */}
+      {data.roadmap && (  
       <div className="max-w-4xl mx-auto px-6 md:px-12 pb-32">
         <div className="text-sm font-mono text-blue-500 uppercase tracking-widest mb-12 text-center">What's Next</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -781,11 +789,21 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
           ))}
         </div>
       </div>
+      )}
 
-      {data.xray && <XRayModule data={data.xray} />}
-      {data.explodedView && <ExplodedViewModule data={data.explodedView} />}
-      {data.topology && <DynamicCircuitModule data={data.topology} />}
-      {data.terminal && <MagneticTerminalModule data={data.terminal} />}
+      {/* [结构 38] X-Ray View 3D 模型 */}
+      {data.xray && (
+        <XRayModule data={data.xray} />
+      )}
+      {data.explodedView && (
+        <ExplodedViewModule data={data.explodedView} />
+      )}
+      {data.topology && (
+        <DynamicCircuitModule data={data.topology} />
+      )}
+      {data.terminal && (
+        <MagneticTerminalModule data={data.terminal} />
+      )}
 
       {/* Footer Next Project */}
       {data.nextProject && (
@@ -798,5 +816,6 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
       )}
 
     </div>
+    
   );
 }

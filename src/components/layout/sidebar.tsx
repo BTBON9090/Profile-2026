@@ -11,8 +11,6 @@ const homeSections =[
   { id: "snow-ecosystem", label: "03 Snowtech Ecosystem" },
   { id: "about", label: "04 About Me" },
   { id: "footer", label: "05 Contact" },
-  // 暂时注释掉 footer，因为 footer 通常不够高，容易导致滚动监听乱跳
-  // { id: "footer", label: "05 // Contact" }, 
 ];
 const workSections =[
   { id: "company", label: "01 Company" },
@@ -30,9 +28,6 @@ export default function Sidebar() {
   // 👇 新增：如果是 /about 页面，直接返回 null (不渲染侧边栏)
   //if (pathname === "/about") { return null;}
 
-  if (pathname.startsWith("/work/")) { 
-    return null; 
-  }
   // 2. 动态决定当前使用哪套导航
   const currentSections = 
     pathname === "/work" ? workSections : // 工作页面
@@ -82,7 +77,7 @@ export default function Sidebar() {
       observer.disconnect();
       clearTimeout(timeoutId);
     };
-  }, [pathname]); // 4. 依赖项改为 pathname，路由一旦变化，就销毁旧监听并重启新监听
+  }, [pathname, currentSections]); // 4. 依赖项改为 pathname，路由一旦变化，就销毁旧监听并重启新监听
 
   const scrollToSection = (id: string) => {
     // 1. 立即点亮点击的导航项，提供秒级反馈
@@ -103,6 +98,18 @@ export default function Sidebar() {
       isClickScrolling.current = false;
     }, 1000); // 1秒后解锁监听器
   };
+
+  // =========================================================
+  // 🟢 第三部分：页面拦截区 (只有等所有 Hooks 都走完，才能拦截)
+  // =========================================================
+  // 如果是作品详情页 (如 /work/snow-ecosystem)，隐藏侧边栏！
+  if (pathname.startsWith("/work/")) { 
+    return null; 
+  }
+  // 如果是图集页 (如 /gallery/light-branding)，隐藏侧边栏！
+  if (pathname.startsWith("/gallery/")) {
+    return null;
+  }
 
   return (
     <motion.div 

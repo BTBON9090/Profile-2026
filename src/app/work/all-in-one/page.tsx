@@ -34,7 +34,7 @@ const projectData = {
     { metric: "100%", label: "AI Generated Code" }
   ],
   
-  nextProject: { slug: "snow-ecosystem", name: "SnowTech Ecosystem" }
+  nextProject: { slug: "light-branding", name: "Light Branding" }
 };
 
 // ==========================================
