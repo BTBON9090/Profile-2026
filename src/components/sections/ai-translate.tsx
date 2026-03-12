@@ -78,7 +78,7 @@ export default function AITranslate() {
 
             <div className="mt-10 mb-10">
               <a 
-                href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/01071636.zip" 
+                href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/20260312.zip" 
                 download="AI-Translate.zip"
                 className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 cursor-pointer"
             >

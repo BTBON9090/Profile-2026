@@ -1,7 +1,7 @@
 // src/data/work/snow-ecosystem.ts
 
 const snowEcosystemData = {
-  "snow-ecosystem": {
+  
     template: "v1", // 👈 必须补上这行！这是它的身份标识
     // 结构 1 & 2: 基础信息
     title: "SnowTech Ecosystem",
@@ -156,7 +156,7 @@ const snowEcosystemData = {
     nextProject: { slug: "all-in-one", name: "AllinOne Figma Plugin" },
 
     
-  },
-}
+  }
+
 
 export default snowEcosystemData;

@@ -2,6 +2,7 @@
 "use client";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import BackToTop from "@/components/ui/back-to-top";
 
 // ==========================================
 // 🎨 配置区：在这里修改你的作品信息
@@ -99,7 +100,7 @@ export default function BehanceStylePage() {
           </h2>
         </Link>
       )}
-      
+                  <BackToTop />
     </div>
   );
 }

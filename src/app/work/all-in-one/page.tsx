@@ -3,6 +3,7 @@ import { motion, type Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Layers, Zap, Bot, CheckCircle2 } from "lucide-react";
+import BackToTop from "@/components/ui/back-to-top";
 
 // ==========================================
 // 核心数据 (直接写在页面内，结构清晰)
@@ -58,7 +59,7 @@ export default function AllInOneProjectPage() {
       </Link>
 
       {/* --- 阶段 1: 头部信息与头图 (Hero Section) --- */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-40 pb-20 relative overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pt-40 pb-20 relative overflow-hidden">
         {/* 背景紫色极光特效 */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/10 blur-[150px] pointer-events-none rounded-full"></div>
         
@@ -92,7 +93,7 @@ export default function AllInOneProjectPage() {
 
       {/* --- 阶段 2: 痛点空间拆解 (The Problem Space) --- */}
       <div className="bg-zinc-950 py-32 border-y border-zinc-900">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center gap-4 mb-16">
             <span className="w-12 h-px bg-purple-500"></span>
             <h2 className="text-sm font-mono text-purple-400 uppercase tracking-widest">The Problem Space</h2>
@@ -118,7 +119,7 @@ export default function AllInOneProjectPage() {
       </div>
 
       {/* --- 阶段 3: AI 驱动架构与工作流 (Logic & Workflow) --- */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-32">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-32">
          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="lg:col-span-5">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
@@ -164,7 +165,7 @@ export default function AllInOneProjectPage() {
       </div>
 
       {/* --- 阶段 4: 核心功能矩阵 (Feature Highlights Bento Grid) --- */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 pb-32">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-32">
          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-4xl font-bold text-white mb-16">
            Feature Highlights
          </motion.h2>
@@ -192,7 +193,7 @@ export default function AllInOneProjectPage() {
 
       {/* --- 阶段 5: 数据与收益看板 (The Impact) --- */}
       <div className="bg-purple-900/10 border-y border-purple-500/20 py-32">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8">
            <div className="flex flex-col md:flex-row gap-16 justify-between items-center text-center md:text-left">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
                 <h2 className="text-4xl font-bold text-white mb-4">The Impact</h2>
@@ -227,7 +228,7 @@ export default function AllInOneProjectPage() {
            {projectData.nextProject.name}
          </h2>
       </Link>
-
+                 <BackToTop />
     </div>
   );
 }
