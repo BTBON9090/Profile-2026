@@ -1,7 +1,8 @@
 // src/data/work/light-branding.ts
 
 const darkAppUiData = {
-  template: "v4",
+  template: "v5",
+  theme: "dark",
     title: "Dark App UI",
     behanceSlices:[
       "/images/cili-project/Desk-03.jpg", 

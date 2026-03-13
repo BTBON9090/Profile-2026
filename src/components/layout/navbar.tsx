@@ -11,18 +11,18 @@ export default function Navbar() {
   const { t } = useI18n();
   // ==============================================================
   // 1. 动态主题感知
-  // 注意这里：如果是放在 gallery 路由下，记得加上 /gallery/ 前缀
+  // 注意这里：如果是放在 project 路由下，记得加上 /project/ 前缀
   // ==============================================================
-  const isLightTheme = pathname === "/gallery/light-branding" || pathname === "/work/light-branding";
+  const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding";
 
   // 提取动态 CSS 变量
-  const navBgClass = isLightTheme ? "bg-white/80 border-b border-zinc-200" : "bg-black/50 border-b border-white/5";
-  const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white";
-  const dotColorClass = isLightTheme ? "text-blue-600" : "text-blue-500";
+  const navBgClass = isLightTheme ? "bg-white/80 border-b border-zinc-200" : "bg-black/50 border-b border-white/5"; // 背景颜色
+  const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white"; // logo 颜色
+  const dotColorClass = isLightTheme ? "text-blue-600" : "text-blue-600"; // 点颜色
   
   // 👇 提取激活和未激活的文字颜色变量
-  const activeText = isLightTheme ? "text-zinc-900" : "text-white";
-  const inactiveText = isLightTheme ? "text-zinc-500 hover:text-zinc-900" : "text-zinc-500 hover:text-white";
+  const activeText = isLightTheme ? "text-zinc-900" : "text-white"; // 激活文字颜色
+  const inactiveText = isLightTheme ? "text-zinc-500 hover:text-zinc-900" : "text-gray-400 hover:text-white"; // 未激活文字颜色
 
 
   return (
@@ -37,9 +37,9 @@ export default function Navbar() {
         className={`font-mono text-sm tracking-widest font-bold transition-colors ${logoColorClass} uppercase`}
       >
         AIDEN
-        <span className="text-blue-500">.</span>
-        <span className="text-blue-500">D</span>
-        <span className={`text-blue-500 hidden md:inline`}>ESIGN</span>
+        <span className={dotColorClass}>.</span>
+        <span className={dotColorClass}>D</span>
+        <span className={`${isLightTheme ? "text-blue-600" : "text-blue-600"} hidden md:inline`}>ESIGN</span>
       </Link>
 
       
@@ -47,28 +47,26 @@ export default function Navbar() {
       <div className="flex items-center gap-8">
         <div className="flex gap-8 font-mono text-sm">
           
-          {/* 1. 首页 (Showcase) */}
+          {/* 1. 首页 (Home) */}
           <Link 
             href="/" 
             // 使用动态变量 activeText 和 inactiveText
             className={`relative group transition-colors ${pathname === '/' ? activeText : inactiveText}`}
           >
-            {/* {t.nav.showcase} 如果你用了多语言的话，否则写回文字 */}
-            SHOWCASE
+            {t.nav.home} 
             <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
           </Link>
 
-          {/* 2. 图库 (Work/Gallery) */}
+          {/* 2. 图库 (Work/Project) */}
           <Link 
             href="/work" 
             className={`relative group transition-colors ${
-              pathname.startsWith('/work') || pathname.startsWith('/gallery') ? activeText : inactiveText
+              pathname.startsWith('/work') || pathname.startsWith('/project') ? activeText : inactiveText
             }`}
           >
-            {/* {t.nav.gallery} */}
-            WORK
+            {t.nav.project}
             <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${
-              pathname.startsWith('/work') || pathname.startsWith('/gallery') ? 'w-full' : 'w-0 group-hover:w-full'
+              pathname.startsWith('/work') || pathname.startsWith('/project') ? 'w-full' : 'w-0 group-hover:w-full'
             }`}></span>
           </Link>
 
@@ -77,8 +75,7 @@ export default function Navbar() {
             href="/about" 
             className={`relative group transition-colors ${pathname === '/about' ? activeText : inactiveText}`}
           >
-            {/* {t.nav.profile} */}
-            ABOUT
+            {t.nav.biography}
             <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
           </Link>
 

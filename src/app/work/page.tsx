@@ -4,12 +4,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 // 1. 结构化你的作品数据 (方便以后随时增删改)
 const projects = [
   {
     sectionId: "company",
-    category: "COMPANY PROJECTS",
+    categoryKey: "companyProjects",
     items:[
       {
         id: "snow-ecosystem",
@@ -37,7 +38,7 @@ const projects = [
         description: "雪诺科技从 0 到 1 的品牌基因构建，包含 Logo、宣传册及官网视觉推演。",
         date: "2024",
         image: "/images/cili-project/Desk-03.jpg",
-        link: "/work/light-branding", // 👈 这个是纯看图的，指向刚刚建好的 /gallery 路由
+        link: "/work/light-branding", // 👈 这个是纯看图的，指向刚刚建好的 /project 路由
       },
       {
         id: "dark-app-ui",
@@ -46,13 +47,13 @@ const projects = [
         description: "B 端数据可视化大屏概念探索。",
         date: "2025",
         image: "/images/cili-project/Desk-06.jpg",
-        link: "/work/dark-app-ui", // 👈 这个是纯看图的，指向刚刚建好的 /gallery 路由
+        link: "/work/dark-app-ui", // 👈 这个是纯看图的，指向刚刚建好的 /project 路由
       }
     ]
   },
   {
     sectionId: "personal",
-    category: "PERSONAL PROJECTS",
+    categoryKey: "personalProjects",
     items:[
       {
         id: "p01",
@@ -61,13 +62,13 @@ const projects = [
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
         date: "2025",
         image: "/images/plugin-ui.png",
-        link: "/work/all-in-one",
+        link: "/work/light-branding",
       },
     ]
   },
   {
     sectionId: "others",
-    category: "FURTHER WORKS",
+    categoryKey: "furtherWorks",
     items:[
       {
         id: "o01",
@@ -76,13 +77,14 @@ const projects = [
         description: "建立并维护桌面端与 Web 端两套独立组件库，保障全域产品视觉基因统一。",
         date: "Ongoing",
         image: "/images/snow-system.png",
-        link: "/work/design-system",
+        link: "/work/dark-app-ui",
       },
     ]
   }
 ];
 
-export default function WorkGallery() {
+export default function WorkProject() {
+  const { t } = useI18n();
   return (
     <div className="relative z-10  min-h-screen pt-32 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200">
       <div className="max-w-7xl mx-auto">
@@ -95,10 +97,10 @@ export default function WorkGallery() {
           className="mb-20"
         >
           <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">
-            All <span className="text-zinc-600">Work.</span>
+            {t.work.title}
           </h1>
           <p className="text-zinc-400 text-lg max-w-2xl font-light">
-            我的专业和独立项目的综合展示。从企业架构到AI赋能的工具。
+            {t.work.description}
           </p>
         </motion.div>
 
@@ -110,7 +112,7 @@ export default function WorkGallery() {
               {/* 分类标题 */}
               <div className="flex items-center gap-4 mb-10 border-b border-zinc-800 pb-4">
                 <span className="text-4xl font-mono font-bold text-blue-500 tracking-widest uppercase">0{sectionIdx + 1}</span>
-                <h2 className="text-4xl font-semibold text-white">{section.category}</h2>
+                <h2 className="text-4xl font-semibold text-white">{t.work[section.categoryKey as keyof typeof t.work]}</h2>
               </div>
 
               {/* 网格卡片区 */}

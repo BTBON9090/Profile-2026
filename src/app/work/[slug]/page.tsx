@@ -143,80 +143,58 @@ const MagneticTerminalModule = ({ data }: { data: any }) => {
 };
 
 // ==========================================
-// Template V3: Behance Style (Light Mode)
+// Template V5: 终极动态 Behance 模板 (黑白自适应)
 // ==========================================
-const TemplateV3 = ({ data }: { data: any }) => {
+const TemplateV5 = ({ data }: { data: any }) => {
+  // 根据数据里的 theme 字段自动判断黑白模式
+  const isDark = data.theme === "dark";
+
+  const bgClass = isDark ? "bg-[#050505]" : "bg-gray-50";
+  const textClass = isDark ? "text-zinc-100" : "text-zinc-900";
+  const selectionClass = isDark 
+    ? "selection:bg-white/20 selection:text-white" 
+    : "selection:bg-black/10 selection:text-black";
+  
+  const btnClass = isDark 
+    ? "bg-black/50 border-white/10 text-zinc-400 hover:text-white hover:bg-zinc-800 shadow-[0_0_30px_rgba(0,0,0,0.8)]" 
+    : "bg-white/80 border-zinc-200 text-zinc-600 hover:text-black hover:bg-zinc-50 shadow-[0_0_30px_rgba(0,0,0,0.1)]";
+
+  const footerClass = isDark
+    ? "bg-[#020202] hover:bg-zinc-900 border-zinc-900"
+    : "bg-zinc-50 hover:bg-zinc-100 border-zinc-200";
+
   return (
-    <div className="bg-white min-h-screen text-zinc-900 selection:bg-black/10 selection:text-black pt-[84px]">
+    // 加上了 pt-[88px] 防止被顶部导航栏遮挡
+    <div className={`min-h-screen pt-[88px] ${bgClass} ${textClass} ${selectionClass}`}>
       
-      {/* 适配白底的返回按钮 */}
-      <Link href="/work" className="fixed top-28 left-8 z-50 w-12 h-12 bg-white/80 backdrop-blur-md border border-zinc-200 shadow-xl rounded-full flex items-center justify-center text-zinc-600 hover:text-black hover:bg-zinc-50 transition-all group">
+      <Link href="/work" className={`fixed top-28 left-8 z-50 w-12 h-12 backdrop-blur-md border rounded-full flex items-center justify-center transition-all group ${btnClass}`}>
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
       </Link>
 
-      {/* Behance 核心画框容器：居中、限制最大最小宽度 */}
-      <div className="w-full min-w-[375px] max-w-[1400px] mx-auto flex flex-col bg-white">
-        {data.behanceSlices.map((sliceUrl: string, index: number) => (
-          // 使用原生 img 确保上下切片绝对无缝衔接 (block 去除底部默认空白)
+      <div className={`w-full min-w-[375px] max-w-[1400px] mx-auto flex flex-col ${bgClass}`}>
+        {data.behanceSlices?.map((imgUrl: string, index: number) => (
           <img 
             key={index} 
-            src={sliceUrl} 
-            alt={`${data.title} - Slice ${index + 1}`} 
-            loading={index === 0 ? "eager" : "lazy"} // 首屏立即加载，后面的懒加载提升性能
-            className="w-full h-auto block m-0 p-0" 
-          />
-        ))}
-      </div>
-
-      {/* Footer Next Project (白底版) */}
-      {data.nextProject && (
-        <Link href={`/work/${data.nextProject.slug}`} className="block w-full py-32 bg-zinc-50 hover:bg-zinc-100 transition-colors text-center border-t border-zinc-200 group">
-          <div className="text-sm font-mono text-zinc-400 tracking-widest uppercase mb-4 group-hover:text-black transition-colors">Next Project</div>
-          <h2 className="text-4xl md:text-6xl font-bold text-zinc-900 group-hover:translate-y-2 transition-transform duration-500">
-            {data.nextProject.name}
-          </h2>
-        </Link>
-      )}
-            <BackToTop />
-    </div>
-  );
-};
-
-// ==========================================
-// Template V4: Behance Style (Dark Mode)
-// ==========================================
-const TemplateV4 = ({ data }: { data: any }) => {
-  return (
-    <div className="bg-[#050505] min-h-screen text-zinc-100 selection:bg-white/20 selection:text-white pt-[88px]">
-      
-      {/* 适配黑底的返回按钮 */}
-      <Link href="/work" className="fixed top-28 left-8 z-50 w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 shadow-2xl rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all group">
-        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-      </Link>
-
-      {/* Behance 核心画框容器：黑底 */}
-      <div className="w-full min-w-[375px] max-w-[1400px] mx-auto flex flex-col bg-[#050505]">
-        {data.behanceSlices.map((sliceUrl: string, index: number) => (
-          <img 
-            key={index} 
-            src={sliceUrl} 
-            alt={`${data.title} - Slice ${index + 1}`} 
+            src={imgUrl} 
+            alt={`${data.title} - slice ${index + 1}`} 
             loading={index === 0 ? "eager" : "lazy"} 
             className="w-full h-auto block m-0 p-0" 
           />
         ))}
       </div>
 
-      {/* Footer Next Project (黑底版) */}
       {data.nextProject && (
-        <Link href={`/work/${data.nextProject.slug}`} className="block w-full py-32 bg-[#020202] hover:bg-zinc-900 transition-colors text-center border-t border-zinc-900 group">
-          <div className="text-sm font-mono text-zinc-600 tracking-widest uppercase mb-4 group-hover:text-white transition-colors">Next Project</div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white group-hover:translate-y-2 transition-transform duration-500">
+        <Link href={`/work/${data.nextProject.slug}`} className={`block w-full max-w-[1400px] mx-auto py-32 transition-colors text-center border-t group ${footerClass}`}>
+          <div className={`text-sm font-mono tracking-widest uppercase mb-4 transition-colors ${isDark ? 'text-zinc-600 group-hover:text-blue-400' : 'text-zinc-400 group-hover:text-blue-600'}`}>
+            Next Project
+          </div>
+          <h2 className="text-4xl md:text-6xl font-bold transition-transform duration-500 group-hover:translate-y-2">
             {data.nextProject.name}
           </h2>
         </Link>
       )}
-            <BackToTop />
+      
+      <BackToTop />
     </div>
   );
 };
@@ -240,15 +218,9 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
   // =======================================================
   // 👇 3. 核心修改：就在这里加上拦截器！
   // =======================================================
-  
-  // 如果你在数据里写了 template: "v3"，它就会在这里停下，渲染白底长图！
-  if (data.template === "v3") {
-    return <TemplateV3 data={data} />;
-  }
-
-  // 如果你在数据里写了 template: "v4"，它就会渲染黑底长图！
-  if (data.template === "v4") {
-    return <TemplateV4 data={data} />;
+  // 👇 新增：如果模板是 v5，就渲染这个万能的动态组件！
+  if (data.template === "v5") {
+    return <TemplateV5 data={data} />;
   }
 
   return (
@@ -505,7 +477,7 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
       {data.masonryImages && (
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-32">
          <div className="flex items-center justify-between mb-12">
-            <div className="text-sm font-mono text-blue-500 uppercase tracking-widest">Deliverables Gallery</div>
+            <div className="text-sm font-mono text-blue-500 uppercase tracking-widest">Deliverables Project</div>
             <LayoutGrid className="w-5 h-5 text-zinc-600" />
          </div>
          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">

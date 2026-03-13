@@ -19,7 +19,7 @@ const workSections =[
 ];
 // 👇 新增：About 页面的锚点导航
 const aboutSections =[
-  { id: "profile", label: "01 Profile & Contact" },
+  { id: "biography", label: "01 Biography & Contact" },
   { id: "experience", label: "02 Experience" },
 ];
 
@@ -106,8 +106,8 @@ export default function Sidebar() {
   if (pathname.startsWith("/work/")) { 
     return null; 
   }
-  // 如果是图集页 (如 /gallery/light-branding)，隐藏侧边栏！
-  if (pathname.startsWith("/gallery/")) {
+  // 如果是图集页 (如 /project/light-branding)，隐藏侧边栏！
+  if (pathname.startsWith("/project/")) {
     return null;
   }
 

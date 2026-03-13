@@ -1,8 +1,8 @@
 export const zh = {
   nav: {
-    showcase: '作品集',
-    gallery: '图库',
-    profile: '简介',
+    home: '首页',
+    project: '作品',
+    biography: '简历',
   },
   hero: {
     badge: '求职中 · 2026',
@@ -119,6 +119,30 @@ export const zh = {
     },
   },
   about: {
+    hero: {
+      title: "BTBON",
+      titleSuffix: "- 产品 UI/UX 设计师",
+      subtitle: "我不只是出 UI 设计稿，我利用 Vibe Coding 构建可交互的产品，模拟产品逻辑，还原用户体验。",
+      subtitleAi: "Vibe Coding",
+      baseStats: "Base Stats",
+      role: "B 端产品 UI 设计师",
+      experience: "10 年工作经验",
+      education: "工业设计系",
+      school: "内蒙古科技大学·本科理工类",
+      location: "北京市朝阳区",
+      locationDetail: "鸟巢旁边",
+      designEngineering: "Design Engineering",
+      aiNativeWorkflows: "AI Native Workflows",
+      skills1: "专注于产品设计表现与用户体验",
+      skills2: "设计系统组件库搭建与维护",
+      skills3: "高级交互动效",
+      skills4: "Figma（ 元婴期 ）",
+      skills5: "PS / AI / Sketch / C4D ( 筑基期 )",
+      skills6: "AI 辅助 UX 推演、生成、优化、开发",
+      skills7: "日常使用 Antigravity、Trae、Gemini、Claude等热门工具进行 Vibe Coding",
+      skills8: "Midjourney、ComfyUI ( 炼气期 )、即梦、Banana",
+      tips: "Tips：元婴就是牛逼的意思，筑基比练气牛逼一点，练气期则是刚刚入门，元婴之上还有化神，即人界巅峰。诚然，人外有人，天外有天...",
+    },
     title: '设计',
     titleSuffix: '不止于交付',
     description: '设计不止于交付，是逻辑的可视化与落地的预演。\n\n我是一名具备全栈视角的 B 端体验设计师。\n\n在 AI 重塑生产力的 2026 年，单纯的"视觉交付"已不再是设计的终点。我主张将 **工程思维-Engineering Thinking** 前置到设计阶段——利用 AI 辅助构建高保真原型与提效工具，在开发介入前验证技术可行性，规避逻辑漏洞。\n\n我不替代工程师，但我能大幅降低设计与研发之间的"翻译损耗"，确保产品从概念到代码的精准落地。',
@@ -130,7 +154,7 @@ export const zh = {
       },
       aiEngineer: {
         title: '技术共情与设计工程化',
-        description: '拥抱代码，是为了更好地设计。 熟练运用 Gemini/Trae 等 AI 工具链，独立开发 Figma 插件或验证 Demo。这种能力让我能预判实现难度，为团队提供“可落地、低成本、高体验”的最优解，而非天马行空的无效稿。',
+        description: '拥抱代码，是为了更好地设计。 熟练运用 Gemini/Trae 等 AI 工具链，独立开发 Figma 插件或验证 Demo。这种能力让我能预判实现难度，为团队提供"可落地、低成本、高体验"的最优解，而非天马行空的无效稿。',
       },
     },
     techStack: '技术栈与工具库',
@@ -145,7 +169,7 @@ export const zh = {
       },
     },
     experience: {
-      title: 'Career Timeline',
+      title: '职业经历',
       subtitle: '职业时间线与里程碑。',
       initialCommit: '参加工作',
       items: [
@@ -213,6 +237,14 @@ export const zh = {
         },
       ],
     },
+  },
+  work: {
+    title: "所有项目",
+    titleHighlight: "项目",
+    description: "我的专业和独立项目的综合展示。从企业架构到AI赋能的工具。",
+    companyProjects: "企业项目",
+    personalProjects: "个人项目",
+    furtherWorks: "其他作品",
   },
   footer: {
     available: '欢迎新的工作机会',

@@ -10,22 +10,7 @@ import {
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 
-const skillMatrix =[
-  {
-    category: "Design Engineering",
-    icon: Layers,
-    color: "from-blue-500/20 to-blue-500/0 border-blue-500/30",
-    textColor: "text-blue-400",
-    skills:["专注于产品设计表现与用户体验", "设计系统组件库搭建与维护", "高级交互动效", "Figma（ 元婴期 ）", "PS / AI / Sketch / C4D ( 筑基期 )"]
-  },
-  {
-    category: "AI Native Workflows",
-    icon: Sparkles,
-    color: "from-purple-500/20 to-purple-500/0 border-purple-500/30",
-    textColor: "text-purple-400",
-    skills:["AI 辅助 UX 推演、生成、优化、开发", "日常使用 Antigravity、Trae、Gemini、Claude等热门工具进行 Vibe Coding", "Midjourney、ComfyUI ( 炼气期 )、即梦、Banana"]
-  }
-];
+
 
 // --- 动画变体 ---
 const fadeUp: Variants = {
@@ -59,7 +44,7 @@ export default function AboutPage() {
             模块 1: 个人名片 (Hero Card)
         ========================================== */}
         <motion.div 
-          id="profile"
+          id="biography"
           initial="hidden" animate="visible" variants={fadeUp}
           className="scroll-mt-32 mb-6"
         >
@@ -85,11 +70,13 @@ export default function AboutPage() {
               {/* 核心信息区 */}
               <div className="text-center md:text-left flex-1 mt-4 md:mt-0">
                 <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4">
-                  BTBON <span className="text-white/60 font-medium text-xl md:text-4xl">- Product UI/UX Designer</span>
+                  {t.about.hero.title} <span className="text-white/60 font-medium text-xl md:text-4xl">{t.about.hero.titleSuffix}</span>
                 </h1>
                 
                 <p className="text-lg md:text-xl text-white/50 font-light leading-relaxed mb-8 max-w-2xl">
-                  "我不只是出 UI 设计稿，我利用 <span className="text-purple-400 font-medium">AI Vibe Coding</span>，构建可交互的产品，模拟产品逻辑，还原用户体验。"
+                  "{t.about.hero.subtitle.split(/(Vibe Coding)/).map((part, i) => 
+                    part === 'Vibe Coding' ? <span key={i} className="text-purple-500 font-medium">Vibe Coding</span> : part
+                  )}"
                 </p>
 
                 {/* 👇 2. 完全替换这部分：实用主义联络矩阵 (Click to Copy) */}
@@ -99,7 +86,6 @@ export default function AboutPage() {
                   <button 
                     onClick={() => handleCopy("hello@nicheng.com")}
                     className="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-700/50 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all cursor-pointer"
-                    title="点击复制邮箱"
                   >
                     {copiedText === "hello@nicheng.com" ? <Check className="w-4 h-4 text-green-400" /> : <Mail className="w-4 h-4 text-blue-400" />}
                     <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">nc0032@qq.com</span>
@@ -109,7 +95,6 @@ export default function AboutPage() {
                   <button 
                     onClick={() => handleCopy("NiCheng_Design")}
                     className="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-700/50 hover:border-green-500/50 hover:bg-green-500/10 transition-all cursor-pointer"
-                    title="点击复制微信号"
                   >
                     {copiedText === "NiCheng_Design" ? <Check className="w-4 h-4 text-green-400" /> : <MessageCircle className="w-4 h-4 text-green-400" />}
                     <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">WECHAT：Aiden0032</span>
@@ -119,7 +104,6 @@ export default function AboutPage() {
                   <button 
                     onClick={() => handleCopy("+86 138-xxxx-xxxx")}
                     className="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-700/50 hover:border-zinc-400/50 hover:bg-zinc-800 transition-all cursor-pointer"
-                    title="点击复制手机号"
                   >
                     {copiedText === "+86 138-xxxx-xxxx" ? <Check className="w-4 h-4 text-green-400" /> : <Phone className="w-4 h-4 text-zinc-400" />}
                     <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">+86 17611231055</span>
@@ -144,28 +128,28 @@ export default function AboutPage() {
             <div>
               <div className="flex items-center gap-2 mb-8">
                 <Cpu className="w-5 h-5 text-zinc-500" />
-                <h3 className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Base Stats</h3>
+                <h3 className="text-xs font-mono text-zinc-500 uppercase tracking-widest">{t.about.hero.baseStats}</h3>
               </div>
               <ul className="space-y-6 text-sm text-zinc-300">
                 <li className="flex items-start gap-4">
                   <Briefcase className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-white font-medium mb-1">B 端产品 UI 设计师</div>
-                    <div className="text-zinc-500 text-xs font-mono">10 年工作经验</div>
+                    <div className="text-white font-medium mb-1">{t.about.hero.role}</div>
+                    <div className="text-zinc-500 text-xs font-mono">{t.about.hero.experience}</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
                   <GraduationCap className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-white font-medium mb-1">工业设计系</div>
-                    <div className="text-zinc-500 text-xs font-mono">内蒙古科技大学·本科理工类</div>
+                    <div className="text-white font-medium mb-1">{t.about.hero.education}</div>
+                    <div className="text-zinc-500 text-xs font-mono">{t.about.hero.school}</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
                   <MapPin className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-white font-medium mb-1">北京市朝阳区</div>
-                    <div className="text-zinc-500 text-xs font-mono">鸟巢旁边</div>
+                    <div className="text-white font-medium mb-1">{t.about.hero.location}</div>
+                    <div className="text-zinc-500 text-xs font-mono">{t.about.hero.locationDetail}</div>
                   </div>
                 </li>
               </ul>
@@ -174,39 +158,55 @@ export default function AboutPage() {
 
           {/* 右侧：双核技能池 (核心视觉亮点) */}
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {skillMatrix.map((matrix, idx) => (
-              <div key={idx} className={`relative bg-gradient-to-b ${matrix.color} bg-opacity-10 border rounded-[2rem] p-8 overflow-hidden group hover:-translate-y-1 transition-transform duration-500`}>
-                {/* 卡片背景肌理 */}
-                <div className="absolute inset-0 bg-zinc-950/80 z-0"></div>
-                
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className={`p-2 rounded-xl bg-zinc-900 border border-zinc-800 ${matrix.textColor}`}>
-                      <matrix.icon className="w-5 h-5" />
+            {/* 第一个卡片 */}
+            <div className="relative bg-gradient-to-b from-blue-500/20 to-blue-500/0 border border-blue-500/30 bg-opacity-10 rounded-[2rem] p-8 overflow-hidden group hover:-translate-y-1 transition-transform duration-500">
+              <div className="absolute inset-0 bg-zinc-950/80 z-0"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-blue-400">
+                    <Layers className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-semibold text-blue-400">{t.about.hero.designEngineering}</h3>
+                </div>
+                <div className="flex flex-col gap-3">
+                  {[t.about.hero.skills1, t.about.hero.skills2, t.about.hero.skills3, t.about.hero.skills4, t.about.hero.skills5].map((skill, i) => (
+                    <div key={i} className="flex items-center gap-3 group/skill">
+                      {/* 👇 核心修复：加上 shrink-0 */}
+                      <div className="shrink-0 w-1 h-1 rounded-full bg-zinc-700 group-hover/skill:bg-white transition-colors"></div>
+                      <span className="text-sm text-zinc-400 group-hover/skill:text-zinc-200 transition-colors font-medium tracking-wide">{skill}</span>
                     </div>
-                    <h3 className={`font-semibold ${matrix.textColor}`}>{matrix.category}</h3>
-                  </div>
-                  
-                  <div className="flex flex-col gap-3">
-                    {matrix.skills.map((skill, i) => (
-                      <div key={i} className="flex items-center gap-3 group/skill">
-                        <div className={`w-1 h-1 rounded-full bg-zinc-700 group-hover/skill:bg-white transition-colors`}></div>
-                        <span className="text-sm text-zinc-400 group-hover/skill:text-zinc-200 transition-colors font-medium tracking-wide">
-                          {skill}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            </div>
+            {/* 第二个卡片 */}
+            <div className="relative bg-gradient-to-b from-purple-500/20 to-purple-500/0 border border-purple-500/30 bg-opacity-10 rounded-[2rem] p-8 overflow-hidden group hover:-translate-y-1 transition-transform duration-500">
+              <div className="absolute inset-0 bg-zinc-950/80 z-0"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-purple-400">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-semibold text-purple-400">{t.about.hero.aiNativeWorkflows}</h3>
+                </div>
+                <div className="flex flex-col gap-3">
+                  {[t.about.hero.skills6, t.about.hero.skills7, t.about.hero.skills8].map((skill, i) => (
+                    <div key={i} className="flex items-center gap-3 group/skill">
+                      {/* 👇 核心修复：加上 shrink-0 */}
+                      <div className="shrink-0 w-1 h-1 rounded-full bg-zinc-700 group-hover/skill:bg-white transition-colors"></div>
+                      <span className="text-sm text-zinc-400 group-hover/skill:text-zinc-200 transition-colors font-medium tracking-wide">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
         <motion.div
         initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
           className="mb-24 flex justify-end"
         >
-            <span className="text-sm font-medium text-white/60 tracking-tight">Tips：元婴就是牛逼的意思，筑基比练气牛逼一点，练气期则是刚刚入门，元婴之上还有化神，即人界巅峰。诚然，人外有人，天外有天...</span>
+            <span className="text-sm font-medium text-white/60 tracking-tight">{t.about.hero.tips}</span>
         </motion.div>
 
         {/* ==========================================
@@ -219,7 +219,7 @@ export default function AboutPage() {
         >
           <div className="flex items-center gap-3 mb-12 border-b border-zinc-800/50 pb-6">
             <TerminalSquare className="w-6 h-6 text-zinc-500" />
-            <h2 className="text-2xl font-semibold text-white tracking-tight">Career Timeline</h2>
+            <h2 className="text-2xl font-semibold text-white tracking-tight">{t.about.experience.title}</h2>
           </div>
 
           <div className="relative ml-3 space-y-16 pb-10">

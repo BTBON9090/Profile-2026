@@ -54,12 +54,12 @@ export default function AllInOneProjectPage() {
     <div className="bg-black min-h-screen text-zinc-300 selection:bg-purple-500/30 selection:text-purple-200">
       
       {/* 顶部全局返回按钮 */}
-      <Link href="/work" className="fixed top-8 left-8 z-50 w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all group">
+      <Link href="/work" className="fixed top-28 left-8 z-50 w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all group">
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
       </Link>
 
       {/* --- 阶段 1: 头部信息与头图 (Hero Section) --- */}
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pt-40 pb-20 relative overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pt-70 pb-20 relative overflow-hidden">
         {/* 背景紫色极光特效 */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/10 blur-[150px] pointer-events-none rounded-full"></div>
         
