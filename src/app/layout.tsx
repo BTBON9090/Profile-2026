@@ -9,6 +9,7 @@ import Sidebar from "@/components/layout/sidebar";
 import BgmPlayer from "@/components/ui/bgm-player"; 
 import DotMatrixBackground from "@/components/visual/dot-matrix";
 import { I18nProvider } from "@/lib/i18n";
+import BackToTop from "@/components/ui/back-to-top";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrainsMono = localFont({
@@ -53,6 +54,8 @@ export default function RootLayout({
 
           </div>
         </I18nProvider>
+        {/* 👇 3. 渲染返回顶部按钮 */}
+        <BackToTop />
       </body>
     </html>
   );

@@ -272,7 +272,6 @@ export default function AboutPage() {
             ))}
           </div>
         </motion.div>
-
       </div>
     </div>
   );

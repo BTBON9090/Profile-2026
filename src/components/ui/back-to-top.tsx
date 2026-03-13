@@ -41,8 +41,8 @@ export default function BackToTop() {
           whileTap={{ scale: 0.9 }}                   // 点击时：物理凹陷
           onClick={scrollToTop}
           // 极致的 UI 质感：黑底毛玻璃、发光边框、微光阴影
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] transition-colors cursor-pointer"
-        >
+          className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer mix-blend-difference bg-white text-black hover:scale-110 transition-transform"
+          >
           <ArrowUp className="w-5 h-5" />
         </motion.button>
       )}

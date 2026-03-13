@@ -1,6 +1,6 @@
 // src/components/sections/snow-ecosystem.tsx
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { ShieldCheck, Layers, Bot, LayoutTemplate, ArrowUpRight, Globe } from "lucide-react";
 import Image from "next/image";
@@ -153,9 +153,12 @@ function TextBlock({ feature, index, setActive }: { feature: any, index: number,
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-50% 0px -50% 0px" });
 
-  if (isInView) {
-    setActive(index);
-  }
+  // 👇 核心修复：把状态更新放到 useEffect 里，让它在渲染完成后执行
+  useEffect(() => {
+    if (isInView) {
+      setActive(index);
+    }
+  }, [isInView, index, setActive]);
 
   return (
     <div ref={ref} className="min-h-[50vh] flex flex-col justify-center p-6 rounded-2xl transition-colors duration-500 hover:bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-800/80 hover:backdrop-blur-sm">

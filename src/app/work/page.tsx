@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
+
 // 1. 结构化你的作品数据 (方便以后随时增删改)
 const projects = [
   {
@@ -172,7 +173,6 @@ export default function WorkProject() {
                             {project.description}
                           </p>
                         </div>
-
                       </div>
                     </Link>
                   </motion.div>
@@ -181,7 +181,6 @@ export default function WorkProject() {
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );
