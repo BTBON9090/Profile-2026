@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-
+import { useState, useMemo} from "react";
+import UniversalModal from "@/components/ui/UniversalModal";
+import { getProjectBySlug } from "@/data/projects";
 
 // 1. 结构化你的作品数据 (方便以后随时增删改)
 const projects = [
@@ -49,7 +51,29 @@ const projects = [
         date: "2025",
         image: "/images/cili-project/Desk-06.jpg",
         link: "/work/dark-app-ui", // 👈 这个是纯看图的，指向刚刚建好的 /project 路由
-      }
+      },
+      {
+        id: "K05",
+        title: "第五个项目",
+        subtitle: "Figma Productivity Tool",
+        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        date: "2025",
+        image: "/images/plugin-ui.png",
+        link: "/work/light-branding",
+        useModal: true,
+        dataSlug: "k05"
+      },
+      {
+        id: "K06",
+        title: "第六个项目",
+        subtitle: "Figma Productivity Tool",
+        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        date: "2025",
+        image: "/images/plugin-ui.png",
+        link: "/work/light-branding",
+        useModal: true,
+        dataSlug: "k06"
+      },
     ]
   },
   {
@@ -64,6 +88,50 @@ const projects = [
         date: "2025",
         image: "/images/plugin-ui.png",
         link: "/work/light-branding",
+      },
+      {
+        id: "K07",
+        title: "第七个项目",
+        subtitle: "Figma Productivity Tool",
+        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        date: "2025",
+        image: "/images/plugin-ui.png",
+        link: "/work/light-branding",
+        useModal: true,
+        dataSlug: "k07"
+      },
+      {
+        id: "K08",
+        title: "第八个项目",
+        subtitle: "Figma Productivity Tool",
+        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        date: "2025",
+        image: "/images/plugin-ui.png",
+        link: "/work/light-branding",
+        useModal: true,
+        dataSlug: "k08"
+      },
+      {
+        id: "K09",
+        title: "第九个项目",
+        subtitle: "Figma Productivity Tool",
+        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        date: "2025",
+        image: "/images/plugin-ui.png",
+        link: "/work/light-branding",
+        useModal: true,
+        dataSlug: "k09"
+      },
+      {
+        id: "K10",
+        title: "第十个项目",
+        subtitle: "Figma Productivity Tool",
+        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        date: "2025",
+        image: "/images/plugin-ui.png",
+        link: "/work/light-branding",
+        useModal: true,
+        dataSlug: "k10"
       },
     ]
   },
@@ -86,102 +154,114 @@ const projects = [
 
 export default function WorkProject() {
   const { t } = useI18n();
+  
+  // 核心状态：记录当前打开的弹窗项目的索引
+  const [currentModalIndex, setCurrentModalIndex] = useState<number | null>(null);
+
+  // 提取出所有支持 Modal 的项目，用于“上一篇/下一篇”切换
+  const modalList = useMemo(() => {
+    return projects
+      .flatMap(section => section.items)
+      .filter(item => item.useModal && item.dataSlug)
+      .map(item => {
+        const detailData = getProjectBySlug(item.dataSlug as string);
+        return {
+          id: item.id,
+          title: item.title,
+          images: detailData?.behanceSlices ||[]
+        };
+      });
+  },[]);
+
+  const openModal = (projectId: string) => {
+    const index = modalList.findIndex(p => p.id === projectId);
+    if (index !== -1) setCurrentModalIndex(index);
+  };
+
+  const handlePrev = () => {
+    if (currentModalIndex !== null && currentModalIndex > 0) {
+      setCurrentModalIndex(currentModalIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentModalIndex !== null && currentModalIndex < modalList.length - 1) {
+      setCurrentModalIndex(currentModalIndex + 1);
+    }
+  };
+
   return (
-    <div className="relative z-10  min-h-screen pt-32 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200">
-      <div className="max-w-7xl mx-auto">
+    <div className="relative z-10 min-h-screen pt-32 pb-24 px-4 md:px-8 2xl:px-12 selection:bg-blue-500/30 selection:text-blue-200">
+      {/* 🔴 修改 1: 移除 max-w 限制，横向完全撑满 */}
+      <div className="w-full mx-auto">
         
-        {/* 页面头部 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mb-20"
-        >
-          <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">
-            {t.work.title}
-          </h1>
-          <p className="text-zinc-400 text-lg max-w-2xl font-light">
-            {t.work.description}
-          </p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-20">
+          <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">{t.work.title}</h1>
+          <p className="text-zinc-400 text-lg max-w-2xl font-light">{t.work.description}</p>
         </motion.div>
 
-        {/* 循环渲染分类与卡片 */}
         <div className="space-y-32">
           {projects.map((section, sectionIdx) => (
-            // 2. 将 sectionId 绑定到外层 div，并加上 scroll-mt-32 留出顶部距离
             <div key={sectionIdx} id={section.sectionId} className="scroll-mt-32">
-              {/* 分类标题 */}
               <div className="flex items-center gap-4 mb-10 border-b border-zinc-800 pb-4">
                 <span className="text-4xl font-mono font-bold text-blue-500 tracking-widest uppercase">0{sectionIdx + 1}</span>
                 <h2 className="text-4xl font-semibold text-white">{t.work[section.categoryKey as keyof typeof t.work]}</h2>
               </div>
 
-              {/* 网格卡片区 */}
-              {/* 修改 1: grid-cols-2 (手机双列), gap-3 (手机小间距) -> md:gap-8 (桌面大间距) */}
-              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
-                {section.items.map((project, idx) => (
-                  <motion.div
-                    key={project.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: idx * 0.1, duration: 0.5 }}
-                  >
-                    <Link href={project.link} className="block group">
-                      {/* 修改 2: 手机端圆角减小 rounded-xl -> 桌面端 rounded-2xl */}
-                      <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl md:rounded-2xl overflow-hidden hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col">
-                        
-                        {/* 1. 封面图区域 */}
-                        {/* 修改 3: 手机高度 h-32 (128px) -> 桌面高度 h-64 (256px) */}
-                        <div className="relative h-32 md:h-64 w-full bg-zinc-950 overflow-hidden flex-shrink-0">
-                          <Image
-                            src={project.image}
-                            alt={project.title}
-                            fill
-                            className="object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-                          />
-                          {/* Hover 箭头只在电脑端显示 (手机没 hover 状态，且箭头会挡住小图) */}
-                          <div className="hidden md:flex absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 rounded-full items-center justify-center opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                            <ArrowUpRight className="w-5 h-5 text-white" />
-                          </div>
-                        </div>
+              {/* 🔴 修改 2: 响应式 1 到 5 列适配 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
+                {section.items.map((project, idx) => {
+                  const isModal = project.useModal && project.dataSlug;
+                  const Wrapper: any = isModal ? "div" : Link;
+                  const wrapperProps = isModal ? { onClick: () => openModal(project.id) } : { href: project.link };
 
-                        {/* 2. 信息区域 */}
-                        {/* 修改 4: 手机内边距 p-3 -> 桌面 p-6 */}
-                        <div className="p-3 md:p-6 flex-1 flex flex-col">
-                          <div className="flex justify-between items-start mb-2 md:mb-4">
-                            <div className="min-w-0 pr-1"> {/* min-w-0 防止 flex 子项撑破容器 */}
-                              {/* 修改 5: 标题字号 text-sm -> text-xl, 增加 truncate 防止换行太丑 */}
-                              <h3 className="text-sm md:text-xl font-bold text-white group-hover:text-blue-400 transition-colors truncate md:whitespace-normal">
-                                {project.title}
-                              </h3>
-                              {/* 修改 6: 副标题更小 text-[10px] -> text-xs */}
-                              <p className="text-[10px] md:text-xs font-mono text-zinc-500 mt-0.5 md:mt-1 truncate">
-                                {project.subtitle}
-                              </p>
-                            </div>
-                            {/* 修改 7: 日期标签缩小 */}
-                            <span className="hidden md:inline-block text-[10px] md:text-xs font-mono text-zinc-600 bg-zinc-900 px-1.5 py-0.5 md:px-2 md:py-1 rounded flex-shrink-0">
-                              {project.date}
-                            </span>
-                          </div>
+                  return (
+                    <motion.div key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: idx * 0.1, duration: 0.5 }} className="h-full">
+                      <Wrapper {...wrapperProps} className={`block group h-full ${isModal ? 'cursor-pointer' : ''}`}>
+                        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col">
                           
-                          {/* 修改 8: 手机端直接隐藏描述文字 (hidden)，只在 md 以上显示。
-                              原因：手机卡片太小，放描述会显得极度拥挤且参差不齐。
-                           */}
-                          <p className="hidden md:block text-zinc-400 text-sm leading-relaxed line-clamp-3 mt-auto">
-                            {project.description}
-                          </p>
+                          {/* 🔴 修改 3: 使用 aspect-video 或 aspect-[4/3] 替代固定高度，保证各端比例完美 */}
+                          <div className="relative aspect-video w-full bg-zinc-950 overflow-hidden flex-shrink-0">
+                            <Image src={project.image} alt={project.title} fill className="object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                            <div className="hidden md:flex absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 rounded-full items-center justify-center opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                              <ArrowUpRight className="w-5 h-5 text-white" />
+                            </div>
+                          </div>
+
+                          <div className="p-5 md:p-6 flex-1 flex flex-col">
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="min-w-0 pr-2">
+                                <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-blue-400 transition-colors truncate md:whitespace-normal">{project.title}</h3>
+                                <p className="text-xs font-mono text-zinc-500 mt-1 truncate">{project.subtitle}</p>
+                              </div>
+                              <span className="hidden md:inline-block text-[10px] font-mono text-zinc-600 bg-zinc-900 px-2 py-1 rounded flex-shrink-0">{project.date}</span>
+                            </div>
+                            <p className="hidden md:block text-zinc-400 text-sm leading-relaxed line-clamp-3 mt-auto">{project.description}</p>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
+                      </Wrapper>
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Universal Modal */}
+      {currentModalIndex !== null && (
+        <UniversalModal
+          isOpen={true}
+          onClose={() => setCurrentModalIndex(null)}
+          title={modalList[currentModalIndex].title}
+          images={modalList[currentModalIndex].images}
+          hasPrev={currentModalIndex > 0}
+          hasNext={currentModalIndex < modalList.length - 1}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
+      )}
     </div>
   );
 }
