@@ -190,13 +190,14 @@ export default function WorkProject() {
     }
   };
 
+  // 🔴 修改 3: 移除固定宽度，改为响应式 1200px 居中
   return (
-    <div className="relative z-10 min-h-screen pt-32 pb-24 px-4 md:px-8 2xl:px-12 selection:bg-blue-500/30 selection:text-blue-200">
+    <div className="relative z-10 min-h-screen pt-32 pb-48 px-4 md:px-8 2xl:px-32 selection:bg-blue-500/30 selection:text-blue-200">
       {/* 🔴 修改 1: 移除 max-w 限制，横向完全撑满 */}
       <div className="w-full mx-auto">
         
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-20">
-          <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">{t.work.title}</h1>
+          <h1 className="text-5xl md:text-9xl font-bold text-white tracking-tight mb-6">All Work</h1>
           <p className="text-zinc-400 text-lg max-w-2xl font-light">{t.work.description}</p>
         </motion.div>
 
@@ -204,8 +205,8 @@ export default function WorkProject() {
           {projects.map((section, sectionIdx) => (
             <div key={sectionIdx} id={section.sectionId} className="scroll-mt-32">
               <div className="flex items-center gap-4 mb-10 border-b border-zinc-800 pb-4">
-                <span className="text-4xl font-mono font-bold text-blue-500 tracking-widest uppercase">0{sectionIdx + 1}</span>
-                <h2 className="text-4xl font-semibold text-white">{t.work[section.categoryKey as keyof typeof t.work]}</h2>
+                <span className="text-5xl font-mono font-bold text-blue-500 tracking-widest uppercase">0{sectionIdx + 1}</span>
+                <h2 className="text-5xl font-bold text-white">{t.work[section.categoryKey as keyof typeof t.work]}</h2>
               </div>
 
               {/* 🔴 修改 2: 响应式 1 到 5 列适配 */}
@@ -223,7 +224,7 @@ export default function WorkProject() {
                           {/* 🔴 修改 3: 使用 aspect-video 或 aspect-[4/3] 替代固定高度，保证各端比例完美 */}
                           <div className="relative aspect-video w-full bg-zinc-950 overflow-hidden flex-shrink-0">
                             <Image src={project.image} alt={project.title} fill className="object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
-                            <div className="hidden md:flex absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 rounded-full items-center justify-center opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                            <div className="hidden md:flex absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 rounded-full items-center justify-center opacity-0  group-hover:opacity-100  transition-all duration-300">
                               <ArrowUpRight className="w-5 h-5 text-white" />
                             </div>
                           </div>

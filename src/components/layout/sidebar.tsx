@@ -102,6 +102,10 @@ export default function Sidebar() {
   // =========================================================
   // 🟢 第三部分：页面拦截区 (只有等所有 Hooks 都走完，才能拦截)
   // =========================================================
+  // 如果是 work 主页面，隐藏侧边栏！
+  if (pathname === "/work") { 
+    return null; 
+  }
   // 如果是作品详情页 (如 /work/snow-ecosystem)，隐藏侧边栏！
   if (pathname.startsWith("/work/")) { 
     return null; 

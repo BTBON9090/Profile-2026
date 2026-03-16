@@ -121,7 +121,7 @@ export const zh = {
   about: {
     hero: {
       title: "BTBON",
-      titleSuffix: "- 产品 UI/UX 设计师",
+      titleSuffix: "产品 UI/UX 设计师",
       subtitle: "我不只是出 UI 设计稿，我利用 Vibe Coding 构建可交互的产品，模拟产品逻辑，还原用户体验。",
       subtitleAi: "Vibe Coding",
       baseStats: "Base Stats",
@@ -140,8 +140,8 @@ export const zh = {
       skills5: "PS / AI / Sketch / C4D ( 筑基期 )",
       skills6: "AI 辅助 UX 推演、生成、优化、开发",
       skills7: "日常使用 Antigravity、Trae、Gemini、Claude等热门工具进行 Vibe Coding",
-      skills8: "Midjourney、ComfyUI ( 炼气期 )、即梦、Banana",
-      tips: "Tips：元婴就是牛逼的意思，筑基比练气牛逼一点，练气期则是刚刚入门，元婴之上还有化神，即人界巅峰。诚然，人外有人，天外有天...",
+      skills8: "Midjourney、ComfyUI ( 炼气期 )、即梦、Nano Banana",
+      tips: "境界之分，参阅《凡人修仙传》",
     },
     title: '设计',
     titleSuffix: '不止于交付',
@@ -202,7 +202,7 @@ export const zh = {
         },
         {
           id: 3,
-          role: 'UI/UX Designer',
+          role: 'UX Designer',
           company: '中国航空工业-中航金网',
           logo: '/images/航空工业.png',
           time: '2018.08 - 2021.08',
@@ -214,7 +214,7 @@ export const zh = {
         },
         {
           id: 4,
-          role: 'UI/UX Designer',
+          role: 'UI Designer',
           company: '好未来-励步英语',
           logo: '/images/好未来.png',
           time: '2018.06 - 2018.08',
@@ -223,7 +223,7 @@ export const zh = {
         },
         {
           id: 5,
-          role: 'UI/UX Designer',
+          role: 'UI Designer',
           company: '云深互联',
           logo: '/images/云深互联.png',
           time: '2016.09 - 2018.04',

@@ -32,13 +32,13 @@ export default function AboutPage() {
     setTimeout(() => setCopiedText(""), 2000);
   };
   return (
-    <div className="relative z-10  min-h-screen pt-32 pb-24 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200 relative overflow-hidden">
+    <div className="relative z-10  min-h-screen pt-32 pb-48 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200 relative overflow-hidden">
       
       {/* 极度克制的背景光晕 */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         
         {/* ==========================================
             模块 1: 个人名片 (Hero Card)
@@ -70,10 +70,10 @@ export default function AboutPage() {
               {/* 核心信息区 */}
               <div className="text-center md:text-left flex-1 mt-4 md:mt-0">
                 <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4">
-                  {t.about.hero.title} <span className="text-white/60 font-medium text-xl md:text-4xl">{t.about.hero.titleSuffix}</span>
+                  {t.about.hero.title} <span className="text-white/60 font-medium text-xl md:text-4xl pl-8">{t.about.hero.titleSuffix}</span>
                 </h1>
                 
-                <p className="text-lg md:text-xl text-white/50 font-light leading-relaxed mb-8 max-w-2xl">
+                <p className="text-lg md:text-xl text-white/50 font-light leading-relaxed mb-8 max-w-full">
                   "{t.about.hero.subtitle.split(/(Vibe Coding)/).map((part, i) => 
                     part === 'Vibe Coding' ? <span key={i} className="text-purple-500 font-medium">Vibe Coding</span> : part
                   )}"
@@ -206,7 +206,14 @@ export default function AboutPage() {
         initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
           className="mb-24 flex justify-end"
         >
-            <span className="text-sm font-medium text-white/60 tracking-tight">{t.about.hero.tips}</span>
+            <span className="text-sm font-medium text-white/60 tracking-tight">
+              {t.about.hero.tips.split(/(\*\*[^*]+\*\*)/).map((part, i) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                  return <em key={i} className="italic font-bold">{part.slice(2, -2)}</em>;
+                }
+                return part;
+              })}
+            </span>
         </motion.div>
 
         {/* ==========================================
