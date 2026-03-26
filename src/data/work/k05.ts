@@ -3,17 +3,14 @@
 const k05Data = {
   template: "v5",
   theme: "dark",
-  title: "嘻嘻哈那会",
   behanceSlices: [
-    "/images/cili-project/Desk-03.jpg", 
-    "/images/cili-project/Desk-04.jpg",
-    "/images/cili-project/Desk-06.jpg",
-    "/images/cili-project/Desk-06-1.jpg",
-    "/images/cili-project/Desk-07.jpg",
-    "/images/cili-project/Desk-08.jpg",
-    "/images/cili-project/Desk-09.jpg",
-    "/images/cili-project/Desk-10.jpg",
-    "/images/cili-project/Desk-11.jpg",
+    "https://cdn.btbon.cn/AVIC-商网/Desk-34.jpg", 
+    "https://cdn.btbon.cn/AVIC-商网/Desk-35.jpg",
+    "https://cdn.btbon.cn/AVIC-商网/Desk-36.jpg",
+    "https://cdn.btbon.cn/AVIC-商网/Desk-37.jpg",
+    "https://cdn.btbon.cn/AVIC-商网/Desk-38.jpg",
+    "https://cdn.btbon.cn/AVIC-商网/Desk-39.jpg",
+    "https://cdn.btbon.cn/AVIC-商网/Desk-40.jpg",
   ],
   nextProject: { slug: "dark-app-ui", name: "Dark App UI" }
 };

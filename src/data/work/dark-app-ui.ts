@@ -3,10 +3,13 @@
 const darkAppUiData = {
   template: "v5",
   theme: "dark",
-    title: "Dark App UI",
     behanceSlices:[
-      "/images/cili-project/Desk-03.jpg", 
-      "/images/cili-project/Desk-04.jpg",
+      "https://cdn.btbon.cn/YSP-Enterporer/Desk-23.jpg", 
+      "https://cdn.btbon.cn/YSP-Enterporer/Desk-24.jpg",
+      "https://cdn.btbon.cn/YSP-Enterporer/Desk-25.jpg",
+      "https://cdn.btbon.cn/YSP-Enterporer/Desk-26.jpg",
+      "https://cdn.btbon.cn/YSP-Enterporer/Desk-27.jpg",
+      "https://cdn.btbon.cn/YSP-Enterporer/Desk-28.jpg",
     ],
     nextProject: { slug: "snow-ecosystem", name: "SnowTech Ecosystem" }
 };

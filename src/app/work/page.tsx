@@ -45,31 +45,31 @@ const projects = [
       },
       {
         id: "dark-app-ui",
-        title: "Dark App UI",
+        title: "Enterporer-企业浏览器",
         subtitle: "Conceptual Data Viz",
         description: "B 端数据可视化大屏概念探索。",
-        date: "2025",
+        date: "2019",
         image: "/images/cili-project/Desk-06.jpg",
         link: "/work/dark-app-ui", // 👈 这个是纯看图的，指向刚刚建好的 /project 路由
       },
       {
         id: "K05",
-        title: "第五个项目",
+        title: "商网协同办公系统",
         subtitle: "Figma Productivity Tool",
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        date: "2025",
-        image: "/images/plugin-ui.png",
+        date: "2021",
+        image: "https://cdn.btbon.cn/AVIC-商网/Desk-34.jpg", 
         link: "/work/light-branding",
         useModal: true,
         dataSlug: "k05"
       },
       {
         id: "K06",
-        title: "第六个项目",
+        title: "磁力聚星-快手达人营销平台",
         subtitle: "Figma Productivity Tool",
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        date: "2025",
-        image: "/images/plugin-ui.png",
+        date: "2022",
+        image: "https://cdn.btbon.cn/Kwai-磁力聚星/Desk-03.jpg",
         link: "/work/light-branding",
         useModal: true,
         dataSlug: "k06"
@@ -223,7 +223,14 @@ export default function WorkProject() {
                           
                           {/* 🔴 修改 3: 使用 aspect-video 或 aspect-[4/3] 替代固定高度，保证各端比例完美 */}
                           <div className="relative aspect-video w-full bg-zinc-950 overflow-hidden flex-shrink-0">
-                            <Image src={project.image} alt={project.title} fill className="object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                            <Image 
+                              src={project.image} 
+                              alt={project.title} 
+                              fill 
+                              unoptimized
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                              className="object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" 
+                            />
                             <div className="hidden md:flex absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 rounded-full items-center justify-center opacity-0  group-hover:opacity-100  transition-all duration-300">
                               <ArrowUpRight className="w-5 h-5 text-white" />
                             </div>
