@@ -39,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="dark">
       <body className={`${inter.variable} ${jetbrainsMono.variable} bg-black text-white antialiased overflow-x-hidden selection:bg-blue-500/30 selection:text-blue-200`}>
         <I18nProvider>
           <DotMatrixBackground />

@@ -2,14 +2,14 @@
 
 const darkAppUiData = {
   template: "v5",
-  theme: "dark",
+  theme: "light",
     behanceSlices:[
-      "https://cdn.btbon.cn/YSP-Enterporer/Desk-23.jpg", 
-      "https://cdn.btbon.cn/YSP-Enterporer/Desk-24.jpg",
-      "https://cdn.btbon.cn/YSP-Enterporer/Desk-25.jpg",
-      "https://cdn.btbon.cn/YSP-Enterporer/Desk-26.jpg",
-      "https://cdn.btbon.cn/YSP-Enterporer/Desk-27.jpg",
-      "https://cdn.btbon.cn/YSP-Enterporer/Desk-28.jpg",
+      "https://cdn.btbon.cn/Other/Desk-52.jpg", 
+      "https://cdn.btbon.cn/Other/Desk-53.jpg",
+      "https://cdn.btbon.cn/Other/Desk-54.jpg",
+      "https://cdn.btbon.cn/Other/Desk-55.jpg",
+      "https://cdn.btbon.cn/Other/Desk-56.jpg",
+      "https://cdn.btbon.cn/Other/Desk-57.jpg",
     ],
     nextProject: { slug: "snow-ecosystem", name: "SnowTech Ecosystem" }
 };

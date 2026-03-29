@@ -4,11 +4,12 @@
 import snowEcosystem from './work/snow-ecosystem';
 import lightBranding from './work/light-branding';
 import darkAppUiData from './work/dark-app-ui';
-import k05 from './work/k05';
-import k06 from './work/k06';
-import k07 from './work/k07';
-import k08 from './work/k08';
-import k09 from './work/k09';
+import enterplorer from './work/enterplorer';
+import avic from './work/avic';
+import kwaiMagneticStar from './work/kwaiMagneticStar';
+import amazeui from './work/amazeui';
+import studio from './work/studio';
+import others from './work/others';
 import k10 from './work/k10';
 // import allInOne from './work/all-in-one'; 
 
@@ -17,11 +18,12 @@ const allProjects: Record<string, any> = {
   "snow-ecosystem": snowEcosystem,
   "light-branding": lightBranding,
   "dark-app-ui": darkAppUiData,
-  "k05": k05,
-  "k06": k06,
-  "k07": k07,
-  "k08": k08,
-  "k09": k09,
+  "enterplorer": enterplorer,
+  "avic": avic,
+  "kwai-magnetic-star": kwaiMagneticStar,
+  "amazeui": amazeui,
+  "studio": studio,
+  "others": others,
   "k10": k10,
   // "all-in-one": allInOne,
 };

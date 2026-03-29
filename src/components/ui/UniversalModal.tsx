@@ -2,8 +2,9 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Mail, Download, Sparkles, Check, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import AICopilot from "./AICopilot"; 
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,12 +15,23 @@ interface ModalProps {
   hasNext: boolean;
   onPrev: () => void;
   onNext: () => void;
+  projectId: string;
+  nextTitle?: string;
 }
 
-export default function UniversalModal({ isOpen, onClose, title, images, hasPrev, hasNext, onPrev, onNext }: ModalProps) {
+export default function UniversalModal({ isOpen, onClose, title, images, hasPrev, hasNext, onPrev, onNext, projectId, nextTitle }: ModalProps) {
   const [copied, setCopied] = useState(false);
   const [sparks, setSparks] = useState<{ id: number; x: number; y: number; symbol: string }[]>([]);
   const [mounted, setMounted] = useState(false);
+  // 👇 1. 增加滚动容器的引用
+  const scrollContainerRef = useRef<HTMLDivElement>(null); 
+  
+  // 👇 2. 监听 title 变化（切换项目时），瞬间回到顶部
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [title]);
 
   // 确保 Portal 只在客户端渲染，防止 Hydration 报错
   useEffect(() => {
@@ -72,7 +84,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
           {/* Layer 1: 全屏背景蒙版 (点击可关闭)           */}
           {/* ========================================== */}
           <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-[0px] cursor-alias" 
+            className="absolute inset-0 bg-black/80 backdrop-blur-[10px] cursor-alias" 
             onClick={onClose} 
           />
 
@@ -80,6 +92,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
           {/* Layer 2: 独立的内容滚动区 (只有这里能上下滑)   */}
           {/* ========================================== */}
           <div 
+          ref={scrollContainerRef}
           className="absolute inset-0 overflow-y-auto overflow-x-hidden custom-scrollbar cursor-zoom-out"
           onClick={onClose}
           >
@@ -91,7 +104,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
               
               {/* 顶部标题栏 (可选，增加精致感) */}
               <div className="sticky top-0 z-20 w-full px-8 py-6 pointer-events-none flex items-center justify-between md:rounded-t-2xl">
-                 <span className="font-mono text-sm text-zinc-400 backdrop-blur-md px-3 py-1 rounded-md bg-black/80">{title}</span>
+                 <span className="font-mono text-sm text-white/60 backdrop-blur-md px-3 py-1 rounded-md bg-black/40">{title}</span>
               </div>
 
               {/* 纯净图片流，底部增加 pb-32 防止最后一张图被底部的按钮挡住 */}
@@ -106,6 +119,12 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
                   />
                 ))}
               </div>
+              <div className="w-full h-32 flex items-center justify-center pb-48">
+                <div className="flex flex-col items-center gap-8">
+                  <span className="text-zinc-500 text-sm tracking-widest uppercase">Next Project</span>
+                  <span className="text-white/80 font-semibold text-4xl">{nextTitle || 'No More Projects'}</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -113,35 +132,14 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
           {/* Layer 3: 绝对静止的悬浮控件层                */}
           {/* ========================================== */}
           <div className="absolute inset-0 pointer-events-none flex justify-center">
-
-            {/* [独立控件 A] 右上角关闭按钮：固定在屏幕死角 */}
-            <button 
-              onClick={onClose} 
-              className="absolute top-18 right-8 z-50 w-12 h-12 bg-zinc-900/80 hover:bg-white text-zinc-300 hover:text-black rounded-full flex items-center justify-center transition-all border border-zinc-800 pointer-events-auto shadow-2xl"
-              title="Close (ESC)"
-            >
+            
+            {/* 关闭按钮 */}
+            <button onClick={onClose} className="fixed top-8 right-8 z-[100000] w-14 h-14 bg-zinc-900/80 hover:bg-white text-zinc-400 hover:text-black rounded-full flex items-center justify-center transition-all border border-zinc-700 pointer-events-auto shadow-2xl">
               <X className="w-6 h-6" />
             </button>
 
-            {/* [独立控件 B] 侧边工具栏：贴着内容的右侧边，垂直居中 */}
-            {/* 我们用一个比 1440 稍宽的包裹层 (1560px)，把它定位在包裹层的右边缘 */}
-            <div className="w-full max-w-[1580px] h-full relative">
-              <div className="absolute top-1/2 -translate-y-1/2 right-10 md:right-0 hidden md:flex flex-col gap-6 pointer-events-auto">
-                {/* 彩蛋 */}
-                <button onClick={fireSparks} className="group w-14 h-14 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-full flex items-center justify-center hover:border-blue-500 relative z-40 shadow-xl transition-colors">
-                  <Sparkles className="w-5 h-5 text-zinc-300 group-hover:text-blue-400" />
-                  {sparks.map(s => (<motion.div key={s.id} initial={{ opacity:1 }} animate={{ opacity:0, x: s.x, y: s.y }} transition={{ duration: 0.8, ease: "easeOut" }} className="absolute text-xl pointer-events-none">{s.symbol}</motion.div>))}
-                </button>
-                {/* 邮件 */}
-                <button onClick={handleCopy} className="group w-14 h-14 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-full flex items-center justify-center hover:border-green-500 shadow-xl transition-colors">
-                  {copied ? <Check className="w-5 h-5 text-green-400" /> : <Mail className="w-5 h-5 text-zinc-300 group-hover:text-green-400" />}
-                </button>
-                {/* 简历下载 */}
-                <a href="/resume.pdf" target="_blank" className="group w-14 h-14 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-full flex items-center justify-center hover:border-purple-500 shadow-xl transition-colors">
-                  <Download className="w-5 h-5 text-zinc-300 group-hover:text-purple-400" />
-                </a>
-              </div>
-            </div>
+            {/* 👇 2. 注入 AI 智能体！把你项目的 projectId 传给它 */}
+            <AICopilot projectId={projectId} />
 
             {/* [独立控件 C] 底部上下页翻页：永远置底常驻 */}
             <motion.div 
@@ -153,17 +151,17 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
               <button 
                 onClick={onPrev} 
                 disabled={!hasPrev}
-                className={`flex items-center gap-3 px-8 py-5 font-mono text-sm tracking-widest transition-colors ${hasPrev ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
+                className={`flex items-center gap-3 px-4 py-5 font-mono text-sm tracking-widest transition-colors ${hasPrev ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
               >
                 <ChevronLeft className="w-5 h-5" /> PREV
               </button>
               
-              <div className="w-px h-8 bg-zinc-700"></div>
+              <div className="w-px h-4 bg-zinc-700"></div>
 
               <button 
                 onClick={onNext} 
                 disabled={!hasNext}
-                className={`flex items-center gap-3 px-8 py-5 font-mono text-sm tracking-widest transition-colors ${hasNext ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
+                className={`flex items-center gap-3 px-4 py-5 font-mono text-sm tracking-widest transition-colors ${hasNext ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
               >
                 NEXT <ChevronRight className="w-5 h-5" />
               </button>

@@ -16,10 +16,62 @@ import {
 import { getProjectBySlug } from "@/data/projects";
 import BackToTop from "@/components/ui/back-to-top";
 
+// Template V5: 终极动态 Behance 模板 (黑白自适应)
+const TemplateV5 = ({ data }: { data: any }) => {
+  // 根据数据里的 theme 字段自动判断黑白模式
+  const isDark = data.theme === "dark";
 
-// ==========================================
+  const bgClass = isDark ? "bg-[#050505]" : "bg-gray-50";
+  const textClass = isDark ? "text-zinc-100" : "text-zinc-900";
+  const selectionClass = isDark 
+    ? "selection:bg-white/20 selection:text-white" 
+    : "selection:bg-black/10 selection:text-black";
+  
+  const btnClass = isDark 
+    ? "bg-black/50 border-white/10 text-zinc-400 hover:text-white hover:bg-zinc-800 shadow-[0_0_30px_rgba(0,0,0,0.8)]" 
+    : "bg-white/80 border-zinc-200 text-zinc-600 hover:text-black hover:bg-zinc-50 shadow-[0_0_30px_rgba(0,0,0,0.1)]";
+
+  const footerClass = isDark
+    ? "bg-[#020202] hover:bg-zinc-900 border-zinc-900"
+    : "bg-zinc-50 hover:bg-zinc-100 border-zinc-200";
+
+  return (
+    // 加上了 pt-[88px] 防止被顶部导航栏遮挡
+    <div className={`min-h-screen pt-[88px] ${bgClass} ${textClass} ${selectionClass}`}>
+      
+      <Link href="/work" className={`fixed top-28 left-8 z-50 w-12 h-12 backdrop-blur-md border rounded-full flex items-center justify-center transition-all group ${btnClass}`}>
+        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+      </Link>
+
+      <div className={`w-full min-w-[375px] max-w-[1400px] mx-auto flex flex-col ${bgClass}`}>
+        {data.behanceSlices?.map((imgUrl: string, index: number) => (
+          <img 
+            key={index} 
+            src={imgUrl} 
+            alt={`${data.title} - slice ${index + 1}`} 
+            loading={index === 0 ? "eager" : "lazy"} 
+            className="w-full h-auto block m-0 p-0" 
+          />
+        ))}
+      </div>
+
+      {data.nextProject && (
+        <Link href={`/work/${data.nextProject.slug}`} className={`block w-full max-w-[1400px] mx-auto py-32 transition-colors text-center border-t group ${footerClass}`}>
+          <div className={`text-sm font-mono tracking-widest uppercase mb-4 transition-colors ${isDark ? 'text-zinc-600 group-hover:text-blue-400' : 'text-zinc-400 group-hover:text-blue-600'}`}>
+            Next Project
+          </div>
+          <h2 className="text-4xl md:text-6xl font-bold transition-transform duration-500 group-hover:translate-y-2">
+            {data.nextProject.name}
+          </h2>
+        </Link>
+      )}
+      
+      <BackToTop />
+    </div>
+  );
+};
+
 // 结构体组件: 滑块对比 (Structure 6)
-// ==========================================
 const ImageCompareSlider = ({ before, after }: { before: string, after: string }) => {
   const [sliderPos, setSliderPos] = useState(50);
   return (
@@ -41,10 +93,7 @@ const ImageCompareSlider = ({ before, after }: { before: string, after: string }
   );
 };
 
-
-// ==========================================
 // 高阶结构体定义区 (隔离高频渲染，保证性能)
-// ==========================================
 
 // [结构 38] X-Ray Spotlight (鼠标探照灯)
 const XRayModule = ({ data }: { data: any }) => {
@@ -142,66 +191,9 @@ const MagneticTerminalModule = ({ data }: { data: any }) => {
   );
 };
 
-// ==========================================
-// Template V5: 终极动态 Behance 模板 (黑白自适应)
-// ==========================================
-const TemplateV5 = ({ data }: { data: any }) => {
-  // 根据数据里的 theme 字段自动判断黑白模式
-  const isDark = data.theme === "dark";
 
-  const bgClass = isDark ? "bg-[#050505]" : "bg-gray-50";
-  const textClass = isDark ? "text-zinc-100" : "text-zinc-900";
-  const selectionClass = isDark 
-    ? "selection:bg-white/20 selection:text-white" 
-    : "selection:bg-black/10 selection:text-black";
-  
-  const btnClass = isDark 
-    ? "bg-black/50 border-white/10 text-zinc-400 hover:text-white hover:bg-zinc-800 shadow-[0_0_30px_rgba(0,0,0,0.8)]" 
-    : "bg-white/80 border-zinc-200 text-zinc-600 hover:text-black hover:bg-zinc-50 shadow-[0_0_30px_rgba(0,0,0,0.1)]";
 
-  const footerClass = isDark
-    ? "bg-[#020202] hover:bg-zinc-900 border-zinc-900"
-    : "bg-zinc-50 hover:bg-zinc-100 border-zinc-200";
-
-  return (
-    // 加上了 pt-[88px] 防止被顶部导航栏遮挡
-    <div className={`min-h-screen pt-[88px] ${bgClass} ${textClass} ${selectionClass}`}>
-      
-      <Link href="/work" className={`fixed top-28 left-8 z-50 w-12 h-12 backdrop-blur-md border rounded-full flex items-center justify-center transition-all group ${btnClass}`}>
-        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-      </Link>
-
-      <div className={`w-full min-w-[375px] max-w-[1400px] mx-auto flex flex-col ${bgClass}`}>
-        {data.behanceSlices?.map((imgUrl: string, index: number) => (
-          <img 
-            key={index} 
-            src={imgUrl} 
-            alt={`${data.title} - slice ${index + 1}`} 
-            loading={index === 0 ? "eager" : "lazy"} 
-            className="w-full h-auto block m-0 p-0" 
-          />
-        ))}
-      </div>
-
-      {data.nextProject && (
-        <Link href={`/work/${data.nextProject.slug}`} className={`block w-full max-w-[1400px] mx-auto py-32 transition-colors text-center border-t group ${footerClass}`}>
-          <div className={`text-sm font-mono tracking-widest uppercase mb-4 transition-colors ${isDark ? 'text-zinc-600 group-hover:text-blue-400' : 'text-zinc-400 group-hover:text-blue-600'}`}>
-            Next Project
-          </div>
-          <h2 className="text-4xl md:text-6xl font-bold transition-transform duration-500 group-hover:translate-y-2">
-            {data.nextProject.name}
-          </h2>
-        </Link>
-      )}
-      
-      <BackToTop />
-    </div>
-  );
-};
-
-// ==========================================
 // 主页面入口
-// ==========================================
 export default function UniversalCaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params); // Next.js 15 解包
   // 👇 把原来报错的那行删掉，换成这句极其优雅的代码！

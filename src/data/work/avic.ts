@@ -1,6 +1,6 @@
-// src/data/work/k05.ts
+// src/data/work/avic.ts
 
-const k05Data = {
+const avicData = {
   template: "v5",
   theme: "dark",
   behanceSlices: [
@@ -12,7 +12,6 @@ const k05Data = {
     "https://cdn.btbon.cn/AVIC-商网/Desk-39.jpg",
     "https://cdn.btbon.cn/AVIC-商网/Desk-40.jpg",
   ],
-  nextProject: { slug: "dark-app-ui", name: "Dark App UI" }
 };
 
-export default k05Data;
+export default avicData;

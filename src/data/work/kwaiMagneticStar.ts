@@ -1,6 +1,6 @@
-// src/data/work/k06.ts
+// src/data/work/kwai-magnetic-star.ts
 
-const k06Data = {
+const kwaiMagneticStarData = {
   template: "v5",
   theme: "dark",
   behanceSlices: [
@@ -13,8 +13,8 @@ const k06Data = {
     "https://cdn.btbon.cn/Kwai-磁力聚星/Desk-09.jpg",
     "https://cdn.btbon.cn/Kwai-磁力聚星/Desk-10.jpg",
     "https://cdn.btbon.cn/Kwai-磁力聚星/Desk-11.jpg",
+    
   ],
-  nextProject: { slug: "dark-app-ui", name: "Dark App UI" }
 };
 
-export default k06Data;
+export default kwaiMagneticStarData;
