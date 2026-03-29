@@ -121,20 +121,21 @@ export default function WorkProject() {
   // 核心状态：记录当前打开的弹窗项目的索引
   const [currentModalIndex, setCurrentModalIndex] = useState<number | null>(null);
 
-  // 提取出所有支持 Modal 的项目，用于"上一篇/下一篇"切换
+// 提取出所有支持 Modal 的项目，用于"上一篇/下一篇"切换
   const modalList = useMemo(() => {
     return projects
-      .flatMap(section => section.items)
-      .filter(item => (item as any).useModal && (item as any).dataSlug)
+      // ✅ 修改这里：显式断言为 any 数组，绕过结构不一致的类型检查
+      .flatMap(section => section.items as any[])
+      .filter(item => item.useModal && item.dataSlug)
       .map(item => {
-        const detailData = getProjectBySlug((item as any).dataSlug as string);
+        const detailData = getProjectBySlug(item.dataSlug as string);
         return {
           id: item.id,
           title: item.title,
-          images: detailData?.behanceSlices ||[]
+          images: detailData?.behanceSlices || []
         };
       });
-  },[]);
+  }, []);
 
   const openModal = (projectId: string) => {
     const index = modalList.findIndex(p => p.id === projectId);
