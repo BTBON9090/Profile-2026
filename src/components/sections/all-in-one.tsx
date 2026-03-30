@@ -75,7 +75,7 @@ export default function AllInOne() {
 
         <motion.div
           variants={itemVariants}
-          className="col-span-12 md:col-span-7 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/95 backdrop-blur-xl border border-zinc-700/50 rounded-3xl overflow-hidden relative group hover:border-purple-500/30 transition-all duration-500"
+          className="col-span-12 md:col-span-7 bg-gradient-to-br from-zinc-900 via-zinc-900/98 to-zinc-800/95 border border-zinc-700/50 rounded-3xl overflow-hidden relative group hover:border-purple-500/30 transition-all duration-500"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
           <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full"></div>
@@ -92,7 +92,7 @@ export default function AllInOne() {
               <p className="text-zinc-400 text-sm">{t.allInOne.poweredBy}</p>
             </div>
 
-            <div className="flex-1 min-h-[320px] bg-black/60 backdrop-blur-sm rounded-2xl border border-zinc-800/80 p-5 font-mono shadow-2xl overflow-auto relative">
+            <div className="flex-1 min-h-[320px] bg-black/60  rounded-2xl border border-zinc-800/80 p-5 font-mono shadow-2xl overflow-auto relative">
                <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800/50">
                  <div className="flex gap-2">
                    <div className="w-3 h-3 rounded-full bg-red-500/40 group-hover:bg-red-500 transition-colors"></div>
@@ -150,14 +150,14 @@ export default function AllInOne() {
                 href="https://allinone-plugin.netlify.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 border border-zinc-700/50 hover:bg-blue-600 hover:border-blue-500 hover:text-white text-zinc-400 transition-all duration-300 group/btn backdrop-blur-sm"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 border border-zinc-700/50 hover:bg-blue-600 hover:border-blue-500 hover:text-white text-zinc-400 transition-all duration-300 group/btn "
               >
                 <span className="text-xs font-mono font-medium">{t.allInOne.interface.visit}</span>
                 <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
               </a>
             </div>
 
-            <div className="relative flex-1 min-h-[420px] bg-black/40 backdrop-blur-sm rounded-2xl border border-zinc-800/80 overflow-hidden group-hover:scale-[1.02] group-hover:border-zinc-700 transition-all duration-500 shadow-2xl">
+            <div className="relative flex-1 min-h-[420px] bg-black/40 rounded-2xl border border-zinc-800/80 overflow-hidden group-hover:scale-[1.02] group-hover:border-zinc-700 transition-all duration-500 shadow-2xl">
               <Image
                 src="/images/plugin-ui.png"
                 alt="AllinOne Plugin UI"
@@ -257,22 +257,22 @@ export default function AllInOne() {
             </div>
 
             <div className="md:col-span-9 grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
                 <div className="text-md text-blue-100/90 font-medium al">{t.allInOne.features.items.exportPpt}</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
                 <div className="text-md text-blue-100/90 font-medium">{t.allInOne.features.items.cleanNames}</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
                 <div className="text-md text-blue-100/90 font-medium">{t.allInOne.features.items.superSelect}</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
                 <div className="text-md text-blue-100/90 font-medium">{t.allInOne.features.items.findReplace}</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
                 <div className="text-md text-blue-100/90 font-medium">{t.allInOne.features.items.aiGenerate}</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
                 <div className="text-md text-blue-100/90 font-medium">{t.allInOne.features.items.toolkit}</div>
               </div>
             </div>

@@ -270,7 +270,7 @@ export default function AboutPage() {
                 
                 <div className="flex flex-wrap gap-2">
                   {exp.tech.map((t: string, i: number) => (
-                    <span key={i} className="px-3 py-1.5 bg-zinc-900/50 border border-zinc-800/50 rounded-lg text-xs font-mono text-zinc-500 hover:text-white hover:border-zinc-600 transition-colors cursor-default backdrop-blur-sm">
+                    <span key={i} className="px-3 py-1.5 bg-zinc-900/50 border border-zinc-800/50 rounded-lg text-xs font-mono text-zinc-500 hover:text-white hover:border-zinc-600 transition-colors cursor-default">
                       {t}
                     </span>
                   ))}

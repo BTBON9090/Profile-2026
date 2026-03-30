@@ -19,7 +19,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer id="footer" className="bg-white/4 backdrop-blur-2xl py-20 border-t border-zinc-900 overflow-hidden relative">
+    <footer id="footer" className="bg-white/4 py-20 border-t border-zinc-900 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-8 md:px-8 text-center relative z-10">
         
         <motion.div

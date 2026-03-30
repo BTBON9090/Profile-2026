@@ -114,7 +114,10 @@ export default function BgmPlayer() {
     audio.addEventListener("pause", handlePause);
     audio.addEventListener("ended", handleEnded);
 
-    // 尝试静默自动播放
+    // ========================================================
+    // 🗑️ 请把下面这整段“静默自动播放”和“解锁”的代码全部删掉！
+    // ========================================================
+    /* 
     audio.play().catch(() => {
       const unlockAudio = () => {
         audio.play().catch(() => {});
@@ -124,6 +127,8 @@ export default function BgmPlayer() {
       document.addEventListener("click", unlockAudio);
       document.addEventListener("keydown", unlockAudio);
     });
+    */
+    // ================== 删掉上面这段 ==========================
 
     return () => {
       audio.removeEventListener("play", handlePlay);

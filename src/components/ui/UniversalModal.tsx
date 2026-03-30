@@ -84,7 +84,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
           {/* Layer 1: 全屏背景蒙版 (点击可关闭)           */}
           {/* ========================================== */}
           <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-[10px] cursor-alias" 
+            className="absolute inset-0 bg-black/80 cursor-alias" 
             onClick={onClose} 
           />
 
@@ -104,7 +104,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
               
               {/* 顶部标题栏 (可选，增加精致感) */}
               <div className="sticky top-0 z-20 w-full px-8 py-6 pointer-events-none flex items-center justify-between md:rounded-t-2xl">
-                 <span className="font-mono text-sm text-white/60 backdrop-blur-md px-3 py-1 rounded-md bg-black/40">{title}</span>
+                 <span className="font-mono text-sm text-white/60  px-3 py-1 rounded-md bg-black/40">{title}</span>
               </div>
 
               {/* 纯净图片流，底部增加 pb-32 防止最后一张图被底部的按钮挡住 */}
@@ -146,7 +146,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
               initial={{ y: 50, opacity: 0 }} 
               animate={{ y: 0, opacity: 1 }} 
               transition={{ delay: 0.3 }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-[#1a1a1a]/90 backdrop-blur-xl text-zinc-300 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-zinc-700/50 overflow-hidden"
+              className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-[#1a1a1a]/90 text-zinc-300 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-zinc-700/50 overflow-hidden"
             >
               <button 
                 onClick={onPrev} 

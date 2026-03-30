@@ -183,7 +183,7 @@ export default function WorkProject() {
                   return (
                     <motion.div key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: idx * 0.1, duration: 0.5 }} className="h-full">
                       <Wrapper {...wrapperProps} className={`block group h-full ${isModal ? 'cursor-pointer' : ''}`}>
-                        <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/0 rounded-xl overflow-hidden hover:border-zinc-800/0 transition-colors duration-300 h-full flex flex-col">
+                        <div className="bg-zinc-900/50  border border-zinc-800/50 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors duration-300 h-full flex flex-col">
                           
                           {/* 🔴 修改 3: 使用 aspect-video 或 aspect-[4/3] 替代固定高度，保证各端比例完美 */}
                           <div className="relative aspect-[4/3] w-full bg-zinc-950 overflow-hidden flex-shrink-0">

@@ -16,7 +16,7 @@ export default function Navbar() {
   const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding";
 
   // 提取动态 CSS 变量
-  const navBgClass = isLightTheme ? "bg-white/80 border-b border-zinc-200" : "bg-black/50 border-b border-white/5"; // 背景颜色
+  const navBgClass = isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
   const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white"; // logo 颜色
   const dotColorClass = isLightTheme ? "text-blue-600" : "text-blue-600"; // 点颜色
   
@@ -30,7 +30,7 @@ export default function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-6 backdrop-blur-md transition-colors duration-500 ${navBgClass}`}
+      className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-3  transition-colors duration-500 ${navBgClass}`}
     >
       <Link 
         href="/" 
