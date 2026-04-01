@@ -140,7 +140,7 @@ export default function Sidebar() {
             <div className="relative flex items-center justify-center w-6 h-8">
               {/* 默认的灰色小点 */}
               <div 
-                className={`absolute w-1.5 h-1.5 rounded-full bg-zinc-700 transition-all duration-300 group-hover:bg-zinc-400 group-hover:scale-150 ${
+                className={`absolute w-1.5 h-1.5 rounded-full bg-zinc-500 transition-all duration-300 group-hover:bg-zinc-400 group-hover:scale-150 ${
                   isActive ? "opacity-0 scale-0" : "opacity-100"
                 }`}
               />
@@ -149,7 +149,7 @@ export default function Sidebar() {
               {isActive && (
                 <motion.div
                   layoutId="activeSidebarIndicator" // 关键：共享布局动画
-                  className="absolute w-1 h-full bg-white rounded-full shadow-[0_0_12px_rgba(59,130,246,0.6)]"
+                  className="absolute w-1 h-full bg-zinc-500 rounded-full"
                   transition={{ 
                     type: "spring", 
                     stiffness: 300, 
@@ -163,8 +163,8 @@ export default function Sidebar() {
             <div 
               className={`absolute left-8 font-mono text-[10px] tracking-widest uppercase whitespace-nowrap transition-all duration-300 ${
                 isActive 
-                  ? "text-white opacity-100 translate-x-0" 
-                  : "text-zinc-500 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:-translate-x-2"
+                  ? "text-zinc-400 opacity-100 translate-x-0" 
+                  : "text-zinc-700 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:-translate-x-2"
               }`}
             >
               {section.label}

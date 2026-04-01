@@ -17,12 +17,12 @@ export default function Navbar() {
 
   // 提取动态 CSS 变量
   const navBgClass = isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
-  const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white"; // logo 颜色
+  const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white/90"; // logo 颜色
   const dotColorClass = isLightTheme ? "text-blue-600" : "text-blue-600"; // 点颜色
   
   // 👇 提取激活和未激活的文字颜色变量
-  const activeText = isLightTheme ? "text-zinc-900" : "text-white"; // 激活文字颜色
-  const inactiveText = isLightTheme ? "text-zinc-500 hover:text-zinc-900" : "text-gray-400 hover:text-white"; // 未激活文字颜色
+  const activeText = isLightTheme ? "text-zinc-900" : "text-white/90"; // 激活文字颜色
+  const inactiveText = isLightTheme ? "text-zinc-500 hover:text-zinc-900" : "text-gray-400 hover:text-white/90"; // 未激活文字颜色
 
 
   return (

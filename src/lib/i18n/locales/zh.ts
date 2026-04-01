@@ -92,7 +92,7 @@ export const zh = {
   snowEcosystem: {
     badge: '核心业务',
     title: '雪诺浏览器',
-    titleSuffix: '企业安全系统',
+    titleSuffix: '企业安全工作空间',
     description: '一套完整的零信任安全轻量化解决方案。从底层重构企业工作空间。',
     visitWebsite: '访问网站',
     features: {

@@ -134,21 +134,21 @@ export default function AboutPage() {
                 <li className="flex items-start gap-4">
                   <Briefcase className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-white font-medium mb-1">{t.about.hero.role}</div>
+                    <div className="text-zinc-300 font-medium mb-1">{t.about.hero.role}</div>
                     <div className="text-zinc-500 text-xs font-mono">{t.about.hero.experience}</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
                   <GraduationCap className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-white font-medium mb-1">{t.about.hero.education}</div>
+                    <div className="text-zinc-300 font-medium mb-1">{t.about.hero.education}</div>
                     <div className="text-zinc-500 text-xs font-mono">{t.about.hero.school}</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
                   <MapPin className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-white font-medium mb-1">{t.about.hero.location}</div>
+                    <div className="text-zinc-300 font-medium mb-1">{t.about.hero.location}</div>
                     <div className="text-zinc-500 text-xs font-mono">{t.about.hero.locationDetail}</div>
                   </div>
                 </li>
@@ -226,10 +226,10 @@ export default function AboutPage() {
         >
           <div className="flex items-center gap-3 mb-12 border-b border-zinc-800/50 pb-6">
             <TerminalSquare className="w-6 h-6 text-zinc-500" />
-            <h2 className="text-2xl font-semibold text-white tracking-tight">{t.about.experience.title}</h2>
+            <h2 className="text-2xl font-semibold text-zinc-300 tracking-tight">{t.about.experience.title}</h2>
           </div>
 
-          <div className="relative ml-3 space-y-16 pb-10">
+          <div className="relative ml-3 space-y-32 pb-10">
             {/* 隐藏的贯穿线 */}
             <div className="absolute top-2 bottom-0 left-[7px] w-px bg-gradient-to-b from-zinc-800 via-zinc-800 to-transparent"></div>
 
@@ -238,9 +238,9 @@ export default function AboutPage() {
                 {/* 精致的节点指示器 */}
                 <div className="absolute left-[2px] top-1.5 w-[11px] h-[11px] rounded-full bg-black border-2 border-zinc-600 group-hover:border-blue-400 group-hover:shadow-[0_0_10px_rgba(96,165,250,0.5)] transition-all duration-300"></div>
                 
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-                  <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-lg flex items-center justify-center text-sm overflow-hidden">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+                  <h3 className="text-3xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors flex items-center gap-4">
+                    <span className="w-10 h-10 rounded-lg flex items-center justify-center text-sm overflow-hidden">
                       {exp.logo ? (
                         <img src={exp.logo} alt={exp.company} className="w-full h-full object-cover" />
                       ) : (
@@ -248,15 +248,15 @@ export default function AboutPage() {
                       )}
                     </span>
                     {exp.company}
-                    <span className="text-zinc-600 font-light hidden md:inline-block mx-2">/</span> 
-                    <span className="text-lg text-zinc-400 font-medium">{exp.role}</span>
+                    <span className="text-zinc-600 font-light hidden md:inline-block mx-2">-</span> 
+                    <span className="text-lg text-zinc-500 font-normal">{exp.role}</span>
                   </h3>
-                  <div className="text-xs font-mono text-zinc-500 tracking-widest uppercase">
+                  <div className="text-sm font-mono text-zinc-500 tracking-widest uppercase">
                     {exp.time}
                   </div>
                 </div>
                 
-                <div className="text-zinc-400 text-sm leading-relaxed mb-6 max-w-3xl">
+                <div className="text-zinc-500 text-sm leading-relaxed mb-6 max-w-3xl">
                   {Array.isArray(exp.description) ? (
                     <ol className="list-decimal list-inside space-y-1.5 pl-2">
                       {exp.description.map((item: string, index: number) => (

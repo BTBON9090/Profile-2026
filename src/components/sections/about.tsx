@@ -8,7 +8,7 @@ export default function About() {
   const { t } = useI18n();
   
   return (
-    <section id="about" className="py-32 bg-transparent relative border-t border-zinc-900">
+    <section id="about" className="py-32 bg-black relative border-t border-zinc-900">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:4rem_4rem][mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20"></div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
@@ -21,7 +21,7 @@ export default function About() {
               viewport={{ once: true }}
               className="sticky top-32"
             >
-              <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">
+              <h2 className="text-5xl md:text-7xl font-bold text-zinc-300 tracking-tight mb-6">
                 {t.about.title} <br />
                 <span className="text-zinc-600">{t.about.titleSuffix}</span>
               </h2>
@@ -45,7 +45,7 @@ export default function About() {
               <a 
                 href="/resume.pdf"
                 download="倪城_Resume.pdf"
-                className="group inline-flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full hover:bg-zinc-200 transition-colors"
+                className="group inline-flex items-center gap-3 px-6 py-3 bg-zinc-300 text-black rounded-full hover:bg-zinc-200 transition-colors"
               >
                 <FileText className="w-4 h-4 group-hover:text-blue-600" />
                 <span className="text-xl font-mono font-bold uppercase group-hover:text-blue-600">{t.about.downloadResume}</span>
@@ -63,7 +63,7 @@ export default function About() {
               className="space-y-8"
             >
               <div className="border-l-2 border-zinc-800 pl-6">
-                <div className="flex items-center gap-2 text-white mb-2">
+                <div className="flex items-center gap-2 text-zinc-300 mb-2">
                   <Layers className="w-5 h-5 text-blue-400" />
                   <h3 className="text-xl font-bold">{t.about.capabilities.systemArchitect.title}</h3>
                 </div>
@@ -71,7 +71,7 @@ export default function About() {
               </div>
 
               <div className="border-l-2 border-zinc-800 pl-6">
-                <div className="flex items-center gap-2 text-white mb-2">
+                <div className="flex items-center gap-2 text-zinc-300 mb-2">
                   <Terminal className="w-5 h-5 text-purple-400" />
                   <h3 className="text-xl font-bold">{t.about.capabilities.aiEngineer.title}</h3>
                 </div>
@@ -90,7 +90,7 @@ export default function About() {
               <div className="space-y-8">
                 {Object.values(t.about.techStackData).map((group: any, idx: number) => (
                   <div key={idx}>
-                    <div className="text-white font-medium mb-3">{group.category}</div>
+                    <div className="text-zinc-300 font-medium mb-3">{group.category}</div>
                     <div className="flex flex-wrap gap-2">
                       {group.items.map((item: string, i: number) => (
                         <span 
@@ -113,7 +113,7 @@ export default function About() {
               className="space-y-8"
             >
               <div>
-                <h3 className="text-2xl font-bold text-white mb-4 font-mono">
+                <h3 className="text-2xl font-bold text-zinc-300 mb-4 font-mono">
                   <span className="text-blue-500">{"$"}</span> {t.about.experience.title}
                 </h3>
                 <p className="text-zinc-400 font-mono text-sm">{t.about.experience.subtitle}</p>
@@ -137,7 +137,7 @@ export default function About() {
                     </div>
                     
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-                      <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors flex items-center gap-3">
+                      <h3 className="text-2xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors flex items-center gap-3">
                         <span className="w-8 h-8 rounded-lg flex items-center justify-center text-sm overflow-hidden">
                           {exp.logo ? (
                             <img src={exp.logo} alt={exp.company} className="w-full h-full object-cover" />

@@ -25,25 +25,25 @@ export default function Hero() {
             <span className="text-xs font-mono text-zinc-400">{t.hero.badge}</span>
           </div>
 
-          <h1 className="text-5xl md:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-4">
+          <h1 className="text-5xl md:text-8xl font-bold text-zinc-300 pb-4">
             {t.hero.title} <br />
             <span className="text-blue-500/90">{t.hero.titleHighlight}</span> {t.hero.titleEnd}
           </h1>
 
-          <p className="mt-4 font-normal text-base text-neutral-300 max-w-2xl mx-auto font-mono leading-relaxed">
+          <p className="mt-4 font-normal text-base text-zinc-400 max-w-2xl mx-auto font-mono leading-relaxed">
             {t.hero.subtitle}<span className="text-blue-500">{t.hero.subtitleAi}</span>{t.hero.subtitleAnd}<span className="text-purple-500">{t.hero.subtitleVibe}</span>{t.hero.subtitleEnd}
             <br />
             {t.hero.description}
           </p>
 
           <div className="flex justify-center gap-8 mt-12 text-zinc-500">
-             <div className="flex flex-col items-center gap-2 group cursor-pointer hover:text-white transition-colors">
+             <div className="flex flex-col items-center gap-2 group cursor-pointer hover:text-zinc-300 transition-colors">
                 <div className="p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 group-hover:border-blue-500/50 transition-colors">
                   <Layers className="w-6 h-6" />
                 </div>
                 <span className="text-xs font-mono">{t.hero.systemDesign}</span>
              </div>
-             <div className="flex flex-col items-center gap-2 group cursor-pointer hover:text-white transition-colors">
+             <div className="flex flex-col items-center gap-2 group cursor-pointer hover:text-zinc-300 transition-colors">
                 <div className="p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 group-hover:border-purple-500/50 transition-colors">
                   <Code2 className="w-6 h-6" />
                 </div>

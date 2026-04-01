@@ -65,7 +65,7 @@ export default function SnowEcosystem() {
                {t.snowEcosystem.badge}
              </span>
           </motion.div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-6xl font-bold text-zinc-300 mb-6">
             {t.snowEcosystem.title} <span className="text-zinc-600">{t.snowEcosystem.titleSuffix}</span>
           </h2>
           <p className="text-zinc-400 max-w-2xl text-lg font-light">
@@ -165,7 +165,7 @@ function TextBlock({ feature, index, setActive }: { feature: any, index: number,
        <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6">
          <feature.icon className="w-6 h-6 text-blue-400" />
        </div>
-       <h3 className="text-3xl font-bold text-white mb-2">{feature.title}</h3>
+       <h3 className="text-3xl font-bold text-zinc-300 mb-2">{feature.title}</h3>
        <div className="text-blue-500 font-mono text-sm mb-6">{feature.subtitle}</div>
        <p className="text-zinc-400 leading-relaxed text-lg">
          {feature.description}

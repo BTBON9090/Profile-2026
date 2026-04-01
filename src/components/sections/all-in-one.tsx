@@ -44,7 +44,7 @@ export default function AllInOne() {
           </span>
         </motion.div>
         
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 flex items-center flex-wrap gap-4">
+        <h2 className="text-4xl md:text-5xl font-bold text-zinc-300 mb-6 flex items-center flex-wrap gap-4">
             {t.allInOne.title} <span className="text-zinc-500">{t.allInOne.titleSuffix}</span>
             <a 
                 href="https://allinone-plugin.netlify.app/" 
@@ -61,7 +61,7 @@ export default function AllInOne() {
         </h2>
         <p className="text-zinc-400 max-w-2xl text-lg font-light leading-relaxed">
           {t.allInOne.description} <br />
-          <span className="text-white font-mono">{t.allInOne.aiGenerated}</span> {t.allInOne.byDesigner}
+          <span className="text-zinc-300 font-mono">{t.allInOne.aiGenerated}</span> {t.allInOne.byDesigner}
         </p>
       </div>
 
@@ -88,7 +88,7 @@ export default function AllInOne() {
                 </div>
                 <span className="font-mono text-xs text-zinc-500 tracking-wider">{t.allInOne.aiWorkflow}</span>
               </div>
-              <h3 className="text-3xl font-bold text-white mb-1">{t.allInOne.fromPromptToProduct}</h3>
+              <h3 className="text-3xl font-bold text-zinc-300 mb-1">{t.allInOne.fromPromptToProduct}</h3>
               <p className="text-zinc-400 text-sm">{t.allInOne.poweredBy}</p>
             </div>
 
@@ -143,7 +143,7 @@ export default function AllInOne() {
                   </div>
                   <span className="font-mono text-xs text-zinc-500 tracking-wider">{t.allInOne.interface.label}</span>
                 </div>
-                <h3 className="text-2xl font-bold text-white">{t.allInOne.interface.title}</h3>
+                <h3 className="text-2xl font-bold text-zinc-300">{t.allInOne.interface.title}</h3>
               </div>
 
               <a
@@ -189,7 +189,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-white group-hover:text-purple-400 transition-colors duration-300 mb-2">8</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-purple-400 transition-colors duration-300 mb-2">8</div>
               <div className="text-sm text-zinc-400">{t.allInOne.timeline.days}</div>
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300 mb-2">7</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors duration-300 mb-2">7</div>
               <div className="text-sm text-zinc-400">{t.allInOne.version.iterations}</div>
             </div>
           </div>
@@ -229,7 +229,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-white group-hover:text-yellow-400 transition-colors duration-300 mb-2">190</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-yellow-400 transition-colors duration-300 mb-2">190</div>
               <div className="text-sm text-zinc-400">{t.allInOne.users.active}</div>
             </div>
           </div>

@@ -34,7 +34,7 @@ export default function Footer() {
           </p>
           
           <div className="relative inline-block">
-            <span className="text-4xl md:text-7xl lg:text-8xl font-bold text-white hover:text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-400 to-white bg-[length:200%_auto] hover:animate-shimmer transition-all duration-300">
+            <span className="text-4xl md:text-7xl lg:text-8xl font-bold text-zinc-300 hover:text-white transition-colors duration-300">
               {t.footer.letsTalk}
             </span>
           </div>
@@ -49,14 +49,14 @@ export default function Footer() {
         >
           <button 
             onClick={() => handleCopy("17611231055", "phone")}
-            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-4 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300"
+            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-4 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-400"
           >
             <div className="flex items-center gap-3">
               <Smartphone className="w-4 h-4 text-zinc-500" />
               <span>176 1123 1055</span>
             </div>
             {copiedField === "phone" ? <Check className="w-4 h-4 text-blue-500" /> : <Copy className="w-4 h-4 text-zinc-600 group-hover:text-blue-500 transition-colors" />}
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-zinc-300 px-3 py-1 rounded-full text-xs font-mono whitespace-nowrap">
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-zinc-400 px-3 py-1 rounded-full text-xs font-mono whitespace-nowrap">
               {copiedField === "phone" ? (
                 <><Check className="w-3 h-3 text-blue-500" /> {t.footer.copied}</>
               ) : (
@@ -67,13 +67,13 @@ export default function Footer() {
 
           <button 
             onClick={() => handleCopy("Aiden0032", "wechat")}
-            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-4 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-300 cursor-default">
+            className="group relative w-full md:w-auto flex items-center justify-between gap-4 px-6 py-4 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900 rounded-full transition-all duration-300 font-mono text-sm text-zinc-400 cursor-default">
             <div className="flex items-center gap-3">
               <MessageCircle className="w-4 h-4 text-zinc-500" />
               <span>WeChat: Aiden0032</span>
             </div>
             {copiedField === "wechat" ? <Check className="w-4 h-4 text-blue-500" /> : <QrCode className="w-4 h-4 text-zinc-600 group-hover:text-blue-500 transition-colors" />}
-            <div className="z-100 absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-zinc-300 px-3 py-1 rounded-full text-xs font-mono whitespace-nowrap">
+            <div className="z-100 absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-zinc-400 px-3 py-1 rounded-full text-xs font-mono whitespace-nowrap">
               {copiedField === "wechat" ? (
                 <><Check className="w-3 h-3 text-blue-500" /> {t.footer.copied}</>
               ) : (
@@ -114,7 +114,7 @@ export default function Footer() {
         <a 
           href="/resume.pdf" 
           download="倪城_Resume.pdf"
-          className=" mb-20  md:w-auto flex items-center justify-center gap-3 px-6 py-4  text-white hover:text-blue-500 border border-transparent rounded-full transition-all duration-300 font-mono text-sm font-semibold"
+          className=" mb-20  md:w-auto flex items-center justify-center gap-3 px-6 py-4  text-zinc-300 hover:text-blue-500 border border-transparent rounded-full transition-all duration-300 font-mono text-sm font-semibold"
         >
           🍀
           <span>{t.footer.downloadReminder}</span>
@@ -129,11 +129,11 @@ export default function Footer() {
               href="https://www.xiaohongshu.com/user/biography/6252abd90000000010006abc" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-white transition-colors flex items-center gap-2 group"
+              className="hover:text-zinc-300 transition-colors flex items-center gap-2 group"
             >
               <img src="/小红书.png" alt="小红书" className="w-7 h-7" />
               <span>小红书</span>
-              <ArrowUpRight className="w-4 h-4 group-hover:text-white transition-colors" />
+              <ArrowUpRight className="w-4 h-4 group-hover:text-zinc-300 transition-colors" />
             </a>
           </div>
         </div>

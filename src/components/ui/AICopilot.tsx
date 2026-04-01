@@ -27,11 +27,12 @@ interface AICopilotProps {
 }
 
 export default function AICopilot({ projectId }: AICopilotProps) {
-  const[isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
-  const[messages, setMessages] = useState<{ role: string; content: string }[]>([]);
-  const[isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [promptOffset, setPromptOffset] = useState(0);
+  const [hasUsed, setHasUsed] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function AICopilot({ projectId }: AICopilotProps) {
   const handleSend = async (text: string) => {
     if (!text.trim() || isLoading) return;
     
+    setHasUsed(true);
     const userMsg = { role: "user", content: text };
     const newMessages =[...messages, userMsg];
     setMessages(newMessages);
@@ -184,7 +186,7 @@ export default function AICopilot({ projectId }: AICopilotProps) {
         </div>
 
         {/* 微动提示词: 极简浮窗 */}
-        {!isOpen && (
+        {!isOpen && !hasUsed && (
           <motion.div 
             initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 2.5, duration: 0.6 }}

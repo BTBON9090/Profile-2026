@@ -161,7 +161,7 @@ export default function WorkProject() {
       <div className="w-full mx-auto">
         
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-20">
-          <h1 className="text-5xl md:text-9xl font-bold text-white tracking-tight mb-6">All Work</h1>
+          <h1 className="text-5xl md:text-9xl font-bold text-zinc-300 tracking-tight mb-6">All Work</h1>
           <p className="text-zinc-400 text-lg max-w-2xl font-light">{t.work.description}</p>
         </motion.div>
 
@@ -170,11 +170,11 @@ export default function WorkProject() {
             <div key={sectionIdx} id={section.sectionId} className="scroll-mt-32">
               <div className="flex items-center gap-4 mb-10 border-b border-zinc-800/60 pb-4">
                 <span className="text-5xl font-mono font-bold text-blue-500 tracking-widest uppercase">0{sectionIdx + 1}</span>
-                <h2 className="text-5xl font-bold text-white">{t.work[section.categoryKey as keyof typeof t.work]}</h2>
+                <h2 className="text-5xl font-bold text-zinc-300">{t.work[section.categoryKey as keyof typeof t.work]}</h2>
               </div>
 
               {/* 🔴 修改 2: 响应式 1 到 5 列适配 */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 ">
                 {section.items.filter(project => !(project as any).hidden).map((project, idx) => {
                   const isModal = (project as any).useModal && (project as any).dataSlug;
                   const Wrapper: any = isModal ? "div" : Link;
@@ -183,10 +183,10 @@ export default function WorkProject() {
                   return (
                     <motion.div key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: idx * 0.1, duration: 0.5 }} className="h-full">
                       <Wrapper {...wrapperProps} className={`block group h-full ${isModal ? 'cursor-pointer' : ''}`}>
-                        <div className="bg-zinc-900/50  border border-zinc-800/50 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors duration-300 h-full flex flex-col">
+                        <div className="bg-zinc-900/50  border border-zinc-800/40 rounded-3xl overflow-hidden hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col">
                           
                           {/* 🔴 修改 3: 使用 aspect-video 或 aspect-[4/3] 替代固定高度，保证各端比例完美 */}
-                          <div className="relative aspect-[4/3] w-full bg-zinc-950 overflow-hidden flex-shrink-0">
+                          <div className="relative aspect-[3/2] w-full bg-zinc-950 overflow-hidden flex-shrink-0">
                             <Image 
                               src={project.image} 
                               alt={project.title} 
@@ -199,7 +199,7 @@ export default function WorkProject() {
                           <div className="p-4 md:p-6 flex-1 flex flex-col">
                             <div className="flex justify-between items-start mb-3">
                               <div className="min-w-0 pr-2">
-                                <h3 className="text-md md:text-lg font-semibold text-white/60 group-hover:text-white transition-colors truncate md:whitespace-normal">{project.title}</h3>
+                                <h3 className="text-md md:text-xl font-semibold text-white/60 group-hover:text-white transition-colors truncate md:whitespace-normal">{project.title}</h3>
                               </div>
                             </div>
                             <p className="hidden md:block text-zinc-600 text-sm leading-relaxed line-clamp-3 mt-auto">{project.description}</p>

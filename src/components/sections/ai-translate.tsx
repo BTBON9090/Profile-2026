@@ -52,7 +52,7 @@ export default function AITranslate() {
               </span>
             </motion.div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-zinc-300 mb-6">
               {t.aiTranslate.title} <span className="text-zinc-600">
                 {t.aiTranslate.titleSuffix}
               </span>
@@ -69,7 +69,7 @@ export default function AITranslate() {
                     <feature.icon className="w-6 h-6 text-zinc-300" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg mb-1">{feature.title}</h3>
+                    <h3 className="text-zinc-300 font-semibold text-lg mb-1">{feature.title}</h3>
                     <p className="text-zinc-500 text-sm leading-relaxed">{feature.description}</p>
                   </div>
                 </div>
@@ -110,7 +110,7 @@ export default function AITranslate() {
             <motion.div 
               animate={{ y: [-10, 10, -10], x: [30, 30, 30] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="relative z-10 w-[320px] h-[444px] rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] border border-zinc-700/50 bg-white"
+              className="relative z-10 w-[320px] h-[444px] rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] bg-white"
             >
               <Image 
                 src="/images/ai-translate2.png"
