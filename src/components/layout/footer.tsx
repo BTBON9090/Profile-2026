@@ -126,7 +126,7 @@ export default function Footer() {
           
           <div className="flex gap-6 mt-4 md:mt-0">
             <a 
-              href="https://www.xiaohongshu.com/user/biography/6252abd90000000010006abc" 
+              href="https://xhslink.com/m/78jWEdnemBP" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover:text-zinc-300 transition-colors flex items-center gap-2 group"

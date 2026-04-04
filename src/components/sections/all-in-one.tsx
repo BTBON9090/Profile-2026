@@ -102,12 +102,12 @@ export default function AllInOne() {
                  <span className="text-xs text-zinc-600">terminal.tsx</span>
                </div>
 
-               <div className="space-y-4 text-sm leading-relaxed">
-                 <div className="flex gap-3 items-start">
+               <div className="space-y-1 text-sm leading-relaxed">
+                 <div className="flex gap-2 items-start">
                    <span className="text-purple-400 font-semibold">{t.allInOne.terminal.user}</span>
                    <span className="text-zinc-300">{t.allInOne.terminal.userMessage}</span>
                  </div>
-                 <div className="flex gap-3 items-start">
+                 <div className="flex gap-2 items-start">
                    <span className="text-blue-400 font-semibold">{t.allInOne.terminal.ai}</span>
                    <span className="text-zinc-400">{t.allInOne.terminal.aiAnalyzing}</span>
                  </div>
@@ -209,7 +209,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors duration-300 mb-2">7</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors duration-300 mb-2">10+</div>
               <div className="text-sm text-zinc-400">{t.allInOne.version.iterations}</div>
             </div>
           </div>
@@ -229,7 +229,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-zinc-300 group-hover:text-yellow-400 transition-colors duration-300 mb-2">190</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-yellow-400 transition-colors duration-300 mb-2">240</div>
               <div className="text-sm text-zinc-400">{t.allInOne.users.active}</div>
             </div>
           </div>
@@ -252,7 +252,7 @@ export default function AllInOne() {
                 </div>
                 <span className="text-xs font-mono text-blue-100 tracking-wider">{t.allInOne.features.label}</span>
               </div>
-              <div className="text-6xl font-bold mb-2">20+</div>
+              <div className="text-6xl font-bold mb-2">26</div>
               <div className="text-sm text-blue-100/80">{t.allInOne.features.count}</div>
             </div>
 

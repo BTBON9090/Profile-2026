@@ -63,7 +63,7 @@ export const zh = {
         cleanNames: '组件命名清洗',
         superSelect: '超级选择工具',
         findReplace: '文本查找替换',
-        aiGenerate: 'AI 内容生成',
+        aiGenerate: 'AI内容填充',
         toolkit: '简易工具集合',
       },
     },

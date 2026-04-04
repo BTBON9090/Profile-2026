@@ -39,39 +39,40 @@ const projects = [
       {
         id: "kwai-magnetic-star",
         title: "磁力聚星-快手达人营销平台",
-        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        description: "快手磁力聚星官网改版，全链路体验升级，老用户下单效率提升22%，首月转化率提升5.6%。",
         image: "https://cdn.btbon.cn/Kwai-磁力聚星/them03-01.png",
+        date: "2024 - 2026",
         useModal: true,
         dataSlug: "kwai-magnetic-star"
       },
       {
         id: "avic",
         title: "商网办公系统",
-        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        description: "中航金网IM办公协同系统，2019年疫情期间为国企定制开发，涵盖视频会议、行程管理、活动统筹，对标钉钉飞书。",
         image: "https://cdn.btbon.cn/AVIC-商网/them07-01.png", 
         useModal: true,
         dataSlug: "avic"
       },
       {
-        id: "studio",
-        title: "Enterplorer Studio",
-        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        image: "https://cdn.btbon.cn/YSP-Studio/them04-01.png",
-        useModal: true,
-        dataSlug: "studio"
-      },
-      {
         id: "enterplorer",
-        title: "Enterplorer-企业浏览器",
-        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        title: "Enterplorer - 企业浏览器",
+        description: "Enterplorer 企业安全浏览器，以零信任为核心，实现桌面端与移动端无缝衔接，保障企业办公数据安全。",
         image: "https://cdn.btbon.cn/YSP-Enterporer/them06-01.png", 
         useModal: true,
         dataSlug: "enterplorer"
       },
       {
+        id: "studio",
+        title: "Enterplorer Studio - 开发者工具",
+        description: "Enterplorer Studio 网页移动端适配开发工具，将桌面端网页快速适配到移动端，降低适配门槛，提升开发者效率。",
+        image: "https://cdn.btbon.cn/YSP-Studio/them04-01.png",
+        useModal: true,
+        dataSlug: "studio"
+      },
+      {
         id: "amazeui",
-        title: "AmazeUI",
-        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        title: "AmazeUI - 开源设计系统",
+        description: "独立建立的移动端适配设计系统，应用于 Enterplorer Studio，包含组件库、样式库、图标库，提升设计效率与前端对接效率。",
         image: "https://cdn.btbon.cn/YSP-AmazeUI/them05-01.png",
         useModal: true,
         dataSlug: "amazeui"
@@ -84,35 +85,29 @@ const projects = [
     items:[
       {
         id: "all-in-one",
-        title: "AllinOne Figma Plugin",
+        title: "AllinOne - Figma全能插件（免费）",
         description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
         image: "/images/allinone封面.jpg",
         link: "/work/all-in-one",
       },
       {
         id: "p01",
-        title: "AllinOne Plugin",
-        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
+        title: "AI Translate - AI翻译插件（免费）",
+        description: "自驱型业务项目、个人外包项目、日常练习作品。",
         image: "/images/plugin-ui.png",
         link: "/work/light-branding",
+      },
+      {
+        id: "others",
+        title: "其他作品",
+        description: "自驱型业务项目、个人外包项目、日常练习作品。",
+        image: "https://cdn.btbon.cn/Other/them09-01.png",
+        link: "/work/others",
+        dataSlug: "others" 
       },
       
     ]
   },
-  {
-    sectionId: "others",
-    categoryKey: "furtherWorks",
-    items:[
-      {
-        id: "others",
-        title: "其他作品 2",
-        description: "雪诺科技从 0 到 1 的品牌基因构建，包含 Logo、宣传册及官网视觉推演。",
-        image: "https://cdn.btbon.cn/Other/them09-01.png",
-        link: "/work/dark-app-ui",
-        dataSlug: "others" 
-      },
-    ]
-  }
 ];
 
 export default function WorkProject() {
@@ -162,7 +157,7 @@ export default function WorkProject() {
         
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-20">
           <h1 className="text-5xl md:text-9xl font-bold text-zinc-300 tracking-tight mb-6">All Work</h1>
-          <p className="text-zinc-400 text-lg max-w-2xl font-light">{t.work.description}</p>
+          <p className="text-zinc-400 text-lg max-w-2xl font-regular">{t.work.description}</p>
         </motion.div>
 
         <div className="space-y-32">
@@ -193,16 +188,16 @@ export default function WorkProject() {
                               fill 
                               unoptimized
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                              className="object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-102 transition-all duration-500" 
+                              className="object-cover object-top group-hover:scale-102 transition-all duration-500" 
                             />
                           </div>
                           <div className="p-4 md:p-6 flex-1 flex flex-col">
                             <div className="flex justify-between items-start mb-3">
                               <div className="min-w-0 pr-2">
-                                <h3 className="text-md md:text-xl font-semibold text-white/60 group-hover:text-white transition-colors truncate md:whitespace-normal">{project.title}</h3>
+                                <h3 className="text-md md:text-xl font-semibold text-white/80 group-hover:text-white transition-colors truncate md:whitespace-normal">{project.title}</h3>
                               </div>
                             </div>
-                            <p className="hidden md:block text-zinc-600 text-sm leading-relaxed line-clamp-3 mt-auto">{project.description}</p>
+                            <p className="hidden md:block text-zinc-500 text-sm leading-relaxed line-clamp-3 mt-auto">{project.description}</p>
                           </div>
                         </div>
                       </Wrapper>
