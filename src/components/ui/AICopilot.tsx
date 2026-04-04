@@ -250,7 +250,7 @@ export default function AICopilot({ projectId }: AICopilotProps) {
                       <Bot className="w-4 h-4 text-blue-400" />
                     </div>
                   )}
-                  <div className={`p-4 text-sm rounded-2xl max-w-[85%] leading-relaxed ${
+                  <div className={`p-4 text-sm rounded-xl max-w-[85%] leading-relaxed ${
                     msg.role === "user" 
                       ? "bg-blue-600 text-white rounded-tr-sm shadow-md" 
                       : "bg-[#181818] border border-white/5 text-zinc-300 rounded-tl-sm shadow-sm"

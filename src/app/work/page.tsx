@@ -40,7 +40,7 @@ const projects = [
         id: "kwai-magnetic-star",
         title: "磁力聚星-快手达人营销平台",
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        image: "https://cdn.btbon.cn/Kwai-磁力聚星/Desk-03.jpg",
+        image: "https://cdn.btbon.cn/Kwai-磁力聚星/them03-01.png",
         useModal: true,
         dataSlug: "kwai-magnetic-star"
       },
@@ -48,7 +48,7 @@ const projects = [
         id: "avic",
         title: "商网办公系统",
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        image: "https://cdn.btbon.cn/AVIC-商网/Desk-34.jpg", 
+        image: "https://cdn.btbon.cn/AVIC-商网/them07-01.png", 
         useModal: true,
         dataSlug: "avic"
       },
@@ -56,7 +56,7 @@ const projects = [
         id: "studio",
         title: "Enterplorer Studio",
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        image: "https://cdn.btbon.cn/YSP-Studio/Desk-12.jpg",
+        image: "https://cdn.btbon.cn/YSP-Studio/them04-01.png",
         useModal: true,
         dataSlug: "studio"
       },
@@ -64,7 +64,7 @@ const projects = [
         id: "enterplorer",
         title: "Enterplorer-企业浏览器",
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        image: "https://cdn.btbon.cn/YSP-Enterporer/Desk-23.jpg", 
+        image: "https://cdn.btbon.cn/YSP-Enterporer/them06-01.png", 
         useModal: true,
         dataSlug: "enterplorer"
       },
@@ -72,7 +72,7 @@ const projects = [
         id: "amazeui",
         title: "AmazeUI",
         description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 180+ 真实设计师。",
-        image: "https://cdn.btbon.cn/YSP-AmazeUI/Desk-29.jpg",
+        image: "https://cdn.btbon.cn/YSP-AmazeUI/them05-01.png",
         useModal: true,
         dataSlug: "amazeui"
       },
@@ -107,7 +107,7 @@ const projects = [
         id: "others",
         title: "其他作品 2",
         description: "雪诺科技从 0 到 1 的品牌基因构建，包含 Logo、宣传册及官网视觉推演。",
-        image: "https://cdn.btbon.cn/Other/Desk-52.jpg",
+        image: "https://cdn.btbon.cn/Other/them09-01.png",
         link: "/work/dark-app-ui",
         dataSlug: "others" 
       },
