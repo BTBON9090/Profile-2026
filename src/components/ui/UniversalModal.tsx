@@ -103,8 +103,8 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
             >
               
               {/* 顶部标题栏 (可选，增加精致感) */}
-              <div className="sticky top-0 z-20 w-full px-8 py-6 pointer-events-none flex items-center justify-between md:rounded-t-2xl">
-                 <span className="font-mono text-sm text-white/60  px-3 py-1 rounded-md bg-black/40">{title}</span>
+              <div className="sticky top-0 z-20 w-full px-3 py-3 md:px-8 md:py-6 pointer-events-none flex items-center justify-between md:rounded-t-2xl">
+                 <span className="font-mono text-[11px] md:text-sm text-white/80  px-3 py-1 rounded-full md:rounded-md bg-black/40 backdrop-blur-md">{title}</span>
               </div>
 
               {/* 纯净图片流，底部增加 pb-32 防止最后一张图被底部的按钮挡住 */}
@@ -134,8 +134,8 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
           <div className="absolute inset-0 pointer-events-none flex justify-center">
             
             {/* 关闭按钮 */}
-            <button onClick={onClose} className="fixed top-8 right-8 z-[100000] w-14 h-14 bg-zinc-900/80 hover:bg-white text-zinc-400 hover:text-black rounded-full flex items-center justify-center transition-all border border-zinc-700 pointer-events-auto shadow-2xl">
-              <X className="w-6 h-6" />
+            <button onClick={onClose} className="fixed top-4 right-4 md:top-12 md:right-8 z-[100000] w-10 h-10 md:w-14 md:h-14 bg-zinc-900/80 hover:bg-white text-zinc-400 hover:text-black rounded-full flex items-center justify-center transition-all border border-zinc-700 pointer-events-auto shadow-2xl">
+              <X className="w-4 h-4 md:w-6 md:h-6" />
             </button>
 
             {/* 👇 2. 注入 AI 智能体！把你项目的 projectId 传给它 */}
@@ -146,7 +146,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
               initial={{ y: 50, opacity: 0 }} 
               animate={{ y: 0, opacity: 1 }} 
               transition={{ delay: 0.3 }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-[#1a1a1a]/90 text-zinc-300 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-zinc-700/50 overflow-hidden"
+              className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-[#1a1a1a]/90 backdrop-blur-md text-zinc-300 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-zinc-700/50 overflow-hidden"
             >
               <button 
                 onClick={onPrev} 

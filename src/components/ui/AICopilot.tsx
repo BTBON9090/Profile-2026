@@ -115,7 +115,7 @@ export default function AICopilot({ projectId }: AICopilotProps) {
 
   return (
     // 面板展开时，调整整体的定位，避免遮挡
-    <div className={`fixed z-[100000] flex flex-row-reverse items-end md:items-center gap-6 pointer-events-auto transition-all duration-500 ${isOpen ? 'bottom-28 right-8 md:top-1/2 md:-translate-y-1/2' : 'bottom-28 right-12 md:top-1/2 md:-translate-y-1/2'}`}>
+    <div className={`fixed z-[100000] flex flex-row-reverse items-end md:items-center gap-4 pointer-events-auto transition-all duration-500 ${isOpen ? 'bottom-28 right-2 md:right-8 md:top-1/2 md:-translate-y-1/2' : 'bottom-28 right-4 md:right-12 md:top-1/2 md:-translate-y-1/2'}`}>
       
       {/* ========================================== */}
       {/* 1. 终极流体能量球 (The Fluid Energy Core)    */}
@@ -214,7 +214,7 @@ export default function AICopilot({ projectId }: AICopilotProps) {
             exit={{ opacity: 0, x: 20, y: 20, scale: 0.95 }}
             transition={{ type:"decay", stiffness: 50, damping: 10 }}
             // 🔴 宽度从 360 升级到 480，高度自适应但最大 80vh
-            className="w-[calc(100vw-32px)] md:w-[480px] h-[65vh] md:h-[75vh] max-h-[800px] bg-[#0c0c0c]/95 backdrop-blur-3xl border border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden flex flex-col"
+            className="w-[calc(100vw-80px)] md:w-[480px] h-[70vh] md:h-[75vh] max-h-[800px] bg-[#0c0c0c]/95 backdrop-blur-3xl border border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden flex flex-col"
           >
             {/* Header: 极简科技风 */}
             <div className="px-6 py-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
