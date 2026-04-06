@@ -121,7 +121,7 @@ export const en = {
   about: {
     hero: {
       title: "BTBON",
-      titleSuffix: "Product Designer（ UI/UX ）",
+      titleSuffix: "UI/UX Designer",
       subtitle: "I don't just create UI designs. I use Vibe Coding to build interactive products, simulate product logic, and restore user experience.",
       subtitleAi: "AI Vibe Coding",
       baseStats: "Base Stats",

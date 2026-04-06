@@ -138,9 +138,9 @@ export default function About() {
                     
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
                       <h3 className="text-2xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-lg flex items-center justify-center text-sm overflow-hidden">
+                        <span className="w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center text-sm overflow-hidden">
                           {exp.logo ? (
-                            <img src={exp.logo} alt={exp.company} className="w-full h-full object-cover" />
+                            <img src={exp.logo} alt={exp.company} className="w-full h-full object-cover flex-shrink-0" />
                           ) : (
                             <span className="text-zinc-500">🏢</span>
                           )}

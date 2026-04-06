@@ -121,7 +121,7 @@ export const zh = {
   about: {
     hero: {
       title: "BTBON",
-      titleSuffix: "产品 UI/UX 设计师",
+      titleSuffix: "UI/UX 设计师",
       subtitle: "我不只是出 UI 设计稿，我利用 Vibe Coding 构建可交互的产品，模拟产品逻辑，还原用户体验。",
       subtitleAi: "Vibe Coding",
       baseStats: "Base Stats",
@@ -176,7 +176,7 @@ export const zh = {
         {
           id: 1,
           role: 'Product Designer',
-          company: '北京雪诺科技-SNOWTECH',
+          company: '北京雪诺科技',
           logo: '/images/snowtech.png',
           time: '2024.08 - Present',
           description: [

@@ -56,11 +56,11 @@ export default function AboutPage() {
             <div className="flex flex-col md:flex-row gap-10 items-center md:items-start relative z-10">
               {/* 头像区 */}
               <div className="relative w-36 h-36 md:w-48 md:h-48 flex-shrink-0">
-                <div className="absolute inset-0 bg-blue-500/20 rounded-[2rem] blur-2xl group-hover:bg-blue-500/40 transition-colors duration-700"></div>
-                <div className="relative w-full h-full rounded-[2rem] overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl">
+                <div className="absolute inset-0 rounded-[1rem] blur-2xl transition-colors duration-700"></div>
+                <div className="relative w-full h-full rounded-[1rem] overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl">
                   {/* 请放入你的头像 */}
                   <Image 
-                    src="/images/avatar.png" 
+                    src="/images/head.jpg" 
                     alt="BTBON" 
                     fill 
                     className="object-cover scale-100 group-hover:scale-105 transition-transform duration-700" 
@@ -70,8 +70,8 @@ export default function AboutPage() {
 
               {/* 核心信息区 */}
               <div className="text-center md:text-left flex-1 mt-4 md:mt-0">
-                <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4">
-                  {t.about.hero.title} <span className="text-white/60 font-medium text-xl md:text-4xl pl-8">{t.about.hero.titleSuffix}</span>
+                <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4 flex flex-col md:flex-row md:items-center">
+                  {t.about.hero.title} <span className="text-white/60 font-medium text-xl md:text-4xl pl-0 md:pl-8">{t.about.hero.titleSuffix}</span>
                 </h1>
                 
                 <p className="text-lg md:text-xl text-white/50 font-light leading-relaxed mb-8 max-w-full">
@@ -85,28 +85,28 @@ export default function AboutPage() {
                   
                   {/* 邮箱 */}
                   <button 
-                    onClick={() => handleCopy("hello@nicheng.com")}
+                    onClick={() => handleCopy("nc0032@qq.com")}
                     className="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-700/50 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all cursor-pointer"
                   >
-                    {copiedText === "hello@nicheng.com" ? <Check className="w-4 h-4 text-green-400" /> : <Mail className="w-4 h-4 text-blue-400" />}
+                    {copiedText === "nc0032@qq.com" ? <Check className="w-4 h-4 text-green-400" /> : <Mail className="w-4 h-4 text-blue-400" />}
                     <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">nc0032@qq.com</span>
                   </button>
 
                   {/* 微信 */}
                   <button 
-                    onClick={() => handleCopy("NiCheng_Design")}
+                    onClick={() => handleCopy("Aiden0032")}
                     className="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-700/50 hover:border-green-500/50 hover:bg-green-500/10 transition-all cursor-pointer"
                   >
-                    {copiedText === "NiCheng_Design" ? <Check className="w-4 h-4 text-green-400" /> : <MessageCircle className="w-4 h-4 text-green-400" />}
+                    {copiedText === "Aiden0032" ? <Check className="w-4 h-4 text-green-400" /> : <MessageCircle className="w-4 h-4 text-green-400" />}
                     <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">WECHAT：Aiden0032</span>
                   </button>
 
                   {/* 电话 */}
                   <button 
-                    onClick={() => handleCopy("+86 138-xxxx-xxxx")}
+                    onClick={() => handleCopy("17611231055")}
                     className="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-700/50 hover:border-zinc-400/50 hover:bg-zinc-800 transition-all cursor-pointer"
                   >
-                    {copiedText === "+86 138-xxxx-xxxx" ? <Check className="w-4 h-4 text-green-400" /> : <Phone className="w-4 h-4 text-zinc-400" />}
+                    {copiedText === "17611231055" ? <Check className="w-4 h-4 text-green-400" /> : <Phone className="w-4 h-4 text-zinc-400" />}
                     <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">+86 17611231055</span>
                   </button>
 
@@ -241,16 +241,16 @@ export default function AboutPage() {
                 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
                   <h3 className="text-3xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors flex items-center gap-4">
-                    <span className="w-10 h-10 rounded-lg flex items-center justify-center text-sm overflow-hidden">
+                    <span className="w-10 h-10 flex-shrink-0 rounded-lg flex items-center justify-center text-sm overflow-hidden">
                       {exp.logo ? (
-                        <img src={exp.logo} alt={exp.company} className="w-full h-full object-cover" />
+                        <img src={exp.logo} alt={exp.company} className="w-full h-full object-cover flex-shrink-0" />
                       ) : (
                         <span className="text-zinc-500">🏢</span>
                       )}
                     </span>
                     {exp.company}
                     <span className="text-zinc-600 font-light hidden md:inline-block mx-2">-</span> 
-                    <span className="text-lg text-zinc-500 font-normal">{exp.role}</span>
+                    <span className="text-lg text-zinc-500 font-normal hidden md:inline-block">{exp.role}</span>
                   </h3>
                   <div className="text-sm font-mono text-zinc-500 tracking-widest uppercase">
                     {exp.time}
