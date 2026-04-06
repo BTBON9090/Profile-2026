@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import Footer from "@/components/layout/footer";
 
 
 
@@ -32,13 +33,13 @@ export default function AboutPage() {
     setTimeout(() => setCopiedText(""), 2000);
   };
   return (
-    <div className="relative z-10  min-h-screen pt-32 pb-48 px-4 md:px-8 selection:bg-blue-500/30 selection:text-blue-200 relative overflow-hidden">
+    <div className="relative z-10  min-h-screen pt-32 pb-0  selection:bg-blue-500/30 selection:text-blue-200 relative overflow-hidden">
       
       {/* 极度克制的背景光晕 */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 pb-40 px-4 md:px-8">
         
         {/* ==========================================
             模块 1: 个人名片 (Hero Card)
@@ -280,6 +281,7 @@ export default function AboutPage() {
           </div>
         </motion.div>
       </div>
+      <Footer />
     </div>
   );
 }

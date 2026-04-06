@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { useState, useMemo} from "react";
 import UniversalModal from "@/components/ui/UniversalModal";
 import { getProjectBySlug } from "@/data/projects";
+import Footer from "@/components/layout/footer";
 
 // 1. 结构化你的作品数据 (方便以后随时增删改)
 const projects = [
@@ -153,9 +154,9 @@ export default function WorkProject() {
 
   // 🔴 修改 3: 移除固定宽度，改为响应式 1200px 居中
   return (
-    <div className="relative z-10 min-h-screen pt-32 pb-48 px-4 md:px-12 2xl:px-20 selection:bg-blue-500/30 selection:text-blue-200">
+    <div className="relative z-10 min-h-screen pt-32 pb-0 selection:bg-blue-500/30 selection:text-blue-200">
       {/* 🔴 修改 1: 移除 max-w 限制，横向完全撑满 */}
-      <div className="w-full mx-auto">
+      <div className="w-full mx-auto pb-40 px-4 md:px-12 2xl:px-20">
         
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-20">
           <h1 className="text-5xl md:text-9xl font-bold text-zinc-300 tracking-tight mb-6">All Work</h1>
@@ -240,6 +241,7 @@ export default function WorkProject() {
           nextTitle={currentModalIndex < modalList.length - 1 ? modalList[currentModalIndex + 1].title : undefined}
         />
       )}
+      <Footer />
     </div>
   );
 }

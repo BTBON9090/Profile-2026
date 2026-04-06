@@ -112,8 +112,8 @@ export default function Footer() {
         </motion.div>
 
         <a 
-          href="/resume.pdf" 
-          download="倪城_Resume.pdf"
+          href="/UI设计-倪城-2026.pdf" 
+          download="UI设计-倪城-2026.pdf"
           className=" mb-20  md:w-auto flex items-center justify-center gap-3 px-6 py-4  text-zinc-300 hover:text-blue-500 border border-transparent rounded-full transition-all duration-300 font-mono text-sm font-semibold"
         >
           🍀
