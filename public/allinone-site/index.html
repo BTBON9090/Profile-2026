@@ -1,0 +1,3685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AllinOne - 全能 Figma 设计效率神器</title>
+    <!-- 引入 Inter 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- 引入 Prism.js 代码高亮组件 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        /* ================= 全局变量与重置 ================= */
+        :root {
+            --primary: #5B54FF;
+            --primary-hover: #4841E0;
+            --text-dark: #0F172A;
+            --text-gray: #475569;
+            --text-light: #94A3B8;
+            --bg-color: #FAFAFC;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ================= 动态背景光晕 ================= */
+        .bg-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .bg-glow.glow-1 {
+            top: -10%; left: -10%;
+            width: 600px; height: 600px;
+            background: rgba(91, 84, 255, 0.2);
+        }
+        .bg-glow.glow-2 {
+            bottom: -20%; right: -10%;
+            width: 800px; height: 800px;
+            background: rgba(14, 165, 233, 0.15);
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        /* ================= 导航栏 ================= */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .qr-hover-container:hover .qr-popup {
+            display: block !important;
+        }
+
+        .qr-hover-container .qr-popup {
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        
+        .logo span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+        }
+
+        .nav-links a {
+            font-weight: 400;
+            color: var(--text-gray);
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 100px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -10px var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -10px var(--primary);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid #E2E8F0;
+            padding: 12px 28px;
+            border-radius: 100px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ================= 首屏 Hero ================= */
+        .hero-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 160px 6%;
+            gap: 40px;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 560px;
+        }
+
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px;
+            background: #F0F9FF; border: 1px solid #BAE6FD;
+            color: #0284C7; font-size: 13px; font-weight: 600;
+            border-radius: 999px; margin-bottom: 24px;
+        }
+
+        .hero-text h1 {
+            font-size: 64px; line-height: 1.1; font-weight: 800;
+            letter-spacing: -2px; margin: 0 0 24px 0; color: var(--text-dark);
+        }
+
+        .hero-text p {
+            font-size: 18px; line-height: 1.6; color: var(--text-gray);
+            margin: 0 0 40px 0;
+        }
+
+        /* 唯一核心高转化按钮 (黑底白字，目前最流行的高级感) */
+        .cta-primary {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: #000000; color: #FFFFFF;
+            padding: 16px 36px; font-size: 16px; font-weight: 600;
+            border-radius: 50px; text-decoration: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+            background: #111111;
+        }
+
+        /* 次要按钮样式 */
+        .cta-secondary {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: #FFFFFF; color: #0F172A;
+            padding: 12px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 50px; text-decoration: none;
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .cta-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: #CBD5E1;
+            background: #FAFAFA;
+        }
+        .cta-secondary img {
+            width: 32px; height: 32px; border-radius: 50%;
+        }
+        .cta-secondary .tag {
+            background-color: #F1F5F9;
+            border-radius: 999px;
+            color: #64748B;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* 3. 3D 交互面板区 */
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            perspective: 1200px; /* 3D 视距 */
+        }
+
+        /* 白底环境下的柔和光晕 */
+        .glow-bg {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(26,188,254,0.1) 0%, transparent 60%);
+            z-index: 0; pointer-events: none;
+        }
+
+        .mockup-container {
+            position: relative; z-index: 10;
+            width: 560px; height: 580px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            /* 白底下的高级 3D 弥散阴影 */
+            box-shadow: 
+                -20px 30px 60px rgba(0,0,0,0.06), 
+                0 0 0 1px rgba(0,0,0,0.02),
+                inset 0 2px 4px rgba(255,255,255,0.5);
+            transform: rotateY(-12deg) rotateX(4deg);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .mockup-container:hover {
+            transform: rotateY(0deg) rotateX(0deg); /* 鼠标移入恢复平面 */
+        }
+
+        .mockup-container iframe {
+            width: 100%; height: 100%; border: none; border-radius: 24px;
+            background: #F8FAFC; /* 插件未加载时的骨架色 */
+        }
+
+        /* 悬浮提示标签 */
+        .interactive-hint {
+            position: absolute; top: 40px; right: -60px;
+            background: white; color: var(--text-dark);
+            padding: 8px 16px; border-radius: 999px;
+            font-size: 12px; font-weight: 600;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            animation: float 3s ease-in-out infinite;
+            z-index: 20; pointer-events: none;
+        }
+        .interactive-hint::after {
+            content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+            border-width: 6px 6px 6px 0; border-style: solid; border-color: transparent white transparent transparent;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .hero-topbar { flex-direction: column; gap: 20px; }
+            .hero-main { flex-direction: column; text-align: center; padding-top: 40px; }
+            .hero-text { max-width: 100%; min-width: 0; flex: none; width: 100%; }
+            .hero-visual { min-width: 0; flex: none; width: 100%; }
+            .mockup-container { transform: none; width: 100%; max-width: 560px; height: 580px; }
+            .interactive-hint { display: none; }
+            .btn-outline-text { display: none; }
+            .cta-buttons-group { 
+                flex-direction: column; 
+                width: 100%; 
+            }
+            .cta-buttons-group > * { 
+                width: 100%; 
+                justify-content: center; 
+            }
+            .cta-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .qr-popup {
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+        }
+
+        
+
+        /* ================= 核心功能卡片 (Vanilla Tilt) ================= */
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title h2 {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .section-title p {
+            font-size: 18px;
+            color: var(--text-gray);
+        }
+
+        .features {
+            padding: 100px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        /* 关键：给卡片增加 preserve-3d 让内部元素实现 Z 轴景深 */
+        .feature-card {
+            background: white;
+            border: 1px solid #F1F5F9;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+            transform-style: preserve-3d; 
+            cursor: pointer;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: #EEF2FF;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 24px;
+            /* Z 轴浮出 */
+            transform: translateZ(50px);
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            /* Z 轴浮出 */
+            transform: translateZ(40px);
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.7;
+            /* Z 轴浮出 */
+            transform: translateZ(30px);
+        }
+
+        /* ================= 特性详细介绍 ================= */
+        .detail-section {
+            padding: 100px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .detail-section.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .detail-content {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .detail-content h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .detail-content p {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        .detail-list li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .detail-list li svg {
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .detail-visual {
+            flex: 1;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            min-width: 0;
+        }
+        @media (max-width: 767px) {
+            .detail-visual {
+                padding: 24px;
+                border-radius: 16px;
+            }
+        }
+
+        /* ================= 隐私安全高亮 ================= */
+        .security-banner {
+            background: #111827;
+            color: white;
+            padding: 60px 5%;
+            margin: 100px 5%;
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        @media (max-width: 1199px) {
+            .security-banner {
+                margin: 60px 4%;
+                padding: 40px 5%;
+                border-radius: 24px;
+            }
+            .security-banner::before {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        .security-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(91,84,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .sec-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+
+        .sec-content h2 { font-size: 36px; font-weight: 800; margin-bottom: 16px; }
+        .sec-content p { font-size: 18px; color: #94A3B8; }
+
+        /* ================= 适用人群 ================= */
+        .audience-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 30px;
+        }
+        .a-tag {
+            padding: 12px 24px;
+            background: #ffffff;
+            border-radius: 100px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* ================= 底部 CTA ================= */
+        .cta-bottom {
+            text-align: center;
+            padding: 120px 5%;
+            background: linear-gradient(180deg, rgba(250,250,252,0) 0%, #EEF2FF 100%);
+        }
+        @media (max-width: 1199px) {
+            .cta-bottom {
+                padding: 80px 4%;
+            }
+            .cta-bottom h2 {
+                font-size: 36px;
+            }
+        }
+        @media (max-width: 767px) {
+            .cta-bottom {
+                padding: 60px 4%;
+            }
+            .cta-bottom h2 {
+                font-size: 28px;
+                margin-bottom: 16px;
+            }
+        }
+
+        .cta-bottom h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        /* ================= 动画类 (Scroll Reveal) ================= */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.2s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ================= 响应式：大屏桌面 (>= 1200px) ================= */
+        @media (min-width: 1200px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ================= 响应式：平板横屏 (992px - 1199px) ================= */
+        @media (max-width: 1199px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .detail-section, .detail-section.reverse {
+                flex-direction: column;
+                text-align: center;
+            }
+            .detail-list li { justify-content: center; }
+            .security-banner { flex-direction: column; text-align: center; gap: 30px;}
+            .nav-links { gap: 20px; }
+            .nav-links a { font-size: 14px; }
+        }
+
+        /* ================= 响应式：平板竖屏 (768px - 991px) ================= */
+        @media (max-width: 991px) {
+            nav { 
+                height: 64px; 
+                padding: 0 20px; 
+            }
+            .nav-links { display: none; }
+            .qr-hover-container { display: none; }
+            .mobile-menu-btn {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 44px;
+                height: 44px;
+                background: white;
+                border: 1px solid #E2E8F0;
+                border-radius: 10px;
+                cursor: pointer;
+                padding: 10px;
+                gap: 5px;
+            }
+            .mobile-menu-btn span {
+                display: block;
+                width: 22px;
+                height: 2.5px;
+                background: #0F172A;
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+            .mobile-menu-btn.active span:nth-child(1) {
+                transform: rotate(45deg) translate(6px, 6px);
+            }
+            .mobile-menu-btn.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .mobile-menu-btn.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(6px, -6px);
+            }
+            .mobile-menu-overlay {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                z-index: 1001;
+            }
+            .mobile-menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .mobile-menu {
+                position: fixed;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 20px 24px;
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 1002;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+            .mobile-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            .mobile-menu-links {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+            }
+            .mobile-menu-links a {
+                display: block;
+                padding: 16px 0;
+                font-size: 17px;
+                color: var(--text-dark);
+                text-decoration: none;
+                border-bottom: 1px solid #E2E8F0;
+                transition: color 0.2s;
+            }
+            .mobile-menu-links a:last-child {
+                border-bottom: none;
+            }
+            .mobile-menu-links a:hover {
+                color: var(--primary);
+            }
+            .hero {
+                padding: 140px 4% 80px;
+            }
+            .hero h1 {
+                font-size: clamp(36px, 5vw, 56px);
+            }
+            .hero-mockup {
+                width: 90%;
+                max-width: 700px;
+                height: 400px;
+            }
+            .feature-showcase {
+                flex-direction: column;
+                gap: 40px;
+            }
+            .feature-showcase.reverse {
+                flex-direction: column;
+            }
+            .showcase-content {
+                max-width: 100%;
+                text-align: center;
+            }
+            .showcase-visual {
+                width: 100%;
+            }
+            .tools-grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ================= 响应式：手机 (<= 767px) ================= */
+        @media (max-width: 767px) {
+            /* 导航栏优化 */
+            nav {
+                height: 60px;
+                padding: 0 16px;
+            }
+            .logo {
+                font-size: 18px;
+                gap: 8px;
+            }
+            .logo img {
+                width: 32px;
+                height: 32px;
+            }
+            .nav-right {
+                gap: 8px !important;
+            }
+            .nav-user-link {
+                display: flex !important;
+                padding: 6px 8px !important;
+                font-size: 13px;
+                gap: 8px !important;
+            }
+            .nav-user-link img {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            .nav-user-link div {
+                padding: 3px 8px !important;
+                font-size: 11px;
+            }
+            .mobile-menu-btn {
+                width: 44px;
+                height: 44px;
+                padding: 10px;
+                border: 1px solid #E2E8F0;
+                background: white;
+            }
+            .mobile-menu-btn span {
+                width: 20px;
+                height: 2.5px;
+            }
+            .mobile-menu {
+                top: 60px;
+                padding: 20px;
+                max-height: calc(100vh - 60px);
+                overflow-y: auto;
+            }
+            .mobile-menu-links a {
+                padding: 16px 0;
+                font-size: 16px;
+                font-weight: 500;
+            }
+            .mobile-menu-links a:active {
+                color: var(--primary);
+                background: #F8FAFC;
+                padding-left: 12px;
+            }
+
+            /* Hero 区域优化 */
+            .hero {
+                padding: 120px 5% 60px;
+            }
+            .hero-badge {
+                font-size: 13px;
+                padding: 8px 18px;
+                margin-bottom: 24px;
+            }
+            .hero h1 {
+                font-size: clamp(28px, 8vw, 40px);
+                letter-spacing: -1px;
+                margin-bottom: 16px;
+            }
+            .hero p {
+                font-size: 15px;
+                padding: 0 10px;
+                margin-bottom: 24px;
+            }
+            .hero-btns {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                padding: 0 20px;
+            }
+            .hero-btns .btn-primary,
+            .hero-btns .btn-outline {
+                width: 100%;
+                justify-content: center;
+                font-size: 16px;
+                padding: 14px 24px;
+            }
+            .hero-mockup-wrapper {
+                width: 100%;
+                padding: 0 0px;
+            }
+            .hero-mockup {
+                width: 100%;
+                height: 560px;
+                border-radius: 16px;
+                transform: none !important;
+            }
+            .hero-mockup-wrapper {
+                perspective: none;
+                margin-top: 40px;
+            }
+
+            /* 功能卡片区域优化 */
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .features {
+                padding: 60px 4%;
+            }
+            .section-title {
+                margin-bottom: 40px;
+            }
+            .section-title h2 {
+                font-size: 28px;
+                margin-bottom: 12px;
+            }
+            .section-title p {
+                font-size: 15px;
+                padding: 0 10px;
+            }
+            .feature-card {
+                padding: 28px 24px;
+                border-radius: 20px;
+                transform: none !important;
+            }
+            .feature-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 24px;
+                margin-bottom: 20px;
+                transform: none !important;
+            }
+            .feature-card h3 {
+                font-size: 19px;
+                margin-bottom: 12px;
+                transform: none !important;
+            }
+            .feature-card p {
+                font-size: 14px;
+                line-height: 1.6;
+                transform: none !important;
+            }
+            /* 简易工具网格优化 */
+            .tools-grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .tool-btn {
+                padding: 10px 12px;
+                font-size: 12px;
+                border-radius: 10px;
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 6px;
+            }
+            .tool-btn span:first-child {
+                font-size: 18px;
+            }
+            .tool-text {
+                max-width: 100%;
+                font-size: 12px;
+                text-align: left;
+            }
+            .tool-tooltip {
+                width: 220px;
+                padding: 14px;
+                font-size: 12px;
+            }
+            .tip-header {
+                font-size: 14px;
+            }
+            .tip-desc {
+                font-size: 12px;
+            }
+
+            /* 详细介绍区优化 */
+            .detail-section {
+                padding: 60px 4%;
+                flex-direction: column;
+                gap: 40px;
+            }
+            .detail-section.reverse {
+                flex-direction: column;
+            }
+            .detail-content {
+                max-width: 100%;
+                text-align: center;
+            }
+            .detail-content h2 {
+                font-size: 26px;
+                line-height: 1.3;
+                margin-bottom: 16px;
+            }
+            .detail-content > p {
+                font-size: 15px;
+                line-height: 1.6;
+                margin-bottom: 24px;
+            }
+            .detail-visual {
+                width: 100%;
+                max-width: 100%;
+            }
+            .detail-list-pro {
+                gap: 24px;
+                margin-top: 24px;
+                text-align: left;
+            }
+            .detail-list-pro li {
+                gap: 14px;
+            }
+            .detail-list-pro .icon-box {
+                width: 44px;
+                height: 44px;
+                border-radius: 10px;
+            }
+            .detail-list-pro .icon-box svg {
+                width: 20px;
+                height: 20px;
+            }
+            .detail-list-pro .text-box h4 {
+                font-size: 16px;
+                margin-bottom: 6px;
+            }
+            .detail-list-pro .text-box p {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            /* 超级选择器云标签优化 */
+            .circular-cloud {
+                height: 500px;
+            }
+
+            /* 数据填充轮播优化 */
+            /* 数据填充轮播优化 */
+            .data-fill-full-section {
+                padding: 60px 0;
+            }
+            .data-fill-header {
+                padding: 0 4%;
+                margin-bottom: 40px;
+            }
+            .data-fill-header h2 {
+                font-size: 26px;
+                margin-bottom: 16px;
+            }
+            .data-fill-header p {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .carousel-container {
+                padding: 20px 0;
+            }
+            .marquee-wrapper {
+                padding: 0 50px;
+            }
+            .carousel-arrow {
+                width: 40px;
+                height: 40px;
+            }
+            .carousel-arrow svg {
+                width: 16px;
+                height: 16px;
+            }
+            .carousel-arrow.prev {
+                left: 8px;
+            }
+            .carousel-arrow.next {
+                right: 8px;
+            }
+            .pan-mockup {
+                width: 300px;
+                min-width: 300px;
+                height: 500px;
+            }
+            .pan-tabs {
+                font-size: 13px;
+            }
+            .pan-tab {
+                padding: 14px 8px;
+                font-size: 13px;
+            }
+            .pan-item {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            .pan-tag {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+
+            /* PPT导出区域优化 */
+            .ppt-showcase {
+                flex-direction: column;
+                gap: 30px;
+                padding: 40px 20px;
+            }
+            .figma-stack, .ppt-result {
+                transform: none !important;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto;
+            }
+
+            /* 查找替换区域优化 */
+            .find-replace-showcase {
+                flex-direction: column;
+                height: auto;
+                padding: 20px;
+                gap: 20px;
+            }
+            .fr-panel {
+                width: 100%;
+                height: auto;
+                min-height: 280px;
+            }
+
+            /* 安全区域优化 */
+            .security-section {
+                padding: 60px 4%;
+            }
+            .security-banner {
+                padding: 28px 20px;
+                border-radius: 16px;
+            }
+            .security-item {
+                gap: 12px;
+            }
+            .security-item svg {
+                width: 36px;
+                height: 36px;
+            }
+            .security-item h4 {
+                font-size: 16px;
+                margin-bottom: 4px;
+            }
+            .security-item p {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            /* CTA区域优化 */
+            .cta-section {
+                padding: 60px 4%;
+            }
+            .cta-content h2 {
+                font-size: 26px;
+                margin-bottom: 16px;
+            }
+            .cta-content p {
+                font-size: 15px;
+                margin-bottom: 28px;
+            }
+            .cta-bottom {
+                padding: 60px 4%;
+            }
+            .cta-bottom h2 {
+                font-size: 26px;
+            }
+
+            /* Footer优化 */
+            footer {
+                padding: 40px 4% 20px;
+            }
+            .footer-content {
+                flex-direction: column;
+                gap: 32px;
+                text-align: center;
+            }
+            .footer-brand {
+                max-width: 100%;
+            }
+            .footer-brand img {
+                margin: 0 auto 12px;
+            }
+            .footer-brand p {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            .footer-links {
+                flex-direction: column;
+                gap: 28px;
+            }
+            .footer-column h4 {
+                font-size: 15px;
+                margin-bottom: 14px;
+            }
+            .footer-column a {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+                margin-top: 28px;
+                padding-top: 20px;
+            }
+            .footer-bottom p {
+                font-size: 13px;
+            }
+        }
+
+        /* ================= 响应式：小屏手机 (<= 375px) ================= */
+        @media (max-width: 375px) {
+            /* 导航栏 */
+            nav {
+                height: 56px;
+                padding: 0 12px;
+            }
+            .logo {
+                font-size: 16px;
+                gap: 6px;
+            }
+            .logo img {
+                width: 28px;
+                height: 28px;
+            }
+            .nav-user-link {
+                padding: 5px 6px !important;
+                font-size: 12px;
+                gap: 6px !important;
+            }
+            .nav-user-link img {
+                width: 20px !important;
+                height: 20px !important;
+            }
+            .mobile-menu-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            /* Hero区域 */
+            .hero {
+                padding: 100px 4% 50px;
+            }
+            .hero-badge {
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+            .hero h1 {
+                font-size: 26px;
+                letter-spacing: -0.5px;
+            }
+            .hero p {
+                font-size: 14px;
+                padding: 0 5px;
+                line-height: 1.5;
+            }
+            .hero-btns {
+                padding: 0 10px;
+            }
+            .hero-btns .btn-primary,
+            .hero-btns .btn-outline {
+                font-size: 15px;
+                padding: 13px 20px;
+            }
+            .hero-mockup {
+                height: 280px;
+            }
+
+            /* 功能卡片 */
+            .features {
+                padding: 50px 4%;
+            }
+            .section-title {
+                margin-bottom: 32px;
+            }
+            .section-title h2 {
+                font-size: 24px;
+            }
+            .section-title p {
+                font-size: 14px;
+            }
+            .feature-card {
+                padding: 24px 20px;
+            }
+            .feature-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+                margin-bottom: 16px;
+            }
+            .feature-card h3 {
+                font-size: 17px;
+            }
+            .feature-card p {
+                font-size: 13px;
+            }
+
+            /* 简易工具网格 */
+            .tools-grid-container {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .tool-btn {
+                padding: 14px 12px;
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 8px;
+            }
+            .tool-text {
+                text-align: left;
+            }
+
+            /* 详细介绍区 */
+            .detail-section {
+                padding: 50px 4%;
+                gap: 32px;
+            }
+            .detail-content h2 {
+                font-size: 22px;
+            }
+            .detail-content > p {
+                font-size: 14px;
+            }
+            .detail-list-pro {
+                gap: 20px;
+            }
+            .detail-list-pro .icon-box {
+                width: 40px;
+                height: 40px;
+            }
+            .detail-list-pro .text-box h4 {
+                font-size: 15px;
+            }
+            .detail-list-pro .text-box p {
+                font-size: 13px;
+            }
+
+            /* 超级选择器云 */
+            .circular-cloud {
+                height: 480px;
+            }
+
+            /* 数据填充 */
+            .data-fill-full-section {
+                padding: 50px 0;
+            }
+            .data-fill-header h2 {
+                font-size: 22px;
+            }
+            .data-fill-header p {
+                font-size: 14px;
+            }
+            .marquee-wrapper {
+                padding: 0 45px;
+            }
+            .pan-mockup {
+                width: 260px;
+                min-width: 260px;
+                height: 460px;
+            }
+
+            /* 其他区域 */
+            .ppt-showcase {
+                padding: 30px 16px;
+            }
+            .security-section {
+                padding: 50px 4%;
+            }
+            .security-banner {
+                padding: 24px 16px;
+            }
+            .cta-section {
+                padding: 50px 4%;
+            }
+            .cta-content h2 {
+                font-size: 22px;
+            }
+            .cta-content p {
+                font-size: 14px;
+            }
+            .cta-bottom {
+                padding: 50px 4%;
+            }
+            .cta-bottom h2 {
+                font-size: 22px;
+            }
+        }
+
+        .mobile-menu-btn { display: none; }
+        .mobile-menu-overlay { display: none; }
+        .mobile-menu { display: none; }
+
+        /* ================= 移动端触摸优化 ================= */
+        @media (hover: none) and (pointer: coarse) {
+            /* 触摸设备优化 */
+            * {
+                -webkit-tap-highlight-color: rgba(91, 84, 255, 0.1);
+            }
+
+            /* 确保所有可点击元素至少44x44px */
+            a, button, .tool-btn, .carousel-arrow, .carousel-dot {
+                min-width: 44px;
+                min-height: 44px;
+            }
+
+            /* 禁用悬停效果 */
+            .feature-card:hover,
+            .tool-btn:hover,
+            .cloud-tag-layout:hover .cloud-tag {
+                transform: none;
+            }
+
+            /* 优化滚动性能 */
+            * {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* ================= 通用性能优化 ================= */
+        @media (max-width: 1024px) {
+            /* 减少动画复杂度 */
+            .bg-glow {
+                animation: none;
+            }
+
+            /* 简化阴影 */
+            .feature-card,
+            .detail-visual,
+            .hero-mockup {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+
+            /* 禁用3D变换 */
+            .hero-mockup {
+                transform: none !important;
+            }
+
+            .feature-icon,
+            .feature-card h3,
+            .feature-card p {
+                transform: none !important;
+            }
+        }
+
+        /* ================= 代码块响应式布局 ================= */
+        @media (max-width: 767px) {
+            .detail-visual[style*="display: flex"] {
+                flex-direction: column !important;
+                gap: 20px !important;
+                padding-bottom: 40px !important;
+            }
+            .code-block {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+            .code-block pre {
+                font-size: 11px !important;
+                line-height: 1.5 !important;
+            }
+        }
+
+        /* ================= 优化后的高级图文列表排版 (Pro List) ================= */
+        .detail-list-pro {
+            display: flex;
+            flex-direction: column;
+            gap: 32px; /* 拉开每个功能点的间距，增加呼吸感 */
+            margin-top: 32px;
+        }
+
+        .detail-list-pro li {
+            list-style: none;
+            display: flex;
+            align-items: flex-start; /* 关键：顶部对齐，防止文字多时图标居中悬空 */
+            gap: 16px; /* 图标与文字容器的间距 */
+        }
+
+        .detail-list-pro .icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: #ffffff; /* 高级感浅紫底色 */
+            color: var(--primary);
+            border-radius: 12px;
+            flex-shrink: 0;
+            border: 1px solid #E0E7FF;
+        }
+
+        .detail-list-pro .text-box {
+            flex: 1;
+            padding-top: 2px; /* 视觉微调，让文字和图标顶部绝对平齐 */
+        }
+
+        .detail-list-pro .text-box h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .detail-list-pro .text-box p {
+            font-size: 15px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ================= 超级选择器：高性能联动扩展按钮云 ================= */
+        .circular-cloud {
+            position: relative;
+            width: 100%;
+            height: 560px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            --spread: 1;
+            overflow: visible;
+        }
+        @media (max-width: 1199px) {
+            .circular-cloud {
+                height: 480px;
+                --spread: 0.85;
+            }
+            .cloud-tag {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+        }
+        @media (max-width: 767px) {
+            .circular-cloud {
+                height: 500px;
+                --spread: 0.55;
+            }
+            .cloud-tag {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+        @media (max-width: 375px) {
+            .circular-cloud {
+                height: 480px;
+                --spread: 0.5;
+            }
+            .cloud-tag {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+        }
+
+        /* 互动扩展：当鼠标移入整个云团区域时，拉开间距 (系数变为 1.15 倍) */
+        .circular-cloud:hover {
+            --spread: 1.15;
+        }
+
+        /* 第一层：负责网格布局与扩散动画 (独立，不与 Hover 冲突，硬件加速无卡顿) */
+        .cloud-tag-layout {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            /* 绝妙的计算：居中定位 + (坐标 * 扩散系数) */
+            transform: translate(calc(-50% + var(--x) * var(--spread)), calc(-50% + var(--y) * var(--spread)));
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1;
+        }
+
+        .cloud-tag-layout:hover {
+            z-index: 100; /* 鼠标碰到哪个，哪个所在的层级就最高 */
+        }
+
+        /* 第二层：负责无限上下的呼吸漂浮 (完全独立) */
+        .cloud-tag-float {
+            animation: float-anim var(--dur) ease-in-out infinite alternate var(--del);
+        }
+
+        @keyframes float-anim {
+            0% { transform: translateY(-7px); }
+            100% { transform: translateY(7px); }
+        }
+
+        /* 第三层：按钮本体，负责样式与丝滑 Hover 反馈 */
+        .cloud-tag {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 22px;
+            /* 去除毛玻璃(blur)，改用高纯度纯色，彻底解决页面滚动卡顿问题 */
+            background: #ffffff; 
+            border: 1px solid #E2E8F0;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+            white-space: nowrap;
+            /* 悬停时的果冻弹性过渡 */
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* 默认点缀高亮 */
+        .cloud-tag.active {
+            background: #EEF2FF;
+            color: var(--primary);
+            border-color: #C7D2FE;
+        }
+
+        /* 鼠标悬停到当前标签时：直接在此层级放大，完全不干扰底层的漂浮，极其连贯 */
+        .cloud-tag-layout:hover .cloud-tag {
+            transform: scale(1.15) translateY(-4px);
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px -5px rgba(91, 84, 255, 0.4);
+        }
+
+        /* ================= 简易工具集：网格与悬停 Tips ================= */
+        .tools-grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            position: relative; 
+            z-index: 5;
+        }
+        @media (max-width: 1199px) {
+            .tools-grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 767px) {
+            .tools-grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+        @media (max-width: 375px) {
+            .tools-grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tool-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-2px);
+            z-index: 40; /* 悬停时置顶，防止 tooltip 被其他按钮遮挡 */
+        }
+
+        .tool-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80px; /* 控制文字截断 */
+        }
+
+        /* 5种色系主题还原 */
+        .theme-orange { background: #FFF9ED; border: 1px solid #FFE4C4; color: #D97706; }
+        .theme-pink { background: #FFF3F6; border: 1px solid #FBCFE8; color: #BE185D; }
+        .theme-blue { background: #F0F9FF; border: 1px solid #BAE6FD; color: #0369A1; }
+        .theme-purple { background: #F5F3FF; border: 1px solid #c4cff4; color: #6D28D9; }
+        .theme-green { background: #F0FDF4; border: 1px solid #aef1c6; color: #059669; }
+
+        /* 悬停的 Tips 卡片样式 */
+        .tool-tooltip {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 240px;
+            background: #181818;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none; /* 防止鼠标移入 tooltip 导致闪烁 */
+            text-align: left;
+            z-index: 100; /* 确保tooltip在最顶层 */
+        }
+
+        /* 为了防止最左/最右侧的 Tips 溢出容器，做特殊定位修正 */
+        .tool-btn:nth-child(4n+1) .tool-tooltip { left: 0; transform: translateX(0) translateY(10px); }
+        .tool-btn:nth-child(4n) .tool-tooltip { left: auto; right: 0; transform: translateX(0) translateY(10px); }
+
+        .tool-btn:hover .tool-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .tool-btn:nth-child(4n+1):hover .tool-tooltip { transform: translateX(0) translateY(0); }
+        .tool-btn:nth-child(4n):hover .tool-tooltip { transform: translateX(0) translateY(0); }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .tip-divider {
+            height: 1px;
+            background: #ffffff2e;
+            margin: 12px 0;
+        }
+
+        .tip-desc {
+            font-size: 13px;
+            color: #ffffff88;
+            font-weight: 400;
+            line-height: 1.6;
+            white-space: normal; /* 允许描述文本换行 */
+        }
+
+        /* ================= 数据填充：双擎驱动仿真面板 ================= */
+        .data-fill-mockup {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部 Tab 栏 */
+        .df-tabs {
+            display: flex;
+            border-bottom: 1px solid #E2E8F0;
+            background: #FAFAFC;
+        }
+
+        .df-tab {
+            flex: 1;
+            text-align: center;
+            padding: 16px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-gray);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 动态底部下划线 */
+        .df-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; width: 100%; height: 2px;
+            background: var(--primary);
+            opacity: 0;
+        }
+
+        /* 面板容器 (绝对定位叠加层) */
+        .df-panels-container {
+            position: relative;
+            height: 420px; /* 固定高度，容纳两种面板 */
+            background: #ffffff;
+        }
+
+        .df-panel {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            padding: 16px;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ======= 动画核心逻辑 ======= */
+        /* 通过 CSS 动画实现两个 Tab 和 面板的自动交替显示 */
+        .data-fill-mockup {
+            /* 鼠标悬停时暂停动画，方便用户观看 */
+            --play-state: running; 
+        }
+        .data-fill-mockup:hover {
+            --play-state: paused;
+        }
+
+        /* 基础填充 Tab 与 面板 动画 (0-45% 显示) */
+        .tab-basic { animation: tab-active-1 10s infinite var(--play-state); }
+        .panel-basic { animation: panel-active-1 10s infinite var(--play-state); }
+        
+        /* AI生成 Tab 与 面板 动画 (50-95% 显示) */
+        .tab-ai { animation: tab-active-2 10s infinite var(--play-state); }
+        .panel-ai { animation: panel-active-2 10s infinite var(--play-state); }
+
+        @keyframes tab-active-1 {
+            0%, 45%, 100% { color: var(--primary); }
+            50%, 95% { color: var(--text-gray); }
+        }
+        @keyframes tab-active-1-line { /* 伪元素动画不支持直接写在一起，需单独控制透明度 */ }
+        .tab-basic::after { animation: line-active-1 10s infinite var(--play-state); }
+        @keyframes line-active-1 {
+            0%, 45%, 100% { opacity: 1; }
+            50%, 95% { opacity: 0; }
+        }
+
+        @keyframes tab-active-2 {
+            0%, 45%, 100% { color: var(--text-gray); }
+            50%, 95% { color: var(--primary); }
+        }
+        .tab-ai::after { animation: line-active-2 10s infinite var(--play-state); }
+        @keyframes line-active-2 {
+            0%, 45%, 100% { opacity: 0; }
+            50%, 95% { opacity: 1; }
+        }
+
+        @keyframes panel-active-1 {
+            0%, 45%, 100% { opacity: 1; visibility: visible; transform: translateX(0); }
+            50%, 95% { opacity: 0; visibility: hidden; transform: translateX(-20px); }
+        }
+        @keyframes panel-active-2 {
+            0%, 45%, 100% { opacity: 0; visibility: hidden; transform: translateX(20px); }
+            50%, 95% { opacity: 1; visibility: visible; transform: translateX(0); }
+        }
+
+        /* ======= UI 细节：还原图 2 (基础填充) ======= */
+        .preset-list {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .preset-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+            background: #ffffff;
+        }
+        .preset-item:nth-child(even) { background: #F8FAFC; }
+        .preset-footer {
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* ======= UI 细节：还原图 3 (AI 生成) ======= */
+        .ai-input {
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-dark);
+            height: 80px;
+            background: #ffffff;
+            margin-bottom: 12px;
+        }
+        .ai-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .ai-btn-primary {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .ai-btn-icon {
+            width: 40px;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+        }
+        .ai-result-box {
+            flex: 1;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.8;
+            overflow: hidden;
+        }
+        .ai-action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .ai-action-btn {
+            border: 1px solid #E2E8F0;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        .ai-action-btn.active {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        /* ================= 数据填充：全宽无限轮播画廊 ================= */
+        .data-fill-full-section {
+            padding: 100px 0; /* 移除左右 padding，实现全宽横移 */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .data-fill-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+            padding: 0 5%;
+        }
+
+        .data-fill-header h2 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .data-fill-header p {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* 轮播容器与轨道 */
+        .marquee-wrapper {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 32px;
+            transition: transform 0.5s ease;
+            padding: 20px 0 60px;
+        }
+
+        /* 左右箭头按钮 */
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-arrow:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 6px 16px rgba(91, 84, 255, 0.3);
+        }
+
+        .carousel-arrow svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-arrow:hover svg {
+            transform: scale(1.1);
+        }
+
+        .carousel-arrow.prev {
+            left: 0;
+        }
+
+        .carousel-arrow.next {
+            right: 0;
+        }
+
+        /* 底部指示器 */
+        .carousel-dots {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E2E8F0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--primary);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .carousel-dot:hover {
+            background: var(--primary);
+        }
+
+        /* 响应式：窄屏时显示箭头和指示器 */
+        @media (max-width: 1400px) {
+            .carousel-arrow {
+                display: flex;
+            }
+            .carousel-dots {
+                display: flex;
+            }
+            .marquee-wrapper {
+                padding: 0 70px;
+            }
+        }
+        @media (max-width: 767px) {
+            .carousel-arrow {
+                width: 44px;
+                height: 44px;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            }
+            .carousel-arrow svg {
+                width: 18px;
+                height: 18px;
+            }
+            .carousel-arrow.prev {
+                left: 8px;
+            }
+            .carousel-arrow.next {
+                right: 8px;
+            }
+            .marquee-wrapper {
+                padding: 0 60px;
+            }
+            .marquee-track {
+                gap: 20px;
+                padding: 20px 0 50px;
+            }
+            .carousel-dots {
+                margin-top: 16px;
+                gap: 10px;
+            }
+            .carousel-dot {
+                width: 8px;
+                height: 8px;
+            }
+            .carousel-dot.active {
+                width: 28px;
+            }
+        }
+
+        /* 独立的仿真面板基础样式 */
+        .pan-mockup {
+            width: 340px;
+            height: 600px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 15px 35px -10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: default;
+        }
+
+        .pan-mockup:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(91, 84, 255, 0.25);
+        }
+
+        /* 面板内部公用 UI 组件 */
+        .pan-tabs { display: flex; border-bottom: 1px solid #E2E8F0; padding: 0 16px; margin-bottom: 8px;}
+        .pan-tab { padding: 16px 12px; font-size: 14px; color: #64748B; font-weight: 500; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap;}
+        .pan-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+        
+        /* 图1：基础填充细节 */
+        .pan-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; font-size: 14px; font-weight: 500; border-radius: 8px; margin: 2px 12px; background: white; border: 1px solid transparent; }
+        .pan-item.stripe { background: #FAFAFC; }
+        .pan-item.active-outline { border-color: var(--primary); }
+        .pan-tags { display: flex; gap: 6px; }
+        .pan-tag { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+        .pan-tag.gray { background: #F1F5F9; color: #64748B; }
+        .pan-tag.pink { background: #FDF2F8; color: #DB2777; }
+        .pan-footer-check { padding: 16px; border-top: 1px solid #E2E8F0; display: flex; gap: 16px; color: #64748B; font-size: 13px; margin-top: auto; background: #FAFAFC;}
+
+        /* 图2 & 图4：表单与输入区 */
+        .pan-header { font-size: 16px; font-weight: 700; padding: 16px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; gap: 12px;}
+        .pan-textarea { margin: 8px 16px; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; height: 100px; font-size: 14px; resize: none; color: #1E293B; }
+        .pan-ai-tool { display: flex; gap: 8px; margin: 0 16px 16px; align-items: center; }
+        .pan-ai-btn { flex: 1; background: var(--primary); color: white; border-radius: 8px; padding: 10px; text-align: center; font-weight: 600; font-size: 14px; }
+        .pan-ai-result { margin: 0 16px; flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; font-size: 13px; color: #475569; line-height: 1.8; overflow: hidden; }
+        .pan-ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px; }
+        .pan-btn-outline { border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px; text-align: center; font-size: 13px; color: #334155; background: white; font-weight: 500;}
+        
+        /* 图3：自定义字段 */
+        .pan-custom-item { margin: 12px 16px; border: 1px solid var(--primary); border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 8px; background: white; }
+        .pan-custom-badge { background: #FEF3C7; color: #D97706; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-left: auto; }
+        .pan-custom-footer { margin-top: auto; border-top: 1px solid #E2E8F0; padding: 16px; display: flex; gap: 8px; background: #FAFAFC;}
+
+        /* 图4：配置表单 */
+        .pan-label { font-size: 13px; font-weight: 600; margin: 16px 16px 8px; display: block; color: #1E293B; }
+        .pan-input { margin: 0 16px; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 12px; font-size: 13px; background: #FAFAFC; display: block; width: calc(100% - 32px); }
+        .pan-note { margin: 24px 16px; background: #F1F5F9; border-radius: 8px; padding: 16px; font-size: 12px; color: #64748B; line-height: 1.6; }
+    
+        /* ================= 导出 PPT：批量转化动态演示区 ================= */
+        .ppt-showcase {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 100px 25px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            perspective: 1000px;
+            height: 100%;
+            min-height: 280px;
+        }
+        @media (max-width: 1199px) {
+            .ppt-showcase {
+                padding: 60px 20px;
+                gap: 30px;
+            }
+            .figma-stack {
+                width: 150px;
+                height: 120px;
+            }
+            .figma-board {
+                width: 110px;
+                height: 70px;
+            }
+        }
+
+        /* 1. 左侧：Figma 批量画板堆叠 */
+        .figma-stack {
+            position: relative;
+            width: 180px;
+            height: 140px;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .figma-board {
+            position: absolute;
+            width: 130px;
+            height: 80px;
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            box-shadow: -4px 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* 内部骨架线 */
+        .f-line-1 { width: 70%; height: 6px; background: #E2E8F0; border-radius: 10px; }
+        .f-line-2 { width: 40%; height: 6px; background: #E2E8F0; border-radius: 10px; }
+
+        /* 利用 nth-child 制造斜向堆叠和呼吸漂浮感 */
+        .figma-board:nth-child(1) { transform: translate(0px, -5px) translateZ(-40px); opacity: 0.5; animation: float-b 4s infinite alternate; }
+        .figma-board:nth-child(2) { transform: translate(20px, 30px) translateZ(-20px); opacity: 0.8; animation: float-b 4s infinite alternate -1s; }
+        .figma-board:nth-child(3) { transform: translate(40px, 65px) translateZ(0); opacity: 1; border-color: #1ABCFE; 
+            box-shadow: -8px 8px 20px rgba(26, 188, 254, 0.15);
+            animation: float-b 2s infinite alternate -1s;
+        }
+
+        @keyframes float-b {
+            0% { margin-top: 0; }
+            100% { margin-top: -6px; }
+        }
+
+        /* Figma 小标签 */
+        .f-badge {
+            position: absolute;
+            top: -10px; left: -10px;
+            background: #1ABCFE;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(26, 188, 254, 0.3);
+        }
+
+        /* 鼠标悬停时：展开这叠画板！ */
+        .ppt-showcase:hover .figma-board:nth-child(1) { transform: translate(-20px, -20px) translateZ(-40px) scale(0.9); opacity: 0.4; }
+        .ppt-showcase:hover .figma-board:nth-child(2) { transform: translate(15px, 15px) translateZ(-20px); }
+        .ppt-showcase:hover .figma-board:nth-child(3) { transform: translate(50px, 50px) translateZ(0) scale(1.05); }
+
+        /* 2. 中间：一键转化动效区 */
+        .export-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .export-magic-btn {
+            background: linear-gradient(135deg, var(--primary), #8B5CF6);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(91, 84, 255, 0.4);
+            animation: pulse-magic 2s infinite;
+        }
+
+        @keyframes pulse-magic {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(91, 84, 255, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(91, 84, 255, 0.6); }
+        }
+
+        .animated-arrow {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 900;
+            animation: arrow-slide 1.5s infinite;
+        }
+        @keyframes arrow-slide {
+            0% { transform: translateX(-5px); opacity: 0.5; }
+            50% { transform: translateX(5px); opacity: 1; }
+            100% { transform: translateX(-5px); opacity: 0.5; }
+        }
+
+        /* 3. 右侧：PPT幻灯片套件 */
+        .pptx-stack {
+            position: relative;
+            width: 160px;
+            height: 120px;
+            margin-left: 10px;
+        }
+
+        .pptx-bg {
+            position: absolute;
+            top: 15px; left: 15px;
+            width: 140px; height: 90px;
+            background: #FECACA;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.15);
+            transition: all 0.4s ease;
+        }
+
+        .pptx-main {
+            position: absolute;
+            top: 0; left: 0;
+            width: 140px; height: 90px;
+            background: linear-gradient(135deg, #FF6B6B, #E03131);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 26px;
+            font-weight: 800;
+            box-shadow: 0 15px 30px rgba(224, 49, 49, 0.3);
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .pptx-badge {
+            position: absolute;
+            bottom: -12px; right: -12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            color: #E03131;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #FEE2E2;
+        }
+
+        .ppt-showcase:hover .pptx-bg { transform: translate(25px, 20px) rotate(5deg); }
+        .ppt-showcase:hover .pptx-main { transform: translate(-5px, -5px) scale(1.05); }
+
+        /* ================= 查找与替换：局部扫描与精准定位动效 ================= */
+        .find-replace-showcase {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            gap: 24px;
+            height: 380px;
+            overflow: hidden;
+        }
+        @media (max-width: 767px) {
+            .find-replace-showcase {
+                flex-direction: column;
+                height: auto;
+                padding: 16px;
+                gap: 16px;
+            }
+            .fr-panel {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #E2E8F0;
+                padding-right: 0;
+                padding-bottom: 16px;
+            }
+        }
+
+        /* 左侧：精简版仿真插件面板 */
+        .fr-panel {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-right: 1px solid #E2E8F0;
+            padding-right: 24px;
+            position: relative;
+        }
+
+        .fr-tabs { display: flex; background: #F1F5F9; border-radius: 8px; padding: 4px; }
+        .fr-tab { flex: 1; text-align: center; font-size: 12px; font-weight: 600; padding: 6px; border-radius: 6px; color: #64748B;}
+        .fr-tab.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
+
+        .fr-input-box { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px; font-size: 13px; color: var(--text-dark); display: flex; gap: 8px; align-items: center;}
+        
+        .fr-btn { background: var(--primary); color: white; border-radius: 8px; padding: 10px; text-align: center; font-size: 13px; font-weight: 600; margin-top: 4px;}
+        
+        .fr-results { flex: 1; margin-top: 8px; border-top: 1px dashed #E2E8F0; padding-top: 12px; display: flex; flex-direction: column; gap: 8px;}
+        .fr-result-item { font-size: 12px; padding: 8px; border-radius: 6px; background: #F8FAFC; color: #475569; display: flex; align-items: center; gap: 6px; border: 1px solid transparent;}
+        
+        /* 鼠标/手指动画指针 */
+        .fr-pointer {
+            position: absolute;
+            font-size: 30px;
+            z-index: 100;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));
+            /* 模拟鼠标操作轨迹：点击结果 -> 点击替换 */
+            animation: pointer-action 8s infinite;
+        }
+
+        /* 右侧：Figma 画布模拟区 */
+        .fr-canvas {
+            flex: 1;
+            background: radial-gradient(circle, #E2E8F0 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-color: #FAFAFC;
+            border-radius: 12px;
+            position: relative;
+            border: 1px solid #E2E8F0;
+            overflow: hidden;
+        }
+
+        /* 局部选择框 (虚线框) */
+        .fr-selection-box {
+            position: absolute;
+            top: 30px; left: 40px; right: 40px; bottom: 80px;
+            border: 2px dashed #818CF8;
+            background: rgba(129, 140, 248, 0.05);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 40px 20px;
+        }
+
+        .fr-selection-label {
+            position: absolute;
+            top: -12px; left: 10px;
+            background: #818CF8; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600;
+        }
+
+        /* 雷达扫描光效 */
+        .fr-scanner {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 20px;
+            background: linear-gradient(to bottom, rgba(91,84,255,0), rgba(91,84,255,0.4));
+            border-bottom: 2px solid var(--primary);
+            opacity: 0;
+            animation: scan-sweep 8s infinite;
+            z-index: 10;
+        }
+
+        /* 文本节点节点 */
+        .fr-node {
+            background: white; border: 1px solid #CBD5E1; border-radius: 6px; padding: 12px 20px; font-size: 14px; font-weight: 600; color: #1E293B; width: max-content;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        /* 选区外不受影响的节点 */
+        .fr-node.outside { position: absolute; bottom: 20px; right: 20px; opacity: 0.6; }
+
+        /* 定位时的呼吸光波效果 */
+        .fr-locate-pulse {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 6px;
+            animation: locate-ring 8s infinite;
+        }
+
+        /* 文本替换的翻转特效 */
+        .fr-text-wrap { position: relative; display: inline-block; width: 30px; height: 20px; vertical-align:top; }
+        .fr-text-old, .fr-text-new { position: absolute; top: 0; left: 0; transition: all 0.3s ease; }
+        .fr-text-new { color: #10B981; opacity: 0; transform: translateY(10px); }
+        
+        /* 通过父级的类名触发内部文字切换动画 */
+        .fr-canvas-animate .fr-text-old { animation: text-out 8s infinite; }
+        .fr-canvas-animate .fr-text-new { animation: text-in 8s infinite; }
+
+        /* ================= 核心剧本动画编排 (时长 8s) ================= */
+        
+        /* 1. 鼠标轨迹：0s起点 -> 2s移到列表结果项 -> 4s移到替换按钮 -> 6s停顿 -> 8s循环 */
+        @keyframes pointer-action {
+            0% { top: 83%; left: 80%; opacity: 0; }
+            0%, 14% { top: 83%; left: 80%; opacity: 1; }
+            16%, 32% { top: 83%; left: 25%; transform: scale(1); opacity: 1;} /* 移到列表项 */
+            34%, 38% { top: 83%; left: 25%; transform: scale(0.8); opacity: 1;} /* 按下 */
+            38%, 42% { top: 83%; left: 25%; transform: scale(1); opacity: 1;} /* 松开 */
+            46%, 54% { top: 54%; left: 50%; transform: scale(1); opacity: 1;} /* 移动到按钮 */
+            50%, 54% { top: 54%; left: 50%; transform: scale(0.8); opacity: 1;} /* 按下按钮 */
+            54%, 58% { top: 54%; left: 50%; transform: scale(1); opacity: 1;} /* 松开 */
+            64%, 80% { top: 83%; left: 80%; transform: scale(1); opacity: 1;} /* 移开 */
+            80% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* 2. 列表项被点击时的激活态 */
+        .fr-result-item:first-child { animation: list-active 8s infinite; }
+        @keyframes list-active {
+            0%, 19% { border-color: transparent; background: #F8FAFC; }
+            20%, 50% { border-color: var(--primary); background: #EEF2FF; color: var(--primary); }
+            51%, 100% { border-color: transparent; background: #F8FAFC; }
+        }
+
+        /* 3. 画布目标节点被“定位”时的强烈呼吸环 */
+        @keyframes locate-ring {
+            0%, 19% { box-shadow: 0 0 0 0 rgba(91, 84, 255, 0); }
+            22% { box-shadow: 0 0 0 8px rgba(91, 84, 255, 0.4); }
+            35% { box-shadow: 0 0 0 0 rgba(91, 84, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(91, 84, 255, 0); }
+        }
+
+        /* 4. 雷达扫描选区 (点击替换按钮后) */
+        @keyframes scan-sweep {
+            0%, 52% { top: 0; opacity: 0; }
+            53% { opacity: 1; }
+            70% { top: 100%; opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* 5. 文字替换翻转 */
+        @keyframes text-out {
+            0%, 60% { opacity: 1; transform: translateY(0); }
+            65%, 90% { opacity: 0; transform: translateY(-10px); }
+            95%, 100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes text-in {
+            0%, 60% { opacity: 0; transform: translateY(10px); }
+            65%, 90% { opacity: 1; transform: translateY(0); }
+            95%, 100% { opacity: 0; transform: translateY(10px); }
+        }
+
+        /* ================= 页脚 ================= */
+        footer {
+            background: white;
+            border-top: 1px solid #E2E8F0;
+            padding: 60px 5% 30px;
+        }
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 60px;
+        }
+        .footer-brand {
+            max-width: 320px;
+        }
+        .footer-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .footer-brand p {
+            font-size: 15px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        .footer-links {
+            display: flex;
+            gap: 80px;
+        }
+        .footer-column h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        .footer-column a {
+            display: block;
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+            transition: color 0.2s;
+        }
+        .footer-column a:hover {
+            color: var(--primary);
+        }
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        @media (max-width: 1199px) {
+            footer {
+                padding: 50px 4% 25px;
+            }
+            .footer-content {
+                gap: 40px;
+            }
+            .footer-links {
+                gap: 50px;
+            }
+        }
+        @media (max-width: 767px) {
+            footer {
+                padding: 40px 4% 20px;
+            }
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            .footer-brand {
+                max-width: 100%;
+            }
+            .footer-brand img {
+                margin: 0 auto 12px;
+            }
+            .footer-brand p {
+                font-size: 14px;
+            }
+            .footer-links {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .footer-column h4 {
+                font-size: 15px;
+                margin-bottom: 16px;
+            }
+            .footer-column a {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+                margin-top: 30px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 动态背景光晕 -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- 首屏 Hero -->
+    <header class="hero-main">
+        <!-- 左侧文案 -->
+        <div class="hero-text">
+            <div class="logo">
+                <!-- Logo 图标 -->
+                <img src="Frame 21.png" alt="AllinOne" width="38" height="38" style="border-radius: 6px;">
+                <div class="logo-icon">
+                    Allin<span>One</span>
+                </div>
+            </div>
+            
+            <h1>Figma 插件<br>用这一个就够啦</h1>
+            
+            <p>
+                告别繁琐操作。集合 AI 智能填充、超级选择器、一键导出 PPT 与组件清洗等数十项极客功能，让设计效率指数级跃升。
+            </p>
+            
+            <!-- CTA 按钮组 -->
+            <div class="cta-buttons-group" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <a href="https://www.figma.com/community/plugin/1579115225697225019/allinone" target="_blank" class="cta-primary">
+                    <svg width="18" height="18" viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 28.5A9.5 9.5 0 1 1 19 9.5a9.5 9.5 0 0 1 0 19z" fill="#0ACF83"/>
+                        <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z" fill="#1ABCFE"/>
+                        <path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5z" fill="#0ECEC1"/>
+                        <path d="M0 9.5A9.5 9.5 0 0 1 9.5 0H19v19H9.5A9.5 9.5 0 0 1 0 9.5z" fill="#F24E1E"/>
+                        <path d="M19 0h9.5a9.5 9.5 0 1 1 0 19H19V0z" fill="#FF7262"/>
+                    </svg>
+                    立即安装 (免费)
+                </a>
+                <div class="qr-hover-container" style="position: relative;">
+                    <a href="#" class="cta-secondary" onclick="event.preventDefault();" style="padding-right: 18px;">
+                        <img src="小红书.png" style="width: 32px; height: 32px;">
+                        小红书
+                    </a>
+                    <div class="qr-popup" style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; padding: 12px; background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); display: none; z-index: 1000; text-align: center;">
+                        <img src="xhs_qr.png" alt="小红书二维码" style="width: 100px; height: 100px; border-radius: 8px;">
+                        <p style="font-size: 11px; color: #64748B; margin-top: 8px; margin-bottom: 0;">扫码关注</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧 3D 界面预览 -->
+        <div class="hero-visual">
+            <div class="glow-bg"></div>
+            <div class="mockup-container">
+                <div class="interactive-hint">👈 Click to Try</div>
+                <iframe src="chajian.html"></iframe>
+            </div>
+        </div>
+    </header>
+
+    <!-- 核心功能卡片网格 -->
+    <section id="features" class="features">
+        <div class="section-title reveal">
+            <h2>强悍的瑞士军刀</h2>
+            <p>一切你需要的提效工具，All in One。</p>
+        </div>
+        <div class="grid">
+            <!-- Vanilla Tilt 卡片 -->
+            <!-- 参数说明：data-tilt-max 倾斜角度, data-tilt-glare 开启反光, data-tilt-max-glare 反光强度 -->
+            <div class="feature-card reveal" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.3">
+                <div class="feature-icon">🛠️</div>
+                <h3>简易工具箱</h3>
+                <p>覆盖日常设计高频痛点：框转矩、段落拆分拼合、解绑所有实例、清除自动布局与隐藏图层、像素取整等。</p>
+            </div>
+            
+            <div class="feature-card reveal" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.3" style="transition-delay: 0.1s;">
+                <div class="feature-icon">🎯</div>
+                <h3>超级选择器</h3>
+                <p>穿透设计稿。支持按内在元素、同级、子孙层级筛选，并可根据类型（切片/布尔/星形/组件）和名称进行多维过滤。</p>
+            </div>
+
+            <div class="feature-card reveal" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.3" style="transition-delay: 0.2s;">
+                <div class="feature-icon">✨</div>
+                <h3>AI 智能填充</h3>
+                <p>除了提供真实的姓名、地址、日期、身份证等基础填充外，支持接入大语言模型，直接对话生成并填充真实文案内容。</p>
+            </div>
+
+            <div class="feature-card reveal" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.3">
+                <div class="feature-icon">🔤</div>
+                <h3>文字与规范重命名</h3>
+                <p>支持对组件名、属性值进行全局查找替换。一键转换为 camelCase、PascalCase、Snake 命名，前端开发对齐福音。</p>
+            </div>
+
+            <div class="feature-card reveal" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.3" style="transition-delay: 0.1s;">
+                <div class="feature-icon">📊</div>
+                <h3>一键导出 PPT</h3>
+                <p>产品经理神器！无需手动切图排版，选中画板一键将 Figma 设计稿结构化导出为可编辑的 PPT 文件。</p>
+            </div>
+
+            <div class="feature-card reveal" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.3" style="transition-delay: 0.2s;">
+                <div class="feature-icon">📚</div>
+                <h3>内置设计理论</h3>
+                <p>插件内嵌尼尔森十大可用性原则、WCAG 无障碍指南、费茨定律与人机交互原则，设计过程随时查阅校验基准。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 详细介绍区补充 2: 简易工具集 -->
+    <section id="simple" class="detail-section">
+        <div class="detail-content">
+            <h2>20+「简易工具」化繁为简</h2>
+            <p>日常设计中那些让你抓狂的“脏活累活”，我们打包成了快捷指令。点一下，省下 10 分钟。</p>
+            <ul class="detail-list-pro">
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="M8 17l4 4 4-4"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>结构转换与排版</h4>
+                        <p>框转矩形、矩转框、文本段落一键拆分与拼合、一键互换元素位置。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>一键清除重置</h4>
+                        <p>解绑所有实例、解散所有编组、清除自动布局、重置图片比例。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>强迫症专区</h4>
+                        <p>“像素取整”瞬间消灭所有小数坐标与尺寸，“视觉排序”让图层顺序与画面位置自动对齐。</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 替换：简易工具集右侧的交互网格 -->
+        <div class="detail-visual" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+            <div class="tools-grid-container">
+                <!-- 第一排 -->
+                <div class="tool-btn theme-orange">
+                    <span>🖼️</span><span class="tool-text">矩转框</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🖼️</span> 矩形转画板</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">将选中的矩形图层快速转换为相同尺寸的画板(Frame)，方便嵌套内容。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-orange">
+                    <span>🧱</span><span class="tool-text">框转矩</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🧱</span> 画板转矩形</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">将画板(Frame)降级为普通矩形图层，并保留原有的填充与描边属性。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-pink">
+                    <span>✂️</span><span class="tool-text">段落行拆分</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>✂️</span> 段落行拆分</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">将包含多行文本的段落，按回车符一键拆分为多个独立的单行文本图层。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-pink">
+                    <span>🔗</span><span class="tool-text">文本拼合</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🔗</span> 文本拼合</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">按选中图层的视觉坐标顺序，将多个独立文本拼合成一个完整的文本段落。</div>
+                    </div>
+                </div>
+
+                <!-- 第二排 -->
+                <div class="tool-btn theme-blue">
+                    <span>⛔</span><span class="tool-text">清除自动布...</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>⛔</span> 清除自动布局</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">一键移除所选图层的 Auto Layout 属性，将其转为绝对定位模式。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-blue">
+                    <span>🍱</span><span class="tool-text">外加自动布...</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🍱</span> 外加自动布局</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">快速为当前所选图层外部包裹一层自动布局框架(Shift+A 的增强版)。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-purple">
+                    <span>📤</span><span class="tool-text">逃逸一层</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>📤</span> 逃逸一层</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">将深层嵌套的子图层移出，剥离到其上一级父容器中，保持绝对坐标不变。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-purple">
+                    <span>🚀</span><span class="tool-text">完全逃逸</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🚀</span> 完全逃逸</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">无视嵌套层级有多深，直接将目标图层提取释放到最外层的页面画布上。</div>
+                    </div>
+                </div>
+
+                <!-- 第三排 -->
+                <div class="tool-btn theme-green">
+                    <span>💥</span><span class="tool-text">解除所有Gro...</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>💥</span> 解除所有Group</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">一键解散选区内的所有 Group 编组，打散图层（不影响 Frame 和组件）。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-green">
+                    <span>🔓</span><span class="tool-text">解锁内部图层</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🔓</span> 解锁内部图层</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">不用再辛苦翻找图层树，一键解除当前选区内部所有被锁定的图层状态。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-orange">
+                    <span>🔄</span><span class="tool-text">交换填充描边</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🔄</span> 交换填充描边</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">类似 AI 软件的 Shift+X，一键互换选中图形的 Fill(填充色) 与 Stroke(描边色)。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-orange">
+                    <span>⚖️</span><span class="tool-text">重置图片比例</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>⚖️</span> 重置图片比例</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">恢复被误拉伸或压缩的图片图层，强制其回到原始的正常宽高比。</div>
+                    </div>
+                </div>
+
+                <!-- 第四排 -->
+                <div class="tool-btn theme-pink">
+                    <span>👁️</span><span class="tool-text">按视觉排序...</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>👁️</span> 按视觉排序图层</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">根据图层在画布上实际呈现的 X/Y 坐标位置，重新梳理左侧图层树结构。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-pink">
+                    <span>🏷️</span><span class="tool-text">按内容重命名</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🏷️</span> 按内容重命名</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">使用文本图层中的实际文字内容，批量覆盖替换它们在图层树中的名称。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-blue">
+                    <span>💔</span><span class="tool-text">解绑所有实例</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>💔</span> 解绑所有实例</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">将选区内的所有组件实例(Instance)彻底解绑为普通 Frame 图层。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-blue">
+                    <span>👻</span><span class="tool-text">删除隐藏图层</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>👻</span> 删除隐藏图层</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">一键清除画板中所有肉眼不可见的隐藏垃圾图层，极大地减小文件体积。</div>
+                    </div>
+                </div>
+
+                <!-- 第五排 -->
+                <div class="tool-btn theme-purple">
+                    <span>🎯</span><span class="tool-text">像素取整</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🎯</span> 像素取整</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">强迫症最爱。将选中图层带有小数点的 X/Y 坐标与宽高尺寸强行修正为整数。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-purple">
+                    <span>🔀</span><span class="tool-text">交换位置</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🔀</span> 交换图层位置</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">选中两个同级别的图层，一键互换它们在画布上的 X/Y 坐标位置。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-green">
+                    <span>✨</span><span class="tool-text">生成本地样式</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>✨</span> 生成本地样式</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">将选中图层的颜色、文本、效果一键转为本地样式。自动检测并跳过重名。</div>
+                    </div>
+                </div>
+                <div class="tool-btn theme-green">
+                    <span>🎨</span><span class="tool-text">匹配本地样式</span>
+                    <div class="tool-tooltip">
+                        <div class="tip-header"><span>🎨</span> 匹配本地样式</div>
+                        <div class="tip-divider"></div>
+                        <div class="tip-desc">自动扫描图层属性，并与文件中已有的同色值/同属性本地样式进行关联匹配。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 详细介绍区补充 1: 超级选择器 -->
+    <section id="super-selector" class="detail-section reverse reveal">
+        <div class="detail-content">
+            <h2>穿透图层层级的「超级选择器」</h2>
+            <p>Figma 原生选择器太弱？嵌套层级太深点不到？超级选择器让你如同拥有“透视眼”，秒选目标图层。</p>
+            <ul class="detail-list-pro">
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>查找范围自由定</h4>
+                        <p>支持按当前页、内在元素、同级、子级、子孙元素精准锁定圈层。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>18+ 种图层类型筛选</h4>
+                        <p>无论是画板(Frame)、组件(Component)、文本、布尔运算还是切片，全类型支持。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>名称与状态精确匹配</h4>
+                        <p>支持输入名称模糊/精确匹配，还能一键筛选出所有“被锁定”或“已隐藏”的捣乱图层。</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 替换：高性能、结构化且支持悬浮推开的按钮云 -->
+        <div class="detail-visual" style="background: transparent; border: none; padding: 0; box-shadow: none; max-width: 500px;">
+            <div class="circular-cloud">
+                
+                <!-- 【中心点】 -->
+                <div class="cloud-tag-layout" style="--x: 0px; --y: 0px; --dur: 3.2s; --del: 0s;"><div class="cloud-tag-float"><div class="cloud-tag active">❖ 组件</div></div></div>
+                
+                <!-- 【内圈】6个 -->
+                <div class="cloud-tag-layout" style="--x: 0px; --y: -85px; --dur: 3.8s; --del: -1s;"><div class="cloud-tag-float"><div class="cloud-tag"># 画板 Frame</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 75px; --y: -42px; --dur: 4.1s; --del: -0.5s;"><div class="cloud-tag-float"><div class="cloud-tag active">内在元素</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 75px; --y: 42px; --dur: 3.5s; --del: -2s;"><div class="cloud-tag-float"><div class="cloud-tag">T 文本</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 0px; --y: 85px; --dur: 4.5s; --del: -1.5s;"><div class="cloud-tag-float"><div class="cloud-tag">同级</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -95px; --y: 42px; --dur: 3.9s; --del: -0.2s;"><div class="cloud-tag-float"><div class="cloud-tag active">◇ 实例</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -75px; --y: -42px; --dur: 4.2s; --del: -2.5s;"><div class="cloud-tag-float"><div class="cloud-tag">⊞ 自动布局</div></div></div>
+
+                <!-- 【中圈】10个 -->
+                <div class="cloud-tag-layout" style="--x: 55px; --y: -160px; --dur: 3.6s; --del: -1.2s;"><div class="cloud-tag-float"><div class="cloud-tag">子孙元素</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 140px; --y: -100px; --dur: 4.8s; --del: -3s;"><div class="cloud-tag-float"><div class="cloud-tag active">👻 隐藏</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 175px; --y: 0px; --dur: 3.4s; --del: -0.8s;"><div class="cloud-tag-float"><div class="cloud-tag">⬚ 组 Group</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 140px; --y: 100px; --dur: 4.0s; --del: -1.8s;"><div class="cloud-tag-float"><div class="cloud-tag">■ 矩形</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 55px; --y: 160px; --dur: 4.3s; --del: -2.2s;"><div class="cloud-tag-float"><div class="cloud-tag">◯ 椭圆</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -55px; --y: 160px; --dur: 3.7s; --del: -1.1s;"><div class="cloud-tag-float"><div class="cloud-tag">🖼 图片</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -140px; --y: 100px; --dur: 4.6s; --del: -0.6s;"><div class="cloud-tag-float"><div class="cloud-tag">✂ 切片</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -175px; --y: 0px; --dur: 3.3s; --del: -2.8s;"><div class="cloud-tag-float"><div class="cloud-tag">★ 星形</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -140px; --y: -100px; --dur: 4.4s; --del: -1.4s;"><div class="cloud-tag-float"><div class="cloud-tag">◑ 布尔</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -55px; --y: -160px; --dur: 3.9s; --del: -3.2s;"><div class="cloud-tag-float"><div class="cloud-tag">📝 便签</div></div></div>
+
+                <!-- 【外圈】7个 -->
+                <div class="cloud-tag-layout" style="--x: -170px; --y: -190px; --dur: 4.7s; --del: -0.9s;"><div class="cloud-tag-float"><div class="cloud-tag">🧩 小部件</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 170px; --y: -190px; --dur: 3.5s; --del: -2.1s;"><div class="cloud-tag-float"><div class="cloud-tag">🔒 锁定</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -250px; --y: -50px; --dur: 4.1s; --del: -1.7s;"><div class="cloud-tag-float"><div class="cloud-tag">🎭 蒙版</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 250px; --y: -50px; --dur: 4.9s; --del: -0.3s;"><div class="cloud-tag-float"><div class="cloud-tag">📤 可导出</div></div></div>
+                <div class="cloud-tag-layout" style="--x: -220px; --y: 133px; --dur: 3.6s; --del: -2.6s;"><div class="cloud-tag-float"><div class="cloud-tag">无填充</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 220px; --y: 133px; --dur: 4.2s; --del: -1.3s;"><div class="cloud-tag-float"><div class="cloud-tag">无描边</div></div></div>
+                <div class="cloud-tag-layout" style="--x: 0px; --y: -205px; --dur: 4.5s; --del: -0.7s;"><div class="cloud-tag-float"><div class="cloud-tag active">✂ 裁剪内容</div></div></div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- 详细介绍区补充 3: 全场景数据填充 (全宽画廊) -->
+    <section id="data-fill-full" class="data-fill-full-section reveal">
+        <div class="data-fill-header">
+            <h2>数据填充预设与 AI 的完美融合</h2>
+            <p>从极速出图的内置本地高频字段，到应对一切边界场景的大语言模型语境生成。提供最完整的设计稿数据填充解决方案，彻底告别假文占位。</p>
+        </div>
+
+        <div class="marquee-wrapper">
+            <!-- 左箭头 -->
+            <div class="carousel-arrow prev">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </div>
+
+            <div class="marquee-track">
+                <!-- 面板 1: 基础填充 -->
+                <div class="pan-mockup">
+                    <div class="pan-tabs">
+                        <div class="pan-tab active">基础填充</div><div class="pan-tab">AI 生成</div><div class="pan-tab">自定义字段</div>
+                    </div>
+                    <div style="flex: 1; overflow: hidden; padding-top: 4px;">
+                        <div class="pan-item"><span>姓名</span><div class="pan-tags"><span class="pan-tag gray">中文</span><span class="pan-tag gray">英文</span><span class="pan-tag pink">发送到 AI</span></div></div>
+                        <div class="pan-item stripe"><span>地址</span><div class="pan-tags"><span class="pan-tag pink">发送到 AI</span></div></div>
+                        <div class="pan-item active-outline"><span>省市区</span><div class="pan-tags"><span class="pan-tag gray">省</span><span class="pan-tag gray">市</span><span class="pan-tag gray">区</span></div></div>
+                        <div class="pan-item stripe"><span>街道</span><div class="pan-tags"><span class="pan-tag pink">发送到 AI</span></div></div>
+                        <div class="pan-item"><span>小区</span><div class="pan-tags"><span class="pan-tag pink">发送到 AI</span></div></div>
+                        <div class="pan-item stripe"><span>数字</span><div class="pan-tags"><span style="color:#94A3B8;">⚙️</span></div></div>
+                        <div class="pan-item"><span>日期</span><div class="pan-tags"><span style="color:#94A3B8;">⚙️</span></div></div>
+                        <div class="pan-item stripe"><span>时间</span><div class="pan-tags"><span style="color:#94A3B8;">⚙️</span></div></div>
+                        <div class="pan-item"><span>Email</span><div class="pan-tags"><span class="pan-tag pink">发送到 AI</span></div></div>
+                    </div>
+                    <div class="pan-footer-check">
+                        <span>☐ 加为前缀</span><span>☐ 加为后缀</span>
+                    </div>
+                </div>
+
+                <!-- 面板 2: AI 生成 -->
+                <div class="pan-mockup">
+                    <div class="pan-tabs">
+                        <div class="pan-tab">基础填充</div><div class="pan-tab active">AI 生成</div><div class="pan-tab">自定义字段</div>
+                    </div>
+                    <div class="pan-header" style="border:none; padding-bottom:0;">AI 对话生成 <span style="margin-left:auto; color:#94A3B8;">⚙️</span></div>
+                    <div class="pan-textarea">高档小区</div>
+                    <div class="pan-ai-tool">
+                        <span style="color:#64748B; font-size:13px;">☐ DeepThink</span>
+                        <div class="pan-ai-btn">生成内容</div>
+                        <div class="pan-btn-outline" style="padding: 8px 12px;">🗑️</div>
+                    </div>
+                    <div class="pan-ai-result">
+                        云顶天际花园<br>御景湾国际公寓<br>湖畔壹号公馆<br>锦绣澜湾<br>金地格林世界<br>华润幸福里<br>中海国际社区<br>万科金域蓝湾<br>保利香槟国际<br>绿城玫瑰园
+                    </div>
+                    <div class="pan-ai-grid">
+                        <div class="pan-btn-outline">⬇ 顺序录入</div>
+                        <div class="pan-btn-outline" style="background: #EEF2FF; color: var(--primary); border-color: var(--primary);">🔀 随机录入</div>
+                        <div class="pan-btn-outline">💾 存为新列表</div>
+                        <div class="pan-btn-outline">➕ 追加到列表</div>
+                    </div>
+                </div>
+
+                <!-- 面板 4: AI 模型配置 -->
+                <div class="pan-mockup">
+                    <div class="pan-header">← AI 模型配置</div>
+                    <div style="flex: 1;">
+                        <span class="pan-label">服务商</span>
+                        <div class="pan-input" style="display:flex; justify-content:space-between;">智谱 GLM (默认) <span>⌄</span></div>
+                        
+                        <span class="pan-label">API 地址 (Base URL)</span>
+                        <div class="pan-input" style="color:#475569;">https://open.bigmodel.cn/api/paas/v4</div>
+                        
+                        <span class="pan-label">模型名称 (Model)</span>
+                        <div class="pan-input" style="color:#475569;">glm-4.7-flash</div>
+                        
+                        <span class="pan-label">API Key</span>
+                        <div class="pan-input" style="color:#475569; letter-spacing: 2px;">•••••••••••••••••••••••••</div>
+                        
+                        <div style="margin: 24px 16px 0;">
+                            <div class="pan-ai-btn">保存配置</div>
+                        </div>
+
+                        <div class="pan-note">
+                            隐私说明：本插件没有后台服务器，API Key 仅保存在本地。Figma 卸载重装后需要重新填写 Key，请放心使用。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 面板 3: 自定义字段 -->
+                <div class="pan-mockup">
+                    <div class="pan-tabs">
+                        <div class="pan-tab">基础填充</div><div class="pan-tab">AI 生成</div><div class="pan-tab active">自定义字段</div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="pan-custom-item">
+                            <span style="font-size:13px; color:#1E293B; font-weight:500;">AI: 生成完整的地址，精确...</span>
+                            <span class="pan-custom-badge">20条</span>
+                            <span style="font-size:14px; cursor:pointer;">✏️</span>
+                            <span style="font-size:14px; cursor:pointer;">🗑️</span>
+                        </div>
+                    </div>
+                    <div class="pan-custom-footer">
+                        <div class="pan-btn-outline" style="padding: 10px;">🗑️</div>
+                        <div class="pan-btn-outline" style="padding: 10px;">📤</div>
+                        <div class="pan-btn-outline" style="padding: 10px;">📥</div>
+                        <div class="pan-ai-btn">+ 添加新列表</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右箭头 -->
+            <div class="carousel-arrow next">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 底部指示器 -->
+        <div class="carousel-dots">
+            <div class="carousel-dot active" data-index="0"></div>
+            <div class="carousel-dot" data-index="1"></div>
+            <div class="carousel-dot" data-index="2"></div>
+            <div class="carousel-dot" data-index="3"></div>
+        </div>
+    </section>
+
+    <!-- 详细介绍区 2: AI 与隐私保护 -->
+    <section id="ai" class="detail-section reveal">
+        <div class="detail-content">
+            <h2>前台接入 AI 大模型<br>坚守绝对的数据隐私</h2>
+            <p>严格遵循隐私保护原则，用户数据仅存储在本地，不向任何第三方服务器发送，无任何数据收集或分析行为。</p>
+            <ul class="detail-list-pro">
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>API Key 仅本地存储，不上传到任何第三方服务器</h4>
+                        <p>API Key 仅在本地浏览器中存储（使用 Figma 的 clientStorage ），发送请求时直接从本地读取 aiConfig.key，所有请求都直接发送到用户配置的 AI 服务提供商（如 OpenAI、Claude 等）</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>无任何数据收集或分析代码</h4>
+                        <p>所有用户配置（包括 API Key）都存储在 Figma 提供的本地存储中，插件仅在本地处理用户数据，不向任何第三方服务器发送，无任何代码用于收集、分析或传输用户数据</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l2-9 5 18 3-9h6"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>网络访问权限透明</h4>
+                        <p>网络权限明确说明仅用于连接 AI API 和加载外部库，无隐藏的网络请求或数据传输，所有网络请求都对用户可见且可追溯</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="detail-visual" style="display: flex; gap: 16px; align-items: stretch; padding-bottom: 80px;">
+            <div style="flex: 1; min-width: 0;" class="code-block">
+                <div style="font-size: 14px; color: #64748B; margin-bottom: 6px;">javascript</div>
+                <pre style="margin: 0; height: 100%; font-size: 12px; line-height: 1.4;"><code class="language-javascript">const requestBody = {
+    // 请求体内容
+};
+const res = await fetch(
+  `${aiConfig.baseUrl}/chat/completions`,
+  {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${aiConfig.key}`
+    },
+    body: JSON.stringify(requestBody)
+  }
+);</code></pre>
+            </div>
+            <div style="flex: 1; min-width: 0;" class="code-block">
+                <div style="font-size: 14px; color: #64748B; margin-bottom: 6px;">typescript</div>
+                <pre style="margin: 0; height: 100%; font-size: 12px; line-height: 1.4;"><code class="language-typescript">case 'save-storage': {
+    await figma.clientStorage
+        .setAsync(msg.key, msg.value);
+    figma.notify("配置已保存");
+    figma.ui.postMessage({
+        type: 'storage-saved',
+        key: msg.key,
+        value: msg.value
+    });
+    break;
+}</code></pre>
+            </div>
+            <div style="flex: 1; min-width: 0;" class="code-block">
+                <div style="font-size: 14px; color: #64748B; margin-bottom: 6px;">json</div>
+                <pre style="margin: 0; height: 100%; font-size: 12px; line-height: 1.4;"><code class="language-json">
+"networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "This plugin connects to AI APIs and loads external libraries (JSZip, PptxGenJS) from CDNs."
+}
+        </code></pre>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 详细介绍区补充 6: 文字查找与替换 -->
+    <section id="find-replace" class="detail-section reverse reveal">
+        <div class="detail-content">
+            <h2>突破全局限制，精准定位的「文本查找替换」</h2>
+            <p>Figma 自带的查找往往会在全文件乱跑，替换极容易误伤。本插件专为复杂工程设计，给你手术刀级别的掌控力。</p>
+            <ul class="detail-list-pro">
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>局部精准圈定范围</h4>
+                        <p>告别全文件无脑替换，支持严格限定在「仅选中图层」或「当前页面」内生效，确保替换零误伤。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>一键反向定位直达画布</h4>
+                        <p>搜索结果列表化呈现。点击任意一条结果，即可在庞大杂乱的画布中瞬间缩放并高亮定位到该图层，找图层神器。</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="detail-visual" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+            <div class="find-replace-showcase">
+                <!-- 左侧：仿真面板 -->
+                <div class="fr-panel">
+                    <div class="fr-pointer">👆</div>
+                    
+                    <div class="fr-tabs">
+                        <div class="fr-tab active">仅选中图层</div>
+                        <div class="fr-tab">当前页面</div>
+                    </div>
+                    
+                    <div class="fr-input-box"><span style="color:#94A3B8;">🔍</span> 登录</div>
+                    <div class="fr-input-box"><span style="color:#94A3B8;">✏️</span> 注册</div>
+                    <div class="fr-btn">开始替换</div>
+                    
+                    <div class="fr-results">
+                        <div style="font-size: 10px; color: #94A3B8; font-weight: 600;">查找结果 (2)</div>
+                        <!-- 点击定位动画项 -->
+                        <div class="fr-result-item">
+                            <span style="color:var(--primary);">T</span> 登录按钮
+                        </div>
+                        <div class="fr-result-item">
+                            <span style="color:#94A3B8;">T</span> 前往登录
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：画布动画演示区 -->
+                <div class="fr-canvas fr-canvas-animate">
+                    
+                    <!-- 用户框选的局部区域 -->
+                    <div class="fr-selection-box">
+                        <div class="fr-selection-label">用户选区 (Selection)</div>
+                        <div class="fr-scanner"></div> <!-- 扫描光效 -->
+                        
+                        <!-- 节点 1 (带点击定位呼吸效) -->
+                        <div class="fr-node">
+                            <div class="fr-locate-pulse"></div>
+                            <span style="color:#94A3B8; font-size:12px; margin-right:4px;">❖</span>
+                            <span class="fr-text-wrap">
+                                <span class="fr-text-old">登录</span>
+                                <span class="fr-text-new">注册</span>
+                            </span>按钮
+                        </div>
+
+                        <!-- 节点 2 -->
+                        <div class="fr-node">
+                            <span style="color:#94A3B8; font-size:12px; margin-right:4px;">T</span>前往 <span class="fr-text-wrap">
+                                <span class="fr-text-old">登录</span>
+                                <span class="fr-text-new">注册</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 选区外不受影响的节点 -->
+                    <div class="fr-node outside">
+                        <span style="color:#94A3B8; font-size:12px; margin-right:4px;">T</span> 页面顶部<span style="color:#64748B;">登录</span>
+                    </div>
+
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 13px; color: #94A3B8; margin-top: 16px;">💡 动态演示：精准定位目标节点，并仅在选区内替换</p>
+        </div>
+    </section>
+
+    <!-- 详细介绍区补充 4: 导出 PPT -->
+    <section id="export-ppt" class="detail-section reveal">
+        <div class="detail-content">
+            <h2>设计稿一键导出为 PPT<br>打工人的救星</h2>
+            <p>还在手动把设计图一张张切片贴到 PPT 里？AllinOne 直接读取 Figma 节点信息，结构化输出可编辑的幻灯片文件。</p>
+            <ul class="detail-list-pro">
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>结构化保留可编辑性</h4>
+                        <p>不仅是出整图，文本、基础矢量形状在 PPT 中依然保留独立且可二次编辑的状态。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="8" y1="12" x2="16" y2="12"></line><line x1="12" y1="8" x2="12" y2="16"></line></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>画板智能识别排序</h4>
+                        <p>自动提取包含 "page" 或 "copy" 命名的 1920x1080 (16:9) 画板，按画布坐标顺序依次生成幻灯片。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>复杂资源图文混排</h4>
+                        <p>遇到复杂曲线、蒙版、多边形或重叠组件，会自动转为高清图片插入，保证视觉 100% 还原。</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 替换：更丰富的批量导出 PPT 动态演示区 -->
+        <div class="detail-visual" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+            <div class="ppt-showcase">
+                
+                <!-- 1. 左侧批量画板 -->
+                <div class="figma-stack">
+                    <!-- 底层画板 -->
+                    <div class="figma-board">
+                        <div class="f-line-1"></div><div class="f-line-2"></div>
+                    </div>
+                    <!-- 中层画板 -->
+                    <div class="figma-board">
+                        <div class="f-line-1"></div><div class="f-line-2"></div>
+                    </div>
+                    <!-- 顶层主画板 -->
+                    <div class="figma-board">
+                        <div class="f-badge">Figma Frames</div>
+                        <div class="f-line-1" style="background: #E0F2FE;"></div>
+                        <div class="f-line-2" style="background: #E0F2FE;"></div>
+                    </div>
+                </div>
+
+                <!-- 2. 一键转化流 -->
+                <div class="export-flow">
+                    <div class="animated-arrow">➔</div>
+                    <div class="export-magic-btn">✨ 一键批量导出</div>
+                </div>
+
+                <!-- 3. 右侧 PPT 结果 -->
+                <div class="pptx-stack">
+                    <div class="pptx-bg"></div>
+                    <div class="pptx-main">
+                        .PPTX
+                        <div class="pptx-badge">文本可编辑 ✎</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 详细介绍区 1: 命名与清理 -->
+    <section id="clean-naming" class="detail-section reverse reveal">
+        <div class="detail-content">
+            <h2>组件清洗与规范化<br>强迫症福音</h2>
+            <p>交付源文件时，最怕乱七八糟的命名和多余的隐藏图层。AllinOne 提供了一站式的「大扫除」能力。</p>
+            <ul class="detail-list">
+                <li>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    全局清洗：一键解锁图层、移除隐藏项
+                </li>
+                <li>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    清理首尾空格、Emoji与内部 ID
+                </li>
+                <li>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    变量重命名 (camelCase/PascalCase)
+                </li>
+            </ul>
+        </div>
+        <div class="detail-visual">
+            <div style="display:flex; flex-direction:column; gap:10px; padding:20px 0;">
+                <div style="background:#F1F5F9; padding:12px; border-radius:8px; font-family:monospace;">btn-primary-hover</div>
+                <div style="text-align:center; color:var(--primary);">↓ Snake Case</div>
+                <div style="background:#EEF2FF; padding:12px; border-radius:8px; font-family:monospace; color:var(--primary); font-weight:bold;">btn_primary_hover</div>
+                <div style="text-align:center; color:var(--primary);">↓ Pascal Case</div>
+                <div style="background:#EEF2FF; padding:12px; border-radius:8px; font-family:monospace; color:var(--primary); font-weight:bold;">BtnPrimaryHover</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 详细介绍区补充 5: 设计理论基准 -->
+    <section id="design-theory" class="detail-section reveal">
+        <div class="detail-content">
+            <h2>随时翻阅的「设计理论指南」</h2>
+            <p>好的设计有迹可循。不用再去四处搜索零散的资料，权威的设计可用性理论就内置在你的工作台旁。</p>
+            <ul class="detail-list-pro">
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>经典产品评估基准</h4>
+                        <p>包含“尼尔森十大可用性原则”、“费茨定律 (Fitts's Law)”等交互领域的黄金法则。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>前沿行业规范标准</h4>
+                        <p>收录 WCAG 无障碍指南、人与 AI 交互指南 (Google 原则)、语音交互原则 (VUI)。</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l2-9 5 18 3-9h6"></path></svg>
+                    </div>
+                    <div class="text-box">
+                        <h4>空间计算设计基石</h4>
+                        <p>紧跟时代，面向未来的 Apple Vision Pro / AR / VR 空间计算原则先导指引。</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="detail-visual">
+            <div style="padding: 24px;">
+                <!-- 模拟理论卡片列表 -->
+                <div style="display:flex; align-items:center; gap: 16px; padding: 16px; background: #F8FAFC; border-radius: 12px; margin-bottom: 16px; border: 1px solid #E2E8F0; transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                    <div style="width:48px; height:48px; background:#D1FAE5; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size: 24px;">🔟</div>
+                    <div style="text-align: left;">
+                        <div style="font-weight: 700; font-size: 16px; color: var(--text-dark); margin-bottom: 4px;">尼尔森十大可用性原则</div>
+                        <div style="font-size: 13px; color: var(--text-gray);">产品设计领域的"圣经"</div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap: 16px; padding: 16px; background: #F8FAFC; border-radius: 12px; margin-bottom: 16px; border: 1px solid #E2E8F0; transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                    <div style="width:48px; height:48px; background:#DBEAFE; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size: 24px;">♿</div>
+                    <div style="text-align: left;">
+                        <div style="font-weight: 700; font-size: 16px; color: var(--text-dark); margin-bottom: 4px;">WCAG 无障碍指南</div>
+                        <div style="font-size: 13px; color: var(--text-gray);">让包括残障人士的所有人都能使用</div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap: 16px; padding: 16px; background: #F8FAFC; border-radius: 12px; border: 1px solid #E2E8F0; transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                    <div style="width:48px; height:48px; background:#FCE7F3; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size: 24px;">🎯</div>
+                    <div style="text-align: left;">
+                        <div style="font-weight: 700; font-size: 16px; color: var(--text-dark); margin-bottom: 4px;">费茨定律 (Fitts's Law)</div>
+                        <div style="font-size: 13px; color: var(--text-gray);">距离与大小决定操作效率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 适用人群 -->
+    <section id="audience" class="reveal" style="padding: 100px 5%; max-width: 1000px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 36px; font-weight: 800; margin-bottom: 20px;">谁需要 AllinOne？</h2>
+        <p style="font-size: 18px; color: var(--text-gray);">打通设计、产品与开发的协作壁垒。</p>
+        
+        <div class="audience-tags" style="justify-content: center; margin-top: 40px;">
+            <div class="a-tag">🎨 UI/UX 设计师 (极速排版与清洗)</div>
+            <div class="a-tag">💻 前端工程师 (变量命名对齐)</div>
+            <div class="a-tag">📦 产品经理 (一键导PPT、生成真实测试文案)</div>
+            <div class="a-tag">📐 交互设计师 (校验设计理论原则)</div>
+        </div>
+    </section>
+
+    <!-- 底部 CTA -->
+    <section class="cta-bottom reveal">
+        <h2>立刻将它加入你的工作流</h2>
+        <p style="font-size: 20px; color: var(--text-gray); margin-bottom: 40px;">完全免费，只为极致效率而生。</p>
+        <a href="https://www.figma.com/community/plugin/1579115225697225019/allinone" target="_blank" class="btn-primary" style="font-size: 20px; padding: 20px 48px;">
+            在 Figma 中打开
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 8px;">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+        </a>
+        <div style="margin-top: 48px;">
+            <img src="xhs_qr.png" alt="小红书二维码" style="width: 120px; height: 120px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <p style="font-size: 14px; color: var(--text-gray); margin-top: 12px;">关注小红书，设计躺平学</p>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer style="text-align: center; padding: 40px; border-top: 1px solid #E2E8F0; color: var(--text-light); font-size: 14px;">
+        <p>© 2026 AllinOne Figma Plugin. All rights reserved.</p>
+    </footer>
+
+    <!-- 引入 VanillaTilt.js (用于实现极客范的 3D Z轴倾斜交互) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <!-- 引入 Prism.js 代码高亮组件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    
+    <!-- 交互脚本 -->
+    <script>
+        // 移动端检测
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 1024;
+        }
+
+        // 初始化 VanillaTilt（仅在桌面端）
+        if (!isMobileDevice() && typeof VanillaTilt !== 'undefined') {
+            VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+                max: 10,
+                speed: 400,
+                perspective: 1000,
+                glare: true,
+                "max-glare": 0.3
+            });
+        }
+
+        function toggleMobileMenu() {
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const menuOverlay = document.querySelector('.mobile-menu-overlay');
+            const mobileMenu = document.querySelector('.mobile-menu');
+
+            menuBtn.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        // 1. 滚动揭示动画 (Scroll Reveal)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15 // 元素出现 15% 时触发
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // 触发后取消观察，保证动画只执行一次
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(element => {
+            observer.observe(element);
+        });
+
+        // 2. 导航栏滚动毛玻璃加深效果
+        const nav = document.querySelector('nav');
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    if (window.scrollY > 50) {
+                        nav.style.background = 'rgba(255, 255, 255, 0.85)';
+                        nav.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05)';
+                    } else {
+                        nav.style.background = 'rgba(255, 255, 255, 0.6)';
+                        nav.style.boxShadow = 'none';
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // 3. 轮播组件控制
+        const marqueeWrapper = document.querySelector('.marquee-wrapper');
+        const marqueeTrack = document.querySelector('.marquee-track');
+        const prevArrow = document.querySelector('.carousel-arrow.prev');
+        const nextArrow = document.querySelector('.carousel-arrow.next');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const panels = document.querySelectorAll('.pan-mockup');
+
+        if (marqueeWrapper && marqueeTrack && panels.length > 0) {
+            let currentIndex = 0;
+            const panelWidth = 340 + 32; // 面板宽度 + gap
+            const totalPanels = panels.length;
+
+            function updateCarousel() {
+                const translateX = -(currentIndex * panelWidth);
+                marqueeTrack.style.transform = `translateX(${translateX}px)`;
+
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+
+                if (prevArrow && nextArrow) {
+                    prevArrow.style.opacity = currentIndex === 0 ? '0.3' : '1';
+                    prevArrow.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+                    nextArrow.style.opacity = currentIndex === totalPanels - 1 ? '0.3' : '1';
+                    nextArrow.style.pointerEvents = currentIndex === totalPanels - 1 ? 'none' : 'auto';
+                }
+            }
+
+            if (prevArrow) {
+                prevArrow.addEventListener('click', () => {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        updateCarousel();
+                    }
+                });
+            }
+
+            if (nextArrow) {
+                nextArrow.addEventListener('click', () => {
+                    if (currentIndex < totalPanels - 1) {
+                        currentIndex++;
+                        updateCarousel();
+                    }
+                });
+            }
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateCarousel();
+                });
+            });
+
+            updateCarousel();
+
+            // 触摸滑动支持
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            marqueeWrapper.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            marqueeWrapper.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50 && currentIndex < totalPanels - 1) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+                if (touchEndX > touchStartX + 50 && currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            }
+        }
+
+        // 4. 移动端性能优化：减少背景光晕模糊
+        if (isMobileDevice()) {
+            const glows = document.querySelectorAll('.bg-glow');
+            glows.forEach(glow => {
+                glow.style.filter = 'blur(80px)';
+            });
+        }
+
+        // 5. 二维码交互优化（移动端点击触发）
+        const qrContainer = document.querySelector('.qr-hover-container');
+        const qrPopup = document.querySelector('.qr-popup');
+
+        if (qrContainer && qrPopup && isMobileDevice()) {
+            let qrVisible = false;
+
+            qrContainer.addEventListener('click', (e) => {
+                e.preventDefault();
+                qrVisible = !qrVisible;
+                qrPopup.style.display = qrVisible ? 'block' : 'none';
+            });
+
+            // 点击其他地方关闭二维码
+            document.addEventListener('click', (e) => {
+                if (!qrContainer.contains(e.target) && qrVisible) {
+                    qrVisible = false;
+                    qrPopup.style.display = 'none';
+                }
+            });
+        }
+
+        // 6. 工具提示触摸优化
+        if (isMobileDevice()) {
+            const toolBtns = document.querySelectorAll('.tool-btn');
+            toolBtns.forEach(btn => {
+                let tooltipVisible = false;
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tooltip = btn.querySelector('.tool-tooltip');
+                    if (tooltip) {
+                        tooltipVisible = !tooltipVisible;
+                        tooltip.style.opacity = tooltipVisible ? '1' : '0';
+                        tooltip.style.visibility = tooltipVisible ? 'visible' : 'hidden';
+                        tooltip.style.transform = tooltipVisible ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(10px)';
+
+                        // 关闭其他工具提示
+                        toolBtns.forEach(otherBtn => {
+                            if (otherBtn !== btn) {
+                                const otherTooltip = otherBtn.querySelector('.tool-tooltip');
+                                if (otherTooltip) {
+                                    otherTooltip.style.opacity = '0';
+                                    otherTooltip.style.visibility = 'hidden';
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            // 点击其他地方关闭所有工具提示
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.tool-btn')) {
+                    toolBtns.forEach(btn => {
+                        const tooltip = btn.querySelector('.tool-tooltip');
+                        if (tooltip) {
+                            tooltip.style.opacity = '0';
+                            tooltip.style.visibility = 'hidden';
+                        }
+                    });
+                }
+            });
+        }
+
+        // 7. 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href !== '') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const navHeight = document.querySelector('nav').offsetHeight;
+                        const targetPosition = target.offsetTop - navHeight - 20;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+
+                        // 关闭移动菜单
+                        const mobileMenu = document.querySelector('.mobile-menu');
+                        if (mobileMenu && mobileMenu.classList.contains('active')) {
+                            toggleMobileMenu();
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

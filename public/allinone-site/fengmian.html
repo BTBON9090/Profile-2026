@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AllinOne Figma Plugin Cover</title>
+    <style>
+        /* 引入 Figma 常用字体 Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* 居中显示，方便截图 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e5e5e5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* 封面主容器：严格按照 Figma 社区推荐的 1920x1080 尺寸 */
+        .poster {
+            width: 1920px;
+            height: 1080px;
+            background: #FAFAFA;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 120px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            /* 如果你屏幕较小，可以在浏览器按 Ctrl/Cmd + '-' 缩小查看 */
+        }
+
+        /* 极简背景装饰：柔和渐变发光体 */
+        .bg-glow-1 {
+            position: absolute;
+            top: -200px;
+            right: -100px;
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(91,84,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            bottom: -300px;
+            left: -200px;
+            width: 1200px;
+            height: 1200px;
+            background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* 左侧文字信息区 */
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 100px;
+            color: #5B54FF; /* 提取自你插件按钮的紫色 */
+            font-weight: 600;
+            font-size: 24px;
+            margin-bottom: 40px;
+            width: max-content;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .badge svg {
+            margin-right: 12px;
+        }
+
+        .title {
+            font-size: 130px;
+            font-weight: 800;
+            color: #0F172A;
+            line-height: 1;
+            margin-bottom: 32px;
+            letter-spacing: -3px;
+        }
+
+        .subtitle {
+            font-size: 48px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .description {
+            font-size: 28px;
+            color: #64748B;
+            line-height: 1.6;
+            margin-bottom: 64px;
+            max-width: 650px;
+        }
+
+        /* 核心功能标签 */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .feature-tag {
+            flex: 0 0 calc(50% - 10px);
+            padding: 16px 32px;
+            background: rgba(0, 0, 0, 0.858);
+            backdrop-filter: blur(10px);
+            
+            border-radius: 20px;
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* 右侧展示区：极简风格的插件面板Mockup */
+        .visual-container {
+            position: absolute;
+            right: 80px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 700px;
+            height: 800px;
+            z-index: 10;
+            perspective: 1000px;
+        }
+
+        /* 模拟你的插件UI面板，采用微质感和毛玻璃效果 */
+        .mockup-window {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(40px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 
+                0 40px 100px -20px rgba(0, 0, 0, 0.1), 
+                0 0 0 1px rgba(0,0,0,0.05),
+                inset 0 0 0 2px rgba(255,255,255,0.5);
+            display: flex;
+            overflow: hidden;
+            /* 微微倾斜带来空间感，如果喜欢纯平可以删掉 transform */
+            transform: rotateY(-8deg) rotateX(4deg) scale(0.95);
+            transition: all 0.5s ease;
+        }
+
+        /* 纯 CSS 绘制你的界面结构示意 */
+        .mock-sidebar {
+            width: 220px;
+            background: #F8FAFC;
+            border-right: 1px solid #E2E8F0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mock-nav-item {
+            height: 48px;
+            border-radius: 12px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+        }
+        
+        .mock-nav-item.active {
+            background: #EEF2FF;
+        }
+
+        .mock-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: #CBD5E1;
+        }
+        .mock-nav-item.active .mock-icon { background: #5B54FF; }
+        
+        .mock-text {
+            width: 80px;
+            height: 12px;
+            border-radius: 10px;
+            background: #CBD5E1;
+        }
+        .mock-nav-item.active .mock-text { background: #5B54FF; }
+
+        .mock-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            background: #FFFFFF;
+        }
+
+        .mock-header {
+            width: 40%;
+            height: 24px;
+            background: #E2E8F0;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mock-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .mock-card {
+            height: 120px;
+            border-radius: 16px;
+            border: 2px dashed #E2E8F0;
+            background: #F8FAFC;
+        }
+
+        .mock-button {
+            margin-top: auto;
+            height: 64px;
+            background: #5B54FF;
+            border-radius: 16px;
+            width: 100%;
+        }
+
+        .mock-ai-box {
+            height: 200px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #EEF2FF 0%, #F8FAFC 100%);
+            border: 1px solid #E0E7FF;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="poster">
+        <!-- 背景光效 -->
+        <div class="bg-glow-1"></div>
+        <div class="bg-glow-2"></div>
+
+        <!-- 左侧文本区 -->
+        <div class="content">
+            <div class="logo" style="display: flex; align-items: center; gap: 12px; padding-bottom: 40px;">
+                <img src="Frame 21.png" alt="AllinOne" width="80" height="80" style="border-radius: 6px;">
+                <span style="font-size: 32px;">➕</span>
+                <img src="Figma.png" alt="AllinOne" width="80" height="80" style="border-radius: 6px;">
+            </div>
+            
+            <h1 class="title">Allin<span style="font-size: 130px;
+            font-weight: 800;
+            color: #5B54FF;
+            line-height: 1;
+            margin-bottom: 32px;
+            letter-spacing: -3px;">One</span></h1>
+            <h2 class="subtitle">全能设计效率神器</h2>
+            <p class="description">
+                告别繁琐操作，聚合智能填充、超级选择、组件清洗与一键导出等数十项高频工具，让设计效率翻倍
+            </p>
+
+            <div class="features">
+                <div class="feature-tag">🚀 简易工具集</div>
+                <div class="feature-tag">✨ AI 智能填充</div>
+                <div class="feature-tag">🎯 超级选择器</div>
+                <div class="feature-tag">⚡️ 一键导出 PPT</div>
+            </div>
+        </div>
+
+        <!-- 右侧抽象UI图形区 -->
+        <div class="visual-container">
+            <div class="mockup-window">
+                <iframe src="chajian.html" style="width: 100%; height: 100%; border: none; border-radius: 24px;"></iframe>
+                <!-- 侧边栏模拟 
+                <div class="mock-sidebar">
+                    <div class="mock-nav-item active"><div class="mock-icon"></div><div class="mock-text"></div></div>
+                    <div class="mock-nav-item"><div class="mock-icon"></div><div class="mock-text"></div></div>
+                    <div class="mock-nav-item"><div class="mock-icon"></div><div class="mock-text"></div></div>
+                    <div class="mock-nav-item"><div class="mock-icon"></div><div class="mock-text"></div></div>
+                    <div class="mock-nav-item"><div class="mock-icon"></div><div class="mock-text"></div></div>
+                    <div class="mock-nav-item"><div class="mock-icon"></div><div class="mock-text"></div></div>
+                </div>
+                主内容区模拟
+                <div class="mock-content">
+                    <div class="mock-header"></div>
+                    <div class="mock-ai-box"></div>
+                    <div class="mock-grid">
+                        <div class="mock-card"></div>
+                        <div class="mock-card"></div>
+                        <div class="mock-card"></div>
+                        <div class="mock-card"></div>
+                    </div>
+                    <div class="mock-button"></div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
