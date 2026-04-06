@@ -87,7 +87,7 @@ export const zh = {
         description: '支持自定义 API Key 与模型代理（GLM, Kimi, Claude 等），Key 仅保存在本地，兼顾隐私与灵活性。',
       },
     },
-    download: '下载插件',
+    download: '查看项目',
   },
   snowEcosystem: {
     badge: '核心业务',

@@ -1,7 +1,7 @@
 // src/components/ui/UniversalModal.tsx
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Mail, Download, Sparkles, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Mail, Download, Sparkles, Check, ChevronLeft, ChevronRight, ArrowRight,CheckCircle2, ArrowBigDown, ArrowDown } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import AICopilot from "./AICopilot"; 
@@ -119,12 +119,37 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
                   />
                 ))}
               </div>
-              <div className="w-full h-32 flex items-center justify-center pb-48">
-                <div className="flex flex-col items-center gap-8">
-                  <span className="text-zinc-500 text-sm tracking-widest uppercase">Next Project</span>
-                  <span className="text-white/80 font-semibold text-4xl">{nextTitle || 'No More Projects'}</span>
+              {/* ========================================== */}
+              {/* 底部无缝引流块 (Next Project / End)           */}
+              {/* ========================================== */}
+              <button 
+                onClick={hasNext ? onNext : onClose}
+                // 摒弃固定高度，用 py-32 撑开完美呼吸感。加入渐变背景和顶边框
+                className="w-full py-32 flex flex-col items-center justify-center cursor-pointer group border-t border-white/5 bg-black/50 hover:bg-white/2 transition-all duration-500"
+              >
+                <div className="flex flex-col items-center gap-6">
+                  {/* 小标题 */}
+                  <span className="text-zinc-500 font-mono text-sm tracking-widest uppercase group-hover:text-blue-400 transition-colors">
+                    {hasNext ? 'Up Next' : 'Back to Gallery'}
+                  </span>
+                  
+                  {/* 大标题与动态图标 */}
+                  <div className="flex flex-col items-center justify-center gap-6">
+                    <span className="text-white/80 font-bold text-4xl md:text-5xl group-hover:text-white transition-colors">
+                      {hasNext ? nextTitle : '没了，感谢关注 🌹'}
+                    </span>
+                    
+                    {/* 极客微交互：Hover 时图标从左侧滑入/放大 */}
+                    {hasNext ? (
+                      <ArrowDown className="w-8 h-8 text-white opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
+                        <X className="w-6 h-6 text-white" />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
 
@@ -134,7 +159,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
           <div className="absolute inset-0 pointer-events-none flex justify-center">
             
             {/* 关闭按钮 */}
-            <button onClick={onClose} className="fixed top-4 right-4 md:top-12 md:right-8 z-[100000] w-10 h-10 md:w-14 md:h-14 bg-zinc-900/80 hover:bg-white text-zinc-400 hover:text-black rounded-full flex items-center justify-center transition-all border border-zinc-700 pointer-events-auto shadow-2xl">
+            <button onClick={onClose} className="fixed top-8 right-4 md:top-20 md:right-8 z-[100000] w-10 h-10 md:w-14 md:h-14 bg-zinc-900/80 hover:bg-white text-zinc-400 hover:text-black rounded-full flex items-center justify-center transition-all border border-zinc-700 pointer-events-auto shadow-2xl">
               <X className="w-4 h-4 md:w-6 md:h-6" />
             </button>
 

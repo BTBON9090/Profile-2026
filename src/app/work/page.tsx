@@ -86,16 +86,18 @@ const projects = [
       {
         id: "all-in-one",
         title: "AllinOne - Figma全能插件（免费）",
-        description: "主导雪诺企业零信任安全生态，包含管理后台长表单重构与 AI 浏览器跨端体验设计。",
+        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 240+ 真实设计师。",
         image: "/images/allinone封面.jpg",
+        useModal: false,
         link: "/work/all-in-one",
       },
       {
-        id: "p01",
+        id: "ai-translate",
         title: "AI Translate - AI翻译插件（免费）",
-        description: "自驱型业务项目、个人外包项目、日常练习作品。",
+        description: "支持自定义 AI 模型配置的极简悬浮翻译插件，提供沉浸式双语对照与局部划词翻译体验。",
         image: "/images/plugin-ui.png",
-        link: "/work/light-branding",
+        useModal: false,
+        link: "/work/ai-translate",
       },
       {
         id: "others",
@@ -172,8 +174,21 @@ export default function WorkProject() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 ">
                 {section.items.filter(project => !(project as any).hidden).map((project, idx) => {
                   const isModal = (project as any).useModal && (project as any).dataSlug;
-                  const Wrapper: any = isModal ? "div" : Link;
-                  const wrapperProps = isModal ? { onClick: () => openModal(project.id) } : { href: project.link };
+                  const isExternal = project.link && (project.link.startsWith('http://') || project.link.startsWith('https://'));
+                  
+                  let Wrapper: any = "div";
+                  let wrapperProps: any = {};
+                  
+                  if (isModal) {
+                    Wrapper = "div";
+                    wrapperProps = { onClick: () => openModal(project.id) };
+                  } else if (isExternal) {
+                    Wrapper = "a";
+                    wrapperProps = { href: project.link, target: "_blank", rel: "noopener noreferrer" };
+                  } else {
+                    Wrapper = Link;
+                    wrapperProps = { href: project.link };
+                  }
 
                   return (
                     <motion.div key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: idx * 0.1, duration: 0.5 }} className="h-full">

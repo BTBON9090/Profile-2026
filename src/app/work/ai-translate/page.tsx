@@ -1,10 +1,10 @@
-// src/app/work/all-in-one/page.tsx
+// src/app/work/ai-translate/page.tsx
 "use client";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { useEffect } from "react";
 
-export default function AllInOneStandalonePage() {
+export default function TranslateStandalonePage() {
   const router = useRouter();
   
   useEffect(() => {
@@ -22,15 +22,15 @@ export default function AllInOneStandalonePage() {
       >
         <X className="w-4 h-4 md:w-6 md:h-6 text-white" />
       </button>
+     
 
-      {/* 🔴 核心黑科技：无缝 Iframe 镶嵌旧网站 */}
-      {/* 这里的 src 指向了我们在 public 目录下放的 index.html */}
+      {/* 🔴 核心黑科技：镶嵌 Translate 旧网站 */}
+      {/* src 指向了刚才放在 public 目录下的 index.html */}
       <iframe 
-        src="/allinone-site/index.html" 
+        src="/translate-site/index.html" 
         className="w-full h-full border-none m-0 p-0 block bg-transparent"
-        title="AllinOne Plugin Site"
-        // 允许旧网站内部的 JS 正常运行
-        sandbox="allow-scripts allow-same-origin allow-popups"
+        title="AI Translate Extension Site"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
       />
 
     </div>

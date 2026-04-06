@@ -3,6 +3,7 @@
 import { motion, type Variants } from "framer-motion";
 import { Globe2, SplitSquareHorizontal, Key, MousePointer2, ArrowUpRight, Download, Puzzle } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 
 export default function AITranslate() {
@@ -77,17 +78,16 @@ export default function AITranslate() {
             </div>
 
             <div className="mt-10 mb-10">
-              <a 
-                href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/20260312.zip" 
-                download="AI-Translate.zip"
+              <Link 
+                href="/work/ai-translate"
                 className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 cursor-pointer"
             >
                 <Puzzle className="w-4 h-4 text-white/60" />
                 <span className="text-xl font-mono font-bold text-zinc-300 group-hover:text-white uppercase tracking-wider">{t.aiTranslate.download}</span>
-                <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </a>
+            </Link>
             </div>
           </motion.div>
 

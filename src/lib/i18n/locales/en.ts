@@ -87,7 +87,7 @@ export const en = {
         description: 'Support for custom API Keys and model proxies (GLM, Kimi, Claude, etc.). Keys stored locally only, balancing privacy and flexibility.',
       },
     },
-    download: 'Download Plugin',
+    download: 'View Project',
   },
   snowEcosystem: {
     badge: 'Core Business',

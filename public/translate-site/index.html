@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 极简翻译 - 智能网页翻译 Chrome 插件</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+            accent: { 400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, #2563eb, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .gradient-bg { background: linear-gradient(135deg, #eff6ff, #faf5ff, #fff7ed); }
+    .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(37,99,235,0.12); }
+    .btn-glow { position: relative; overflow: hidden; transition: all 0.3s ease; }
+    .btn-glow::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,transparent,rgba(255,255,255,0.2),transparent); transform:translateX(-100%); transition:transform 0.5s; }
+    .btn-glow:hover::after { transform:translateX(100%); }
+    .float-animation { animation: float 6s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .fade-in { opacity:0; animation: fadeInUp 0.8s ease forwards; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .delay-1 { animation-delay:0.1s } .delay-2 { animation-delay:0.2s } .delay-3 { animation-delay:0.3s } .delay-4 { animation-delay:0.4s } .delay-5 { animation-delay:0.5s }
+    .provider-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:9999px; font-size:12px; font-weight:500; white-space:nowrap; background:#f1f5f9; color:#475569; border:1px solid #e2e8f0; transition:all 0.2s; }
+    .provider-badge:hover { background:#e0e7ff; border-color:#93c5fd; color:#1e40af; }
+    .feature-icon { width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0; }
+    .mockup-shadow { box-shadow: 0 25px 60px -15px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05); border-radius:16px; overflow:hidden; }
+    .step-number { width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;flex-shrink:0; }
+    ::selection { background:#bfdbfe; color:#1e3a8a; }
+  </style>
+</head>
+<body class="bg-white text-gray-800 antialiased">
+
+  <!-- Hero 区域 -->
+  <section class="gradient-bg pt-32 pb-20 relative overflow-hidden">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-blue-200/40 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-violet-200/40 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <!-- 左侧文字 -->
+        <div class="space-y-7">
+          <div class="fade-in inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-sm font-medium text-blue-700">
+            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Chrome 扩展 · 免费使用
+          </div>
+          <h1 class="fade-in delay-1 text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-gray-900">
+            让网页翻译<br><span class="gradient-text">智能又简单</span>
+          </h1>
+          <p class="fade-in delay-2 text-lg text-gray-500 leading-relaxed max-w-md">
+            基于 AI 大模型的极简翻译插件，支持流式输出与沉浸式阅读体验。选中即译，一键全页，多模型自由切换。
+          </p>
+          <div class="fade-in delay-3 flex flex-wrap gap-4 pt-2">
+            <a href="#download" class="btn-glow inline-flex items-center gap-2.5 px-7 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-blue-500/25 hover:-translate-y-0.5 transition-all">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m7-10v12m0 0l-4-4m4 4l4-4"/></svg>
+              免费下载
+            </a>
+            <a href="#features" class="inline-flex items-center gap-2.5 px-7 py-3.5 bg-white text-gray-700 font-semibold rounded-2xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all">
+              了解更多
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+            </a>
+          </div>
+          <div class="fade-in delay-4 flex items-center gap-6 pt-4 text-sm text-gray-400">
+            <div class="flex items-center gap-2"><span class="text-yellow-500">★</span> 4.9 评分</div>
+            <div class="w-px h-4 bg-gray-200"></div>
+            <div>10K+ 用户</div>
+            <div class="w-px h-4 bg-gray-200"></div>
+            <div>Manifest V3</div>
+          </div>
+        </div>
+        
+        <!-- 右侧 Mockup -->
+        <div class="fade-in delay-5 flex justify-center lg:justify-end">
+          <div class="mockup-shadow bg-white w-[380px] float-animation">
+            <div class="bg-gradient-to-r from-blue-50 to-violet-50 px-5 py-4 flex items-center gap-3 border-b border-gray-100">
+              <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
+                <img src="icon128.png" style="width: 32px; height: 32px;">
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-gray-800">AI 极简翻译</div>
+                <div class="text-xs text-gray-400">DeepSeek · 就绪</div>
+              </div>
+              <div class="ml-auto w-2.5 h-2.5 bg-green-400 rounded-full"></div>
+            </div>
+            <div class="p-5 space-y-4">
+              <button class="w-full py-3.5 bg-gradient-to-r from-blue-500 to-violet-500 text-white font-semibold rounded-xl text-sm">🌐 翻译当前页面</button>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between py-2.5 px-4 bg-gray-50 rounded-xl text-sm">
+                  <span class="text-gray-600">目标语言</span>
+                  <span class="font-medium text-gray-800">简体中文 ▾</span>
+                </div>
+                <div class="flex items-center justify-between py-2.5 px-4 bg-gray-50 rounded-xl text-sm">
+                  <span class="text-gray-600">双语对照</span>
+                  <div class="w-9 h-5 bg-blue-500 rounded-full relative"><div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div></div>
+                </div>
+                <div class="flex items-center justify-between py-2.5 px-4 bg-gray-50 rounded-xl text-sm">
+                  <span class="text-gray-600">悬浮球入口</span>
+                  <div class="w-9 h-5 bg-blue-500 rounded-full relative"><div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能特性 -->
+  <section id="features" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-violet-50 rounded-full text-sm font-medium text-violet-600 mb-4">✨ 核心功能</div>
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">强大而简洁的翻译能力</h2>
+        <p class="text-gray-500 leading-relaxed">每一个功能都经过精心设计，只为给你最流畅的翻译体验</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 功能卡片 -->
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-blue-50 text-blue-500 mb-5 group-hover:scale-110 transition-transform">🌐</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">整页翻译</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">一键翻译整个网页内容，支持流式实时输出，无需等待即可看到翻译结果逐字呈现。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-emerald-50 text-emerald-500 mb-5 group-hover:scale-110 transition-transform">✍️</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">划词翻译</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">选中任意文字即刻翻译，悬浮显示结果，不打断阅读节奏，精准高效。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-violet-50 text-violet-500 mb-5 group-hover:scale-110 transition-transform">🔄</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">双语对照</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">原文与译文并排展示，提供极简和高亮两种对照样式，满足不同阅读偏好。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-orange-50 text-orange-500 mb-5 group-hover:scale-110 transition-transform">🎯</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">AI 精翻</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">基于大语言模型的深度语义理解，翻译更通顺自然，告别机翻的生硬感。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-pink-50 text-pink-500 mb-5 group-hover:scale-110 transition-transform">⚡</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">流式输出</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">SSE 流式传输技术，翻译内容像打字一样逐字出现，告别漫长等待。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-cyan-50 text-cyan-500 mb-5 group-hover:scale-110 transition-transform">🎈</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">悬浮球入口</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">页面右下角悬浮球设计，随时呼出翻译面板，操作便捷不遮挡内容。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-indigo-50 text-indigo-500 mb-5 group-hover:scale-110 transition-transform">📝</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">自动翻译</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">设置指定网站自动翻译，打开即译，适合经常访问的外文网站。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-teal-50 text-teal-500 mb-5 group-hover:scale-110 transition-transform">💾</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">智能缓存</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">本地缓存已翻译内容，相同文本二次调用秒出结果，节省 API 调用成本。</p>
+        </div>
+        
+        <div class="card-hover p-7 bg-white rounded-2xl border border-gray-100 group">
+          <div class="feature-icon bg-amber-50 text-amber-500 mb-5 group-hover:scale-110 transition-transform">🔒</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">隐私安全</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">API Key 仅存储在浏览器本地，请求不携带 Cookie 和个人信息，安全可控。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 支持的模型 -->
+  <section id="providers" class="py-24 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full text-sm font-medium text-blue-600 mb-4">🤖 模型支持</div>
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">自由选择你喜欢的 AI 模型</h2>
+        <p class="text-gray-500 leading-relaxed">支持 11+ 主流 AI 服务商，从免费到付费，总有一款适合你</p>
+      </div>
+      
+      <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
+        <span class="provider-badge">✨ DeepSeek 官方</span>
+        <span class="provider-badge">🌙 Kimi 官方</span>
+        <span class="provider-badge">🚀 硅基流动 SiliconFlow</span>
+        <span class="provider-badge">🟣 通义千问 Qwen</span>
+        <span class="provider-badge">🎓 智谱清言 BigModel</span>
+        <span class="provider-badge">🎓 GLM-4.7-FlashX</span>
+        <span class="provider-badge">🎓 GLM-4.7-Flash</span>
+        <span class="provider-badge">🤖 OpenAI GPT-4o</span>
+        <span class="provider-badge">⚡ Groq</span>
+        <span class="provider-badge">🌐 OpenRouter</span>
+        <span class="provider-badge">🏠 Ollama 本地</span>
+        <span class="provider-badge">⚙️ 自定义 API</span>
+      </div>
+      
+      <div class="mt-14 grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-7 border border-gray-100 card-hover">
+          <div class="text-3xl mb-4">🆓</div>
+          <h3 class="font-bold text-gray-900 mb-2">免费方案</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">智谱 GLM-4-Flash / FlashX 等免费模型开箱即用，零门槛体验 AI 翻译。</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 border border-gray-100 card-hover">
+          <div class="text-3xl mb-4">💰</div>
+          <h3 class="font-bold text-gray-900 mb-2">性价比之选</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">DeepSeek、硅基流动等平台价格低廉，翻译质量出色，日常使用成本低。</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 border border-gray-100 card-hover">
+          <div class="text-3xl mb-4">🔧</div>
+          <h3 class="font-bold text-gray-900 mb-2">完全自定义</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">支持自定义 API 地址和模型名称，兼容任何 OpenAI 格式接口。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 支持的语言 -->
+  <section class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 rounded-full text-sm font-medium text-emerald-600 mb-4">🌍 语言覆盖</div>
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">覆盖全球主流语言</h2>
+        <p class="text-gray-500 leading-relaxed">22 种语言互译，满足你的跨语言阅读需求</p>
+      </div>
+      
+      <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 max-w-4xl mx-auto text-sm text-gray-600">
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">简体中文</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">繁體中文</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg font-medium text-gray-800">English</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">日本語</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">한국어</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Français</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Deutsch</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Español</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Русский</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Português</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Italiano</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Nederlands</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Svenska</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Türkçe</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Polski</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Bahasa Indonesia</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">ไทย</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Tiếng Việt</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">Bahasa Melayu</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">العربية</span>
+        <span class="px-3 py-1.5 bg-gray-50 rounded-lg">हिन्दी</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使用指南 -->
+  <section id="guide" class="py-24 gradient-bg">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full text-sm font-medium text-blue-600 mb-4">📖 快速上手</div>
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">三步开始使用</h2>
+        <p class="text-gray-500 leading-relaxed">简单几步，即可享受 AI 驱动的智能翻译体验</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center space-y-4">
+          <div class="step-number bg-gradient-to-br from-blue-500 to-blue-600 mx-auto shadow-lg shadow-blue-500/30">1</div>
+          <h3 class="text-xl font-bold text-gray-900">安装插件</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">下载插件包，在 Chrome 中打开扩展管理页，开启开发者模式后加载解压的扩展程序文件夹。</p>
+        </div>
+        <div class="text-center space-y-4">
+          <div class="step-number bg-gradient-to-br from-violet-500 to-violet-600 mx-auto shadow-lg shadow-violet-500/30">2</div>
+          <h3 class="text-xl font-bold text-gray-900">配置 API</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">点击插件图标，选择 AI 模型服务商，填入对应的 API Key（部分免费模型可跳过此步）。</p>
+        </div>
+        <div class="text-center space-y-4">
+          <div class="step-number bg-gradient-to-br from-pink-500 to-pink-600 mx-auto shadow-lg shadow-pink-500/30">3</div>
+          <h3 class="text-xl font-bold text-gray-900">开始翻译</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">打开任意外文网页，点击「翻译当前页面」或选中文本划词翻译，即刻体验 AI 翻译的魅力。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA 下载区域 -->
+  <section id="download" class="py-28 bg-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-violet-50/40 to-transparent"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-100/50 to-violet-100/50 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">准备好体验了吗？</h2>
+      <p class="text-lg text-gray-500 mb-10 max-w-xl mx-auto leading-relaxed">立即下载 AI 极简翻译，让每一次外语阅读都变得轻松自如</p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://github.com/BTBON9090/AI-Translate/archive/refs/heads/20260312.zip" target="_blank" class="btn-glow inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold text-lg rounded-2xl hover:shadow-2xl hover:shadow-blue-500/25 hover:-translate-y-1 transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m7-10v12m0 0l-4-4m4 4l4-4"/></svg>
+          从 GitHub 下载
+        </a>
+        <a href="https://github.com/BTBON9090/AI-Translate" target="_blank" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-gray-700 font-bold text-lg rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          查看 GitHub 仓库
+        </a>
+      </div>
+      
+      <p class="mt-8 text-sm text-gray-400">适用于 Google Chrome / Edge / 其他 Chromium 内核浏览器 · Manifest V3</p>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="bg-gray-900 text-gray-400 py-14">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold">
+            <img src="icon128.png" style="width: 40px; height: 40px;">
+          </div>
+          <div>
+            <div class="font-bold text-white">AI 极简翻译</div>
+            <div class="text-xs text-gray-500">Chrome Extension v1.0.0</div>
+          </div>
+        </div>
+        <div class="text-sm text-center md:text-right space-y-1">
+          <div>Made with ❤️ by <span class="text-gray-300">BTBON (倪城)</span></div>
+          <div class="text-xs text-gray-600">Copyright © 2025-2026 BTBON. All Rights Reserved.</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

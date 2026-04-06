@@ -3,6 +3,7 @@
 import { motion, type Variants } from "framer-motion";
 import { Code2, Cpu, Zap, Star, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 
 const containerVariants = {
@@ -46,10 +47,8 @@ export default function AllInOne() {
         
         <h2 className="text-4xl md:text-5xl font-bold text-zinc-300 mb-6 flex items-center flex-wrap gap-4">
             {t.allInOne.title} <span className="text-zinc-500">{t.allInOne.titleSuffix}</span>
-            <a 
-                href="https://allinone-plugin.netlify.app/" 
-                target="_blank" 
-                rel="noopener noreferrer"
+            <Link 
+                href="/work/all-in-one"
                 className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-purple-500/50 hover:bg-purple-500/10 transition-all duration-300 cursor-pointer"
             >
                 <Code2 className="w-4 h-4 text-white/60" />
@@ -57,7 +56,7 @@ export default function AllInOne() {
                 <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </a>
+            </Link>
         </h2>
         <p className="text-zinc-400 max-w-2xl text-lg font-light leading-relaxed">
           {t.allInOne.description} <br />
@@ -146,15 +145,13 @@ export default function AllInOne() {
                 <h3 className="text-2xl font-bold text-zinc-300">{t.allInOne.interface.title}</h3>
               </div>
 
-              <a
-                href="https://allinone-plugin.netlify.app/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/work/all-in-one"
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 border border-zinc-700/50 hover:bg-blue-600 hover:border-blue-500 hover:text-white text-zinc-400 transition-all duration-300 group/btn "
               >
                 <span className="text-xs font-mono font-medium">{t.allInOne.interface.visit}</span>
                 <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-              </a>
+              </Link>
             </div>
 
             <div className="relative flex-1 min-h-[420px] bg-black/40 rounded-2xl border border-zinc-800/80 overflow-hidden group-hover:scale-[1.02] group-hover:border-zinc-700 transition-all duration-500 shadow-2xl">
