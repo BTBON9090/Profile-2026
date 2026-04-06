@@ -69,34 +69,7 @@
         }
 
         /* ================= 导航栏 ================= */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5%;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .qr-hover-container:hover .qr-popup {
-            display: block !important;
-        }
-
-        .qr-hover-container .qr-popup {
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
+        
 
         .logo {
             font-size: 24px;
@@ -108,57 +81,6 @@
             margin-bottom: 40px;
         }
         
-        .logo span { color: var(--primary); }
-
-        .nav-links {
-            display: flex;
-            gap: 32px;
-            flex-wrap: nowrap;
-            white-space: nowrap;
-        }
-
-        .nav-links a {
-            font-weight: 400;
-            color: var(--text-gray);
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover { color: var(--primary); }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 100px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px -10px var(--primary);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px -10px var(--primary);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-dark);
-            border: 2px solid #E2E8F0;
-            padding: 12px 28px;
-            border-radius: 100px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
         /* ================= 首屏 Hero ================= */
         .hero-main {
             max-width: 1400px;
@@ -299,7 +221,10 @@
 
         /* 响应式 */
         @media (max-width: 900px) {
-            .hero-topbar { flex-direction: column; gap: 20px; }
+            .logo {
+                justify-content: center;
+                margin: 100px auto 40px;
+            }
             .hero-main { flex-direction: column; text-align: center; padding-top: 40px; }
             .hero-text { max-width: 100%; min-width: 0; flex: none; width: 100%; }
             .hero-visual { min-width: 0; flex: none; width: 100%; }
@@ -582,8 +507,6 @@
             }
             .detail-list li { justify-content: center; }
             .security-banner { flex-direction: column; text-align: center; gap: 30px;}
-            .nav-links { gap: 20px; }
-            .nav-links a { font-size: 14px; }
         }
 
         /* ================= 响应式：平板竖屏 (768px - 991px) ================= */
@@ -592,93 +515,7 @@
                 height: 64px; 
                 padding: 0 20px; 
             }
-            .nav-links { display: none; }
             .qr-hover-container { display: none; }
-            .mobile-menu-btn {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                width: 44px;
-                height: 44px;
-                background: white;
-                border: 1px solid #E2E8F0;
-                border-radius: 10px;
-                cursor: pointer;
-                padding: 10px;
-                gap: 5px;
-            }
-            .mobile-menu-btn span {
-                display: block;
-                width: 22px;
-                height: 2.5px;
-                background: #0F172A;
-                border-radius: 2px;
-                transition: all 0.3s ease;
-            }
-            .mobile-menu-btn.active span:nth-child(1) {
-                transform: rotate(45deg) translate(6px, 6px);
-            }
-            .mobile-menu-btn.active span:nth-child(2) {
-                opacity: 0;
-            }
-            .mobile-menu-btn.active span:nth-child(3) {
-                transform: rotate(-45deg) translate(6px, -6px);
-            }
-            .mobile-menu-overlay {
-                display: block;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-                z-index: 1001;
-            }
-            .mobile-menu-overlay.active {
-                opacity: 1;
-                visibility: visible;
-            }
-            .mobile-menu {
-                position: fixed;
-                top: 64px;
-                left: 0;
-                right: 0;
-                background: white;
-                padding: 20px 24px;
-                transform: translateY(-100%);
-                opacity: 0;
-                transition: all 0.3s ease;
-                z-index: 1002;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            }
-            .mobile-menu.active {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            .mobile-menu-links {
-                display: flex;
-                flex-direction: column;
-                gap: 0;
-            }
-            .mobile-menu-links a {
-                display: block;
-                padding: 16px 0;
-                font-size: 17px;
-                color: var(--text-dark);
-                text-decoration: none;
-                border-bottom: 1px solid #E2E8F0;
-                transition: color 0.2s;
-            }
-            .mobile-menu-links a:last-child {
-                border-bottom: none;
-            }
-            .mobile-menu-links a:hover {
-                color: var(--primary);
-            }
             .hero {
                 padding: 140px 4% 80px;
             }
@@ -711,64 +548,11 @@
 
         /* ================= 响应式：手机 (<= 767px) ================= */
         @media (max-width: 767px) {
-            /* 导航栏优化 */
-            nav {
-                height: 60px;
-                padding: 0 16px;
-            }
+            /* Logo 居中 */
             .logo {
-                font-size: 18px;
-                gap: 8px;
+                justify-content: center;
+                margin: 100px auto 40px;
             }
-            .logo img {
-                width: 32px;
-                height: 32px;
-            }
-            .nav-right {
-                gap: 8px !important;
-            }
-            .nav-user-link {
-                display: flex !important;
-                padding: 6px 8px !important;
-                font-size: 13px;
-                gap: 8px !important;
-            }
-            .nav-user-link img {
-                width: 22px !important;
-                height: 22px !important;
-            }
-            .nav-user-link div {
-                padding: 3px 8px !important;
-                font-size: 11px;
-            }
-            .mobile-menu-btn {
-                width: 44px;
-                height: 44px;
-                padding: 10px;
-                border: 1px solid #E2E8F0;
-                background: white;
-            }
-            .mobile-menu-btn span {
-                width: 20px;
-                height: 2.5px;
-            }
-            .mobile-menu {
-                top: 60px;
-                padding: 20px;
-                max-height: calc(100vh - 60px);
-                overflow-y: auto;
-            }
-            .mobile-menu-links a {
-                padding: 16px 0;
-                font-size: 16px;
-                font-weight: 500;
-            }
-            .mobile-menu-links a:active {
-                color: var(--primary);
-                background: #F8FAFC;
-                padding-left: 12px;
-            }
-
             /* Hero 区域优化 */
             .hero {
                 padding: 120px 5% 60px;
@@ -1120,33 +904,6 @@
 
         /* ================= 响应式：小屏手机 (<= 375px) ================= */
         @media (max-width: 375px) {
-            /* 导航栏 */
-            nav {
-                height: 56px;
-                padding: 0 12px;
-            }
-            .logo {
-                font-size: 16px;
-                gap: 6px;
-            }
-            .logo img {
-                width: 28px;
-                height: 28px;
-            }
-            .nav-user-link {
-                padding: 5px 6px !important;
-                font-size: 12px;
-                gap: 6px !important;
-            }
-            .nav-user-link img {
-                width: 20px !important;
-                height: 20px !important;
-            }
-            .mobile-menu-btn {
-                width: 40px;
-                height: 40px;
-            }
-
             /* Hero区域 */
             .hero {
                 padding: 100px 4% 50px;
@@ -1295,10 +1052,6 @@
                 font-size: 22px;
             }
         }
-
-        .mobile-menu-btn { display: none; }
-        .mobile-menu-overlay { display: none; }
-        .mobile-menu { display: none; }
 
         /* ================= 移动端触摸优化 ================= */
         @media (hover: none) and (pointer: coarse) {
@@ -2537,8 +2290,6 @@
     <div class="bg-glow glow-1"></div>
     <div class="bg-glow glow-2"></div>
 
-    <div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
-
     <!-- 首屏 Hero -->
     <header class="hero-main">
         <!-- 左侧文案 -->
@@ -3451,18 +3202,6 @@ const res = await fetch(
             });
         }
 
-        function toggleMobileMenu() {
-            const menuBtn = document.querySelector('.mobile-menu-btn');
-            const menuOverlay = document.querySelector('.mobile-menu-overlay');
-            const mobileMenu = document.querySelector('.mobile-menu');
-
-            menuBtn.classList.toggle('active');
-            menuOverlay.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-
-            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-        }
-
         // 1. 滚动揭示动画 (Scroll Reveal)
         const observerOptions = {
             root: null,
@@ -3670,12 +3409,6 @@ const res = await fetch(
                             top: targetPosition,
                             behavior: 'smooth'
                         });
-
-                        // 关闭移动菜单
-                        const mobileMenu = document.querySelector('.mobile-menu');
-                        if (mobileMenu && mobileMenu.classList.contains('active')) {
-                            toggleMobileMenu();
-                        }
                     }
                 }
             });
