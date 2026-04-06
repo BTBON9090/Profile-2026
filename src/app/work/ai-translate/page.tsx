@@ -30,7 +30,7 @@ export default function TranslateStandalonePage() {
         src="/translate-site/index.html" 
         className="w-full h-full border-none m-0 p-0 block bg-transparent"
         title="AI Translate Extension Site"
-        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
       />
 
     </div>
