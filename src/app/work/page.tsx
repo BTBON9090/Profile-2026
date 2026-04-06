@@ -78,6 +78,24 @@ const projects = [
         useModal: true,
         dataSlug: "amazeui"
       },
+      {
+        id: "snownewtab",
+        title: "雪诺企业安全浏览器",
+        description: "企业级安全浏览器",
+        image: "https://cdn.btbon.cn/snownewtab/AI-NEWTAB.png",
+        date: "2024 - 2026",
+        useModal: true,
+        dataSlug: "snownewtab"
+      },
+      {
+        id: "snowspace",
+        title: "雪诺企业安全工作空间",
+        description: "企业安全办公管理系统，浏览器后台",
+        image: "https://cdn.btbon.cn/snowspace/应用列表.png",
+        date: "2024 - 2026",
+        useModal: true,
+        dataSlug: "snowspace"
+      },
     ]
   },
   {

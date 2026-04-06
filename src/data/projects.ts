@@ -9,6 +9,8 @@ import kwaiMagneticStar from './work/kwaiMagneticStar';
 import amazeui from './work/amazeui';
 import studio from './work/studio';
 import others from './work/others';
+import snownewtab from './work/snownewtab';
+import snowspace from './work/snowspace';
 // import allInOne from './work/all-in-one'; 
 
 // 2. 建立全局数据索引库 (Registry)
@@ -21,7 +23,8 @@ const allProjects: Record<string, any> = {
   "amazeui": amazeui,
   "studio": studio,
   "others": others,
-  // "all-in-one": allInOne,
+  "snownewtab": snownewtab,
+  "snowspace": snowspace,
 };
 
 // 3. 暴露出两个极其优雅的方法供 UI 层调用

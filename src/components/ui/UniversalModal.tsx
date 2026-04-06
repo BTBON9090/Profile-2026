@@ -134,10 +134,15 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
                   </span>
                   
                   {/* 大标题与动态图标 */}
-                  <div className="flex flex-col items-center justify-center gap-6">
+                  <div className="flex flex-col items-center justify-center gap-3">
                     <span className="text-white/80 font-bold text-4xl md:text-5xl group-hover:text-white transition-colors">
-                      {hasNext ? nextTitle : '没了，感谢关注 🌹'}
+                      {hasNext ? nextTitle : '企业项目已结束'}
                     </span>
+                    {!hasNext && (
+                      <span className="text-zinc-500 font-mono text-sm tracking-wider group-hover:text-zinc-400 transition-colors mt-2">
+                        等等，还没完，下面还有更多个人作品哟！
+                      </span>
+                    )}
                     
                     {/* 极客微交互：Hover 时图标从左侧滑入/放大 */}
                     {hasNext ? (
