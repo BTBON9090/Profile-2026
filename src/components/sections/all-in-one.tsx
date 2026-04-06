@@ -79,7 +79,7 @@ export default function AllInOne() {
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
           <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full"></div>
 
-          <div className="p-8 h-full flex flex-col relative z-10">
+          <div className="p-6 md:p-8 h-full flex flex-col relative z-10">
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
@@ -133,7 +133,7 @@ export default function AllInOne() {
           <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/20 blur-[120px] rounded-full"></div>
           <div className="absolute bottom-0 left-0 w-60 h-60 bg-purple-500/10 blur-[100px] rounded-full"></div>
 
-          <div className="p-8 h-full flex flex-col relative z-10">
+          <div className="p-6 md:p-8 h-full flex flex-col relative z-10">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-2 mb-3">
@@ -186,7 +186,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-zinc-300 group-hover:text-purple-400 transition-colors duration-300 mb-2">8</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-purple-400 transition-colors duration-300 mb-2">15</div>
               <div className="text-sm text-zinc-400">{t.allInOne.timeline.days}</div>
             </div>
           </div>
@@ -206,7 +206,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors duration-300 mb-2">10+</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-blue-400 transition-colors duration-300 mb-2">8</div>
               <div className="text-sm text-zinc-400">{t.allInOne.version.iterations}</div>
             </div>
           </div>
@@ -226,7 +226,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-zinc-300 group-hover:text-yellow-400 transition-colors duration-300 mb-2">240</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-yellow-400 transition-colors duration-300 mb-2">240+</div>
               <div className="text-sm text-zinc-400">{t.allInOne.users.active}</div>
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function AllInOne() {
                 </div>
                 <span className="text-xs font-mono text-blue-100 tracking-wider">{t.allInOne.features.label}</span>
               </div>
-              <div className="text-6xl font-bold mb-2">26</div>
+              <div className="text-6xl font-bold mb-2">26+</div>
               <div className="text-sm text-blue-100/80">{t.allInOne.features.count}</div>
             </div>
 
