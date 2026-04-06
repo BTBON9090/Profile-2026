@@ -190,7 +190,7 @@ export default function WorkProject() {
               </div>
 
               {/* 🔴 修改 2: 响应式 1 到 5 列适配 */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 ">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
                 {section.items.filter(project => !(project as any).hidden).map((project, idx) => {
                   const isModal = (project as any).useModal && (project as any).dataSlug;
                   const isExternal = project.link && (project.link.startsWith('http://') || project.link.startsWith('https://'));
@@ -212,7 +212,7 @@ export default function WorkProject() {
                   return (
                     <motion.div key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: idx * 0.1, duration: 0.5 }} className="h-full">
                       <Wrapper {...wrapperProps} className={`block group h-full ${isModal ? 'cursor-pointer' : ''}`}>
-                        <div className="bg-zinc-900/50  border border-zinc-800/40 rounded-3xl overflow-hidden hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col">
+                        <div className="bg-zinc-900/50  border border-zinc-800/40 rounded-xl md:rounded-3xl overflow-hidden hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col">
                           
                           {/* 🔴 修改 3: 使用 aspect-video 或 aspect-[4/3] 替代固定高度，保证各端比例完美 */}
                           <div className="relative aspect-[3/2] w-full bg-zinc-950 overflow-hidden flex-shrink-0">
