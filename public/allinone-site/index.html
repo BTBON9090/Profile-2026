@@ -1708,7 +1708,7 @@
             background: var(--primary);
         }
 
-        /* 响应式：窄屏时显示箭头和指示器 */
+        /* 响应式：窄屏时启用水平滚动 */
         @media (max-width: 1400px) {
             .carousel-arrow {
                 display: flex;
@@ -1717,7 +1717,20 @@
                 display: flex;
             }
             .marquee-wrapper {
+                justify-content: flex-start;
+                overflow: hidden;
                 padding: 0 70px;
+            }
+            .marquee-track {
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                padding: 20px 40px 60px 0;
+            }
+            .marquee-track::-webkit-scrollbar {
+                display: none;
             }
         }
         @media (max-width: 767px) {
@@ -1743,7 +1756,7 @@
             }
             .marquee-track {
                 gap: 20px;
-                padding: 20px 0 50px;
+                padding: 20px 40px 50px 0;
             }
             .carousel-dots {
                 margin-top: 16px;
@@ -3259,30 +3272,87 @@ const res = await fetch(
 
         if (marqueeWrapper && marqueeTrack && panels.length > 0) {
             let currentIndex = 0;
-            const panelWidth = 340 + 32; // 面板宽度 + gap
             const totalPanels = panels.length;
 
-            function updateCarousel() {
-                const translateX = -(currentIndex * panelWidth);
-                marqueeTrack.style.transform = `translateX(${translateX}px)`;
+            function getPanelWidth() {
+                const firstPanel = panels[0];
+                const gap = parseFloat(getComputedStyle(marqueeTrack).gap) || 32;
+                return firstPanel.offsetWidth + gap;
+            }
 
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentIndex);
+            function isNarrowScreen() {
+                return window.innerWidth <= 1400;
+            }
+
+            function updateCarousel(instant) {
+                if (!isNarrowScreen()) {
+                    marqueeTrack.style.transform = '';
+                    marqueeTrack.scrollLeft = 0;
+                    return;
+                }
+
+                const panelWidth = getPanelWidth();
+                const targetScrollLeft = currentIndex * panelWidth;
+                
+                marqueeTrack.scrollTo({
+                    left: targetScrollLeft,
+                    behavior: instant ? 'auto' : 'smooth'
+                });
+            }
+
+            function updateDots(index) {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
                 });
 
                 if (prevArrow && nextArrow) {
-                    prevArrow.style.opacity = currentIndex === 0 ? '0.3' : '1';
-                    prevArrow.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
-                    nextArrow.style.opacity = currentIndex === totalPanels - 1 ? '0.3' : '1';
-                    nextArrow.style.pointerEvents = currentIndex === totalPanels - 1 ? 'none' : 'auto';
+                    prevArrow.style.opacity = index === 0 ? '0.3' : '1';
+                    prevArrow.style.pointerEvents = index === 0 ? 'none' : 'auto';
+                    nextArrow.style.opacity = index === totalPanels - 1 ? '0.3' : '1';
+                    nextArrow.style.pointerEvents = index === totalPanels - 1 ? 'none' : 'auto';
                 }
             }
+
+            function snapToClosestPanel() {
+                if (!isNarrowScreen()) return;
+                
+                const panelWidth = getPanelWidth();
+                const scrollLeft = marqueeTrack.scrollLeft;
+                const rawIndex = Math.round(scrollLeft / panelWidth);
+                const clampedIndex = Math.max(0, Math.min(totalPanels - 1, rawIndex));
+
+                if (clampedIndex !== currentIndex) {
+                    currentIndex = clampedIndex;
+                    updateDots(currentIndex);
+                }
+                updateCarousel(true);
+            }
+
+            // Scroll listener to update dots during free scrolling
+            let scrollTimeout;
+            marqueeTrack.addEventListener('scroll', () => {
+                if (!isNarrowScreen()) return;
+                
+                const panelWidth = getPanelWidth();
+                const scrollLeft = marqueeTrack.scrollLeft;
+                const rawIndex = Math.round(scrollLeft / panelWidth);
+                const clampedIndex = Math.max(0, Math.min(totalPanels - 1, rawIndex));
+
+                if (clampedIndex !== currentIndex) {
+                    currentIndex = clampedIndex;
+                    updateDots(currentIndex);
+                }
+
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(snapToClosestPanel, 150);
+            }, { passive: true });
 
             if (prevArrow) {
                 prevArrow.addEventListener('click', () => {
                     if (currentIndex > 0) {
                         currentIndex--;
-                        updateCarousel();
+                        updateDots(currentIndex);
+                        updateCarousel(true);
                     }
                 });
             }
@@ -3291,7 +3361,8 @@ const res = await fetch(
                 nextArrow.addEventListener('click', () => {
                     if (currentIndex < totalPanels - 1) {
                         currentIndex++;
-                        updateCarousel();
+                        updateDots(currentIndex);
+                        updateCarousel(true);
                     }
                 });
             }
@@ -3299,35 +3370,20 @@ const res = await fetch(
             dots.forEach((dot, index) => {
                 dot.addEventListener('click', () => {
                     currentIndex = index;
-                    updateCarousel();
+                    updateDots(currentIndex);
+                    updateCarousel(true);
                 });
             });
 
-            updateCarousel();
+            // Window resize: recalculate position
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => updateCarousel(true), 200);
+            });
 
-            // 触摸滑动支持
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            marqueeWrapper.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
-
-            marqueeWrapper.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, { passive: true });
-
-            function handleSwipe() {
-                if (touchEndX < touchStartX - 50 && currentIndex < totalPanels - 1) {
-                    currentIndex++;
-                    updateCarousel();
-                }
-                if (touchEndX > touchStartX + 50 && currentIndex > 0) {
-                    currentIndex--;
-                    updateCarousel();
-                }
-            }
+            // Init
+            updateDots(currentIndex);
         }
 
         // 4. 移动端性能优化：减少背景光晕模糊

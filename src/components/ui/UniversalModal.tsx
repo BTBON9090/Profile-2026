@@ -82,7 +82,7 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
 
     const timeoutId = setTimeout(initObserver, 100);
     return () => clearTimeout(timeoutId);
-  }, [isOpen, images]);
+  }, [isOpen, images, mounted]);
 
   // 确保 Portal 只在客户端渲染，防止 Hydration 报错
   useEffect(() => {
