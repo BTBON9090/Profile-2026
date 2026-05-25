@@ -72,6 +72,11 @@ export default function AICopilot({ projectId }: AICopilotProps) {
         body: JSON.stringify({ messages: newMessages, projectId }),
       });
 
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "未知错误" }));
+        throw new Error(errorData.error || `请求失败 (${res.status})`);
+      }
+
       if (!res.body) throw new Error("No response body");
 
       const reader = res.body.getReader();
@@ -105,7 +110,7 @@ export default function AICopilot({ projectId }: AICopilotProps) {
       console.error("Chat error:", error);
       setMessages((prev) => {
         const updated = [...prev];
-        updated[updated.length - 1].content = "网络似乎有点问题，请稍后再试。";
+        updated[updated.length - 1].content = error instanceof Error ? error.message : "网络似乎有点问题，请稍后再试。";
         return updated;
       });
     } finally {
@@ -225,7 +230,7 @@ export default function AICopilot({ projectId }: AICopilotProps) {
                 <div>
                   <div className="text-sm font-bold text-white tracking-wide">助手小八</div>
                   <div className="text-[10px] text-zinc-400 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Volcengine Powered
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> DeepSeek Powered
                   </div>
                 </div>
               </div>

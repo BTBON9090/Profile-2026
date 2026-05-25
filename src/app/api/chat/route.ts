@@ -32,25 +32,31 @@ export async function POST(req: Request) {
 【项目背景资料】：
 ${projectContext ? projectContext : "主人还没有上传该项目的背景资料，将结合当前作品的通用设计逻辑作答。"}`;
 
-    // 3. 带着知识库请求火山引擎豆包 API
-    const response = await fetch('https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions', {
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 使用 process.env 读取本地环境中的变量
-        'Authorization': `Bearer ${process.env.VOLC_API_KEY}`
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'doubao-seed-2.0-pro',
+        model: 'deepseek-v4-pro',
         messages:[
           { role: "system", content: systemPrompt },
           ...messages
         ],
-        stream: true, // 开启流式输出
+        stream: true,
       }),
     });
 
-    // 4. 将火山的 Stream 原封不动地透传回我们的前端
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('DeepSeek API Error:', response.status, errorData);
+      return NextResponse.json({ 
+        error: 'AI 模型调用失败，请稍后重试或联系管理员。',
+        details: errorData 
+      }, { status: response.status });
+    }
+
     return new Response(response.body, {
       headers: {
         'Content-Type': 'text/event-stream',

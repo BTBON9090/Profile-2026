@@ -23,15 +23,66 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
   const [copied, setCopied] = useState(false);
   const [sparks, setSparks] = useState<{ id: number; x: number; y: number; symbol: string }[]>([]);
   const [mounted, setMounted] = useState(false);
-  // 👇 1. 增加滚动容器的引用
-  const scrollContainerRef = useRef<HTMLDivElement>(null); 
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([]); 
   
-  // 👇 2. 监听 title 变化（切换项目时），瞬间回到顶部
   useEffect(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
+      setCurrentImageIndex(0);
     }
   }, [title]);
+
+  useEffect(() => {
+    if (!isOpen || images.length === 0) return;
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const initObserver = () => {
+      let ticking = false;
+
+      const handleScroll = () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const scrollTop = container.scrollTop;
+            const viewportHeight = container.clientHeight;
+            const viewportCenter = scrollTop + viewportHeight / 2;
+
+            let closestIndex = 0;
+            let closestDistance = Infinity;
+
+            imageRefs.current.forEach((ref, idx) => {
+              if (!ref) return;
+              const rect = ref.getBoundingClientRect();
+              const containerRect = container.getBoundingClientRect();
+              const elementTop = rect.top - containerRect.top + scrollTop;
+              const elementCenter = elementTop + rect.height / 2;
+              const distance = Math.abs(viewportCenter - elementCenter);
+
+              if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = idx;
+              }
+            });
+
+            setCurrentImageIndex(closestIndex);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+      
+      return () => container.removeEventListener('scroll', handleScroll);
+    };
+
+    const timeoutId = setTimeout(initObserver, 100);
+    return () => clearTimeout(timeoutId);
+  }, [isOpen, images]);
 
   // 确保 Portal 只在客户端渲染，防止 Hydration 报错
   useEffect(() => {
@@ -104,19 +155,28 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
               
               {/* 顶部标题栏 (可选，增加精致感) */}
               <div className="sticky top-0 z-20 w-full px-3 py-3 md:px-8 md:py-6 pointer-events-none flex items-center justify-between md:rounded-t-2xl">
-                 <span className="font-mono text-[11px] md:text-sm text-white/80  px-3 py-1 rounded-full md:rounded-md bg-black/40 backdrop-blur-md">{title}</span>
+                 <span className="font-mono text-[11px] md:text-sm text-white/80 px-3 py-1 rounded-full md:rounded-md bg-black/40 backdrop-blur-md">{title}</span>
+                 {images.length > 1 && (
+                   <span className="font-mono text-[11px] md:text-sm text-white/70 px-3 py-1 rounded-full md:rounded-md bg-black/40 backdrop-blur-md">
+                     图片 <span className="text-white font-semibold">{currentImageIndex + 1}</span> / {images.length}
+                   </span>
+                 )}
               </div>
 
               {/* 纯净图片流，底部增加 pb-32 防止最后一张图被底部的按钮挡住 */}
               <div className="w-full flex flex-col pb-32">
                 {images.map((img: string, idx: number) => (
-                  <img 
+                  <div 
                     key={idx} 
-                    src={img} 
-                    alt={`${title}-${idx}`} 
-                    loading={idx === 0 ? "eager" : "lazy"} 
-                    className="w-full h-auto block m-0 p-0" 
-                  />
+                    ref={(el) => { imageRefs.current[idx] = el; }}
+                  >
+                    <img 
+                      src={img} 
+                      alt={`${title}-${idx}`} 
+                      loading={idx === 0 ? "eager" : "lazy"} 
+                      className="w-full h-auto block m-0 p-0" 
+                    />
+                  </div>
                 ))}
               </div>
               {/* ========================================== */}
