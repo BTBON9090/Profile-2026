@@ -38,6 +38,15 @@ const projects = [
         hidden: true,
       },
       {
+        id: "snownewtab",
+        title: "雪诺企业安全浏览器",
+        description: "旨在替代传统繁重的 VDI（桌面虚拟化）与 VPN + DLP 方案，在互联网与企业内网双环境下，从访问入口处守护企业核心资产。",
+        image: "https://cdn.btbon.cn/snownewtab/AI-NEWTAB.png",
+        date: "2024 - 2026",
+        useModal: true,
+        dataSlug: "snownewtab"
+      },
+      {
         id: "kwai-magnetic-star",
         title: "磁力聚星-快手达人营销平台",
         description: "快手磁力聚星官网改版，全链路体验升级，老用户下单效率提升22%，首月转化率提升5.6%。",
@@ -77,15 +86,6 @@ const projects = [
         image: "https://cdn.btbon.cn/YSP-AmazeUI/them05-01.png",
         useModal: true,
         dataSlug: "amazeui"
-      },
-      {
-        id: "snownewtab",
-        title: "雪诺企业安全浏览器",
-        description: "企业级安全浏览器",
-        image: "https://cdn.btbon.cn/snownewtab/AI-NEWTAB.png",
-        date: "2024 - 2026",
-        useModal: true,
-        dataSlug: "snownewtab"
       },
       {
         id: "snowspace",
@@ -225,13 +225,13 @@ export default function WorkProject() {
                               className="object-cover object-top group-hover:scale-102 transition-all duration-500" 
                             />
                           </div>
-                          <div className="p-4 md:p-6 flex-1 flex flex-col">
+                          <div className="p-4 md:p-6 flex flex-col">
                             <div className="flex justify-between items-start mb-3">
                               <div className="min-w-0 pr-2">
                                 <h3 className="text-md md:text-xl font-semibold text-white/80 group-hover:text-white transition-colors truncate md:whitespace-normal">{project.title}</h3>
                               </div>
                             </div>
-                            <p className="hidden md:block text-zinc-500 text-sm leading-relaxed line-clamp-3 mt-auto">{project.description}</p>
+                            <p className="hidden md:block text-zinc-500 text-sm leading-relaxed line-clamp-3">{project.description}</p>
                           </div>
                         </div>
                       </Wrapper>
