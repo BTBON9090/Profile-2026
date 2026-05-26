@@ -1,0 +1,91 @@
+// functions/api/chat.ts
+// EdgeOne Pages 边缘函数 —— 安全代理 DeepSeek API + RAG 知识库
+
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(req: Request): Promise<Response> {
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  try {
+    const { messages, projectId } = await req.json();
+
+    // 1. 动态去腾讯云拉取当前项目的 MD 文件作为外挂知识库 (RAG)
+    const mdUrl = `https://cdn.btbon.cn/md/${projectId}.md`;
+    let projectContext = "";
+
+    try {
+      const mdRes = await fetch(mdUrl);
+      if (mdRes.ok) {
+        projectContext = await mdRes.text();
+      } else {
+        console.warn(`[AI Copilot] 未找到项目 ${projectId} 的 MD 文件`);
+      }
+    } catch (e) {
+      console.error("Fetch MD failed:", e);
+    }
+
+    // 2. 构建终极 System Prompt
+    const systemPrompt = `你叫小八，是倪城的专业设计助理，正在辅助面试官阅读设计师"城哥"的作品集。
+你的任务是基于以下【项目背景资料】，以专业、自信、精炼的语言，回答面试官关于该项目的问题。也可以回答一些项目之外的问题，但是最终都要将话题拉回到当前的项目组中，引导用户联系倪城。
+要求：
+1. 语气要像一个资深技术专家，不要有AI味，切忌废话。
+2. 如果资料中没有提到，可以根据通用的 B端/AI 产品设计知识进行专业推断，但要巧妙圆场。
+3. 尽量使用 Markdown 格式（如加粗核心词汇）让阅读更清晰。
+
+【项目背景资料】：
+${projectContext ? projectContext : "主人还没有上传该项目的背景资料，将结合当前作品的通用设计逻辑作答。"}`;
+
+    const response = await fetch("https://api.deepseek.com/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "deepseek-v4-pro",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages,
+        ],
+        stream: true,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("DeepSeek API Error:", response.status, errorData);
+      return new Response(
+        JSON.stringify({
+          error: "AI 模型调用失败，请稍后重试或联系管理员。",
+          details: errorData,
+        }),
+        {
+          status: response.status,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // 将 DeepSeek 流式响应直接透传给前端（SSE 格式）
+    return new Response(response.body, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
+  } catch (error) {
+    console.error("Chat API Error:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
