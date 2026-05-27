@@ -8,7 +8,7 @@ const snowEcosystemData = {
   role: "Lead Product Designer",
   timeline: "2024 - 2026",
   platform: "Web / Desktop Chrome",
-  heroImage: "/images/snow-admin.png", // 替换为真实大图
+  heroImage: "https://cdn.btbon.cn/images/snow-admin.png", // 替换为真实大图
   
   // 结构 3: 核心洞察引语
   quote: "“B 端设计的最高境界，是让复杂的业务逻辑在极简的界面中隐形。”",
@@ -38,15 +38,15 @@ const snowEcosystemData = {
   ],
 
   // 结构 6: 滑块对比
-  beforeImage: "/images/snow-wireframe.png", 
-  afterImage: "/images/snow-admin.png",      
+  beforeImage: "https://cdn.btbon.cn/images/snow-wireframe.png", 
+  afterImage: "https://cdn.btbon.cn/images/snow-admin.png",      
   
   // 结构 7: Mac Window 微交互展示
-  interactionMockup: "/images/snow-browser.png", // 放一张浏览器 AI 侧边栏的图
+  interactionMockup: "https://cdn.btbon.cn/images/snow-browser.png", // 放一张浏览器 AI 侧边栏的图
   interactionDesc: "AI 侧边栏上下文感知交互，支持拖拽网页内容直接生成摘要。",
 
   // [新增 12] UI Anatomy 界面解剖
-  anatomyImage: "/images/snow-admin.png",
+  anatomyImage: "https://cdn.btbon.cn/images/snow-admin.png",
   anatomySpots:[
     { x: "20%", y: "30%", title: "全局工作台", desc: "将最高频的数据看板前置" },
     { x: "80%", y: "15%", title: "状态发布开关", desc: "解决前后端草稿逻辑冲突的核心机制" }
@@ -65,16 +65,16 @@ const snowEcosystemData = {
   ],
 
   // [新增 15] Micro-details 像素深潜
-  microZoom: { image: "/images/snow-admin.png", desc: "复杂的权限穿梭框 Hover 态与拖拽阴影的像素级打磨。" },
+  microZoom: { image: "https://cdn.btbon.cn/images/snow-admin.png", desc: "复杂的权限穿梭框 Hover 态与拖拽阴影的像素级打磨。" },
 
   // [新增 16] Design to Code 工程协同
   codeBridge: {
-    ui: "/images/snow-admin.png",
+    ui: "https://cdn.btbon.cn/images/snow-admin.png",
     code: `{\n  "component": "SnowButton",\n  "variant": "primary",\n  "state": "disabled",\n  "tokens": {\n    "bg": "var(--snow-blue-500)",\n    "opacity": 0.4\n  }\n}`
   },
 
   // [新增 18] Graveyard 废弃方案
-  graveyard: { image: "/images/snow-wireframe.png", reason: "早期试图模仿传统的防火墙配置界面，被业务线否决，因为我们的受众是普通 IT 而非顶级极客。" },
+  graveyard: { image: "https://cdn.btbon.cn/images/snow-wireframe.png", reason: "早期试图模仿传统的防火墙配置界面，被业务线否决，因为我们的受众是普通 IT 而非顶级极客。" },
 
   // [新增 19] Testimonials 业务原声
   testimonials:[
@@ -136,7 +136,7 @@ const snowEcosystemData = {
   // [新增 37] Roadmap
   roadmap:["Q3: AI Copilot Integration", "Q4: Automated Threat Response"],
   // [新增 38] X-Ray Spotlight 数据
-  xray: { baseImage: "/images/snow-admin.png", overlayImage: "/images/snow-admin.png", codeSpot1: "<SidebarNavigation />", codeSpot2: "<DataGrid virtualized={true} />" },
+  xray: { baseImage: "https://cdn.btbon.cn/images/snow-admin.png", overlayImage: "https://cdn.btbon.cn/images/snow-admin.png", codeSpot1: "<SidebarNavigation />", codeSpot2: "<DataGrid virtualized={true} />" },
   
   //[新增 39] 3D Exploded 数据
   explodedView: { layer1: "BASE_LAYER / Canvas", layer2: "Glassmorphism UI", layer3: "ACTION_BUTTON" },
@@ -150,8 +150,8 @@ const snowEcosystemData = {
   // ... 保持原来的 nextProject 在最下面
 
   // 结构 10: 全景大图与下一篇
-  fullWidthImage: "/images/snow-admin.png",
-  masonryImages:["/images/snow-admin.png", "/images/snow-browser.png", "/images/plugin-ui.png", "/images/ai-translate.png"],
+  fullWidthImage: "https://cdn.btbon.cn/images/snow-admin.png",
+  masonryImages:["https://cdn.btbon.cn/images/snow-admin.png", "https://cdn.btbon.cn/images/snow-browser.png", "https://cdn.btbon.cn/images/plugin-ui.png", "https://cdn.btbon.cn/images/ai-translate.png"],
   nextProject: { slug: "all-in-one", name: "AllinOne Figma Plugin" },
 
   

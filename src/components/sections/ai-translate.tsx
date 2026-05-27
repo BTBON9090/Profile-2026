@@ -100,7 +100,7 @@ export default function AITranslate() {
           >
             <div className="absolute inset-0 bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden opacity-16 shadow-2xl scale-95 origin-right">
               <Image 
-                src="/images/medium2.png"
+                src="https://cdn.btbon.cn/images/medium2.png"
                 alt="AI Translate Extension"
                 fill
                 className="object-cover object-top"
@@ -113,7 +113,7 @@ export default function AITranslate() {
               className="relative z-10 w-[320px] h-[444px] rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] bg-white"
             >
               <Image 
-                src="/images/ai-translate2.png"
+                src="https://cdn.btbon.cn/images/ai-translate2.png"
                 alt="AI Translate Extension"
                 fill
                 className="object-cover object-top"

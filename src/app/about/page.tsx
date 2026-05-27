@@ -60,7 +60,7 @@ export default function AboutPage() {
                 <div className="relative w-full h-full rounded-[1rem] overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl">
                   {/* 请放入你的头像 */}
                   <Image 
-                    src="/images/head.jpg" 
+                    src="https://cdn.btbon.cn/images/head.jpg" 
                     alt="BTBON" 
                     fill 
                     className="object-cover scale-100 group-hover:scale-105 transition-transform duration-700" 

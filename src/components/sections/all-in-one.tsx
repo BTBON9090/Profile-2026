@@ -156,7 +156,7 @@ export default function AllInOne() {
 
             <div className="relative flex-1 min-h-[420px] bg-black/40 rounded-2xl border border-zinc-800/80 overflow-hidden group-hover:scale-[1.02] group-hover:border-zinc-700 transition-all duration-500 shadow-2xl">
               <Image
-                src="/images/plugin-ui.png"
+                src="https://cdn.btbon.cn/images/plugin-ui.png"
                 alt="AllinOne Plugin UI"
                 fill
                 className="object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity duration-500"

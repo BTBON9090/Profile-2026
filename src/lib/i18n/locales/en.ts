@@ -180,7 +180,7 @@ export const en = {
           id: 1,
           role: 'Product Designer',
           company: 'SNOWTECH',
-          logo: '/images/snowtech.png',
+          logo: 'https://cdn.btbon.cn/images/snowtech.png',
           time: '2024.08 - Present',
           description: [
             'Led end-to-end design of enterprise security browser and workspace console from 0 to 1',
@@ -193,7 +193,7 @@ export const en = {
           id: 2,
           role: 'Product Designer',
           company: 'Kwai - Magnetic Star‌',
-          logo: '/images/快手.png',
+          logo: 'https://cdn.btbon.cn/images/kuaishou.png',
           time: '2021.08 - 2023.04',
           description: [
             'Responsible for Magnolia Star user and client sides, and dual-platform business system design and maintenance',
@@ -207,7 +207,7 @@ export const en = {
           id: 3,
           role: 'UX Designer',
           company: 'AVIC - Zhonghang Jinwang',
-          logo: '/images/航空工业.png',
+          logo: 'https://cdn.btbon.cn/images/avic.png',
           time: '2018.08 - 2021.08',
           description: [
             'Led end-to-end design of group office tool "Shangwang Office" App and its SaaS applications from 0 to 1. Built dual-platform component library',
@@ -219,7 +219,7 @@ export const en = {
           id: 4,
           role: 'UI Designer',
           company: 'TAL - FIRSTLEAP',
-          logo: '/images/好未来.png',
+          logo: 'https://cdn.btbon.cn/images/tal.png',
           time: '2018.06 - 2018.08',
           description: 'Responsible for mobile and customer management backend design and maintenance for Libu English',
           tech: ['Team Collaboration', 'CRM', 'C-End'],
@@ -228,7 +228,7 @@ export const en = {
           id: 5,
           role: 'UI Designer',
           company: 'CloudDeepTechnology',
-          logo: '/images/云深互联.png',
+          logo: 'https://cdn.btbon.cn/images/yunshen.png',
           time: '2016.09 - 2018.04',
           description: [
             'Responsible for dual-platform enterprise browser and native developer tool interaction UI design',

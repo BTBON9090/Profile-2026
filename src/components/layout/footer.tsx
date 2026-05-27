@@ -84,7 +84,7 @@ export default function Footer() {
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto transition-all duration-300 origin-bottom z-50">
               <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl shadow-2xl flex flex-col items-center gap-3">
                 <div className="w-44 h-48 bg-zinc-950 rounded-lg flex items-center justify-center border border-zinc-800 overflow-hidden">
-                  <img src="/images/wechat-qr.png" alt="WeChat QR" className="w-full h-full object-cover" />
+                  <img src="https://cdn.btbon.cn/images/wechat-qr.png" alt="WeChat QR" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-xs text-zinc-400 font-mono">{t.footer.scanQr}</span>
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-zinc-900 border-b border-r border-zinc-800 rotate-45"></div>
@@ -112,7 +112,7 @@ export default function Footer() {
         </motion.div>
 
         <a 
-          href="/UI设计-倪城-2026.pdf" 
+          href="https://cdn.btbon.cn/UI设计-倪城-2026.pdf" 
           download="UI设计-倪城-2026.pdf"
           className=" mb-20  md:w-auto flex items-center justify-center gap-3 px-6 py-4  text-zinc-300 hover:text-blue-500 border border-transparent rounded-full transition-all duration-300 font-mono text-sm font-semibold"
         >
