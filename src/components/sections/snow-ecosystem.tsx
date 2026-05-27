@@ -87,7 +87,7 @@ export default function SnowEcosystem() {
             <div className="absolute -inset-x-20 -inset-y-10 bg-gradient-to-b from-blue-600/20 via-transparent to-transparent blur-[120px] pointer-events-none" />
 
             {/* Chrome Frame */}
-            <div className="relative rounded-xl overflow-hidden border border-zinc-700/30 bg-black">
+            <div className="relative rounded-lg md:rounded-xl overflow-hidden border border-zinc-700/30 bg-black">
               
               {/* Video */}
               <div className="relative w-full aspect-[11/6] bg-zinc-950">

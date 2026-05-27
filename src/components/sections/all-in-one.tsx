@@ -234,14 +234,14 @@ export default function AllInOne() {
         
         <motion.div
           variants={itemVariants}
-          className="col-span-12 md:col-span-8 bg-gradient-to-br from-blue-800/50 via-blue-700/10 to-indigo-800/10 border border-blue-400/20 rounded-3xl py-4 px-8 text-white relative overflow-hidden group hover:border-blue-500/40 transition-all duration-500"
+          className="col-span-12 md:col-span-8 bg-gradient-to-br from-blue-800/50 via-blue-700/10 to-indigo-800/10 border border-blue-400/20 rounded-3xl py-4 px-4 md:px-8 text-white relative overflow-hidden group hover:border-blue-500/40 transition-all duration-500"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(225, 0, 255, 1),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           <div className="absolute -bottom-10 -right-10 text-white/5 group-hover:text-white/10 transition-colors duration-500">
             <Cpu className="w-48 h-48 rotate-12" />
           </div>
 
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-center">
             <div className="md:col-span-3">
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-2 bg-white/10 rounded-lg border border-white/20">
@@ -253,7 +253,7 @@ export default function AllInOne() {
               <div className="text-sm text-blue-100/80">{t.allInOne.features.count}</div>
             </div>
 
-            <div className="md:col-span-9 grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
               <div className="bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-colors">
                 <div className="text-md text-blue-100/90 font-medium al">{t.allInOne.features.items.exportPpt}</div>
               </div>

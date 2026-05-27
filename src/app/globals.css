@@ -8,6 +8,9 @@
     
     /* 2. 针对 IE 和 Edge 浏览器 */
     -ms-overflow-style: none; 
+    
+    /* 3. 防止水平滚动 */
+    overflow-x: hidden;
   }
 
   /* 3. 针对 Chrome, Safari 和 Opera 等 WebKit 内核浏览器 */
