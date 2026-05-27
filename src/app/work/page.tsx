@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import UniversalModal from "@/components/ui/UniversalModal";
 import { getProjectBySlug } from "@/data/projects";
@@ -132,11 +132,25 @@ const projects = [
   },
 ];
 
-export default function WorkProject() {
-  const { t } = useI18n();
+function ModalHandler({ modalList, setCurrentModalIndex }: { modalList: any[], setCurrentModalIndex: (index: number | null) => void }) {
   const searchParams = useSearchParams();
   
-  // 核心状态：记录当前打开的弹窗项目的索引
+  useEffect(() => {
+    const projectId = searchParams.get("project");
+    if (projectId) {
+      const index = modalList.findIndex(p => p.id === projectId);
+      if (index !== -1) {
+        setCurrentModalIndex(index);
+      }
+    }
+  }, [searchParams, modalList, setCurrentModalIndex]);
+
+  return null;
+}
+
+export default function WorkProject() {
+  const { t } = useI18n();
+  
   const [currentModalIndex, setCurrentModalIndex] = useState<number | null>(null);
 
   // 提取出所有支持 Modal 的项目，用于"上一篇/下一篇"切换
@@ -158,17 +172,6 @@ export default function WorkProject() {
       });
   }, []);
 
-  // 检测 URL 参数，自动打开对应弹窗
-  useEffect(() => {
-    const projectId = searchParams.get("project");
-    if (projectId) {
-      const index = modalList.findIndex(p => p.id === projectId);
-      if (index !== -1) {
-        setCurrentModalIndex(index);
-      }
-    }
-  }, [searchParams, modalList]);
-
   const openModal = (projectId: string) => {
     const index = modalList.findIndex(p => p.id === projectId);
     if (index !== -1) setCurrentModalIndex(index);
@@ -189,6 +192,9 @@ export default function WorkProject() {
   // 🔴 修改 3: 移除固定宽度，改为响应式 1200px 居中
   return (
     <div className="relative z-10 min-h-screen pt-32 pb-0 selection:bg-blue-500/30 selection:text-blue-200">
+      <Suspense fallback={null}>
+        <ModalHandler modalList={modalList} setCurrentModalIndex={setCurrentModalIndex} />
+      </Suspense>
       {/* 🔴 修改 1: 移除 max-w 限制，横向完全撑满 */}
       <div className="w-full mx-auto pb-40 px-4 md:px-12 2xl:px-20">
         
