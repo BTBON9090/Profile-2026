@@ -121,7 +121,7 @@ export default function AboutPage() {
         ========================================== */}
         <motion.div 
           id="skills"
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+          initial="hidden" animate="visible" variants={fadeUp}
           className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6"
         >
           {/* 左侧：基本属性卡片 */}
@@ -204,7 +204,7 @@ export default function AboutPage() {
           </div>
         </motion.div>
         <motion.div
-        initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+        initial="hidden" animate="visible" variants={fadeUp}
           className="mb-24 flex justify-end"
         >
             <span className="text-sm font-medium text-white/60 tracking-tight">
@@ -222,7 +222,7 @@ export default function AboutPage() {
         ========================================== */}
         <motion.div 
           id="experience"
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+          initial="hidden" animate="visible" variants={fadeUp}
           className="scroll-mt-32"
         >
           <div className="flex items-center gap-3 mb-12 border-b border-zinc-800/50 pb-6">

@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { useState, useMemo} from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import UniversalModal from "@/components/ui/UniversalModal";
 import { getProjectBySlug } from "@/data/projects";
 import Footer from "@/components/layout/footer";
@@ -47,13 +48,13 @@ const projects = [
         dataSlug: "snownewtab"
       },
       {
-        id: "kwai-magnetic-star",
-        title: "磁力聚星-快手达人营销平台",
-        description: "快手磁力聚星官网改版，全链路体验升级，老用户下单效率提升22%，首月转化率提升5.6%。",
-        image: "https://cdn.btbon.cn/Kwai-磁力聚星/them03-01.png",
+        id: "snowspace",
+        title: "雪诺企业安全工作空间（整理中...）",
+        description: "企业安全办公管理系统，浏览器后台",
+        image: "https://cdn.btbon.cn/snowspace/ssth3.png",
         date: "2024 - 2026",
         useModal: true,
-        dataSlug: "kwai-magnetic-star"
+        dataSlug: "snowspace"
       },
       {
         id: "avic",
@@ -88,13 +89,13 @@ const projects = [
         dataSlug: "amazeui"
       },
       {
-        id: "snowspace",
-        title: "雪诺企业安全工作空间",
-        description: "企业安全办公管理系统，浏览器后台",
-        image: "https://cdn.btbon.cn/snowspace/应用列表.png",
+        id: "kwai-magnetic-star",
+        title: "磁力聚星-快手达人营销平台",
+        description: "快手磁力聚星官网改版，全链路体验升级，老用户下单效率提升22%，首月转化率提升5.6%。",
+        image: "https://cdn.btbon.cn/Kwai-磁力聚星/them03-01.png",
         date: "2024 - 2026",
         useModal: true,
-        dataSlug: "snowspace"
+        dataSlug: "kwai-magnetic-star"
       },
     ]
   },
@@ -105,7 +106,7 @@ const projects = [
       {
         id: "all-in-one",
         title: "AllinOne - Figma全能插件（免费）",
-        description: "100% 由 AI 辅助生成的 Figma 提效插件，集成 20+ 功能，累计服务 240+ 真实设计师。",
+        description: "300+设计师使用的 Figma 提效插件，集成 30+ 功能，另有 AI 功能，提升设计效率。",
         image: "/images/allinone 封面.png",
         useModal: false,
         link: "/work/all-in-one",
@@ -123,7 +124,7 @@ const projects = [
         title: "其他作品",
         description: "自驱型业务项目、个人外包项目、日常练习作品。",
         image: "https://cdn.btbon.cn/Other/them09-01.png",
-        link: "/work/others",
+        useModal: true,
         dataSlug: "others" 
       },
       
@@ -133,25 +134,40 @@ const projects = [
 
 export default function WorkProject() {
   const { t } = useI18n();
+  const searchParams = useSearchParams();
   
   // 核心状态：记录当前打开的弹窗项目的索引
   const [currentModalIndex, setCurrentModalIndex] = useState<number | null>(null);
 
-// 提取出所有支持 Modal 的项目，用于"上一篇/下一篇"切换
+  // 提取出所有支持 Modal 的项目，用于"上一篇/下一篇"切换
   const modalList = useMemo(() => {
     return projects
-      // ✅ 修改这里：显式断言为 any 数组，绕过结构不一致的类型检查
-      .flatMap(section => section.items as any[])
+      .flatMap(section => {
+        const isCompanyProject = section.sectionId === "company";
+        return (section.items as any[]).map(item => ({ ...item, isCompanyProject }));
+      })
       .filter(item => item.useModal && item.dataSlug)
       .map(item => {
         const detailData = getProjectBySlug(item.dataSlug as string);
         return {
           id: item.id,
           title: item.title,
-          images: detailData?.behanceSlices || []
+          images: detailData?.behanceSlices || [],
+          isCompanyProject: item.isCompanyProject,
         };
       });
   }, []);
+
+  // 检测 URL 参数，自动打开对应弹窗
+  useEffect(() => {
+    const projectId = searchParams.get("project");
+    if (projectId) {
+      const index = modalList.findIndex(p => p.id === projectId);
+      if (index !== -1) {
+        setCurrentModalIndex(index);
+      }
+    }
+  }, [searchParams, modalList]);
 
   const openModal = (projectId: string) => {
     const index = modalList.findIndex(p => p.id === projectId);
@@ -210,17 +226,18 @@ export default function WorkProject() {
                   }
 
                   return (
-                    <motion.div key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: idx * 0.1, duration: 0.5 }} className="h-full">
+                    <motion.div key={project.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05, duration: 0.4 }} className="h-full">
                       <Wrapper {...wrapperProps} className={`block group h-full ${isModal ? 'cursor-pointer' : ''}`}>
-                        <div className="bg-zinc-900/50  border border-zinc-800/40 rounded-xl md:rounded-3xl overflow-hidden hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col">
+                        <div className="bg-zinc-900/50  border border-zinc-800/20 rounded-xl md:rounded-3xl overflow-hidden hover:bg-zinc-900/70 hover:border-zinc-600/40 transition-colors duration-300 h-full flex flex-col">
                           
                           {/* 🔴 修改 3: 使用 aspect-video 或 aspect-[4/3] 替代固定高度，保证各端比例完美 */}
-                          <div className="relative aspect-[3/2] w-full bg-zinc-950 overflow-hidden flex-shrink-0">
+                          <div className="relative aspect-[3/2] w-full bg-zinc-800 overflow-hidden flex-shrink-0">
                             <Image 
                               src={project.image} 
                               alt={project.title} 
                               fill 
                               unoptimized
+                              loading="lazy"
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                               className="object-cover object-top group-hover:scale-102 transition-all duration-500" 
                             />
@@ -257,6 +274,7 @@ export default function WorkProject() {
           onNext={handleNext}
           projectId={modalList[currentModalIndex].id}
           nextTitle={currentModalIndex < modalList.length - 1 ? modalList[currentModalIndex + 1].title : undefined}
+          isCompanyProject={modalList[currentModalIndex].isCompanyProject}
         />
       )}
       <Footer />

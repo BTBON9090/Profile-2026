@@ -97,7 +97,7 @@ export const en = {
     title: 'SNOW BROWSER',
     titleSuffix: 'Enterprise Security System',
     description: 'A comprehensive lightweight zero-trust security solution. Rebuilding the enterprise workspace from the ground up.',
-    visitWebsite: 'VISIT WEBSITE',
+    visitWebsite: 'VISIT OFFICIAL SITE',
     features: {
       architecture: {
         title: 'The Paradigm Shift',

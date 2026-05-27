@@ -17,9 +17,10 @@ interface ModalProps {
   onNext: () => void;
   projectId: string;
   nextTitle?: string;
+  isCompanyProject?: boolean;
 }
 
-export default function UniversalModal({ isOpen, onClose, title, images, hasPrev, hasNext, onPrev, onNext, projectId, nextTitle }: ModalProps) {
+export default function UniversalModal({ isOpen, onClose, title, images, hasPrev, hasNext, onPrev, onNext, projectId, nextTitle, isCompanyProject }: ModalProps) {
   const [copied, setCopied] = useState(false);
   const [sparks, setSparks] = useState<{ id: number; x: number; y: number; symbol: string }[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -182,39 +183,40 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
               {/* ========================================== */}
               {/* 底部无缝引流块 (Next Project / End)           */}
               {/* ========================================== */}
-              <button 
-                onClick={hasNext ? onNext : onClose}
-                // 摒弃固定高度，用 py-32 撑开完美呼吸感。加入渐变背景和顶边框
-                className="w-full py-32 flex flex-col items-center justify-center cursor-pointer group border-t border-white/5 bg-black/50 hover:bg-white/2 transition-all duration-500"
-              >
-                <div className="flex flex-col items-center gap-6">
-                  {/* 小标题 */}
-                  <span className="text-zinc-500 font-mono text-sm tracking-widest uppercase group-hover:text-blue-400 transition-colors">
-                    {hasNext ? 'Up Next' : 'Back to Gallery'}
-                  </span>
-                  
-                  {/* 大标题与动态图标 */}
-                  <div className="flex flex-col items-center justify-center gap-3">
-                    <span className="text-white/80 font-bold text-4xl md:text-5xl group-hover:text-white transition-colors">
-                      {hasNext ? nextTitle : '企业项目已结束'}
+              {(hasPrev || hasNext) && (
+                <button 
+                  onClick={hasNext ? onNext : onClose}
+                  className="w-full py-32 flex flex-col items-center justify-center cursor-pointer group border-t border-white/5 bg-black/50 hover:bg-white/2 transition-all duration-500"
+                >
+                  <div className="flex flex-col items-center gap-6">
+                    {/* 小标题 */}
+                    <span className="text-zinc-500 font-mono text-sm tracking-widest uppercase group-hover:text-blue-400 transition-colors">
+                      {hasNext ? 'Up Next' : 'Back to Gallery'}
                     </span>
-                    {!hasNext && (
-                      <span className="text-zinc-500 font-mono text-sm tracking-wider group-hover:text-zinc-400 transition-colors mt-2">
-                        等等，还没完，下面还有更多个人作品哟！
-                      </span>
-                    )}
                     
-                    {/* 极客微交互：Hover 时图标从左侧滑入/放大 */}
-                    {hasNext ? (
-                      <ArrowDown className="w-8 h-8 text-white opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
-                        <X className="w-6 h-6 text-white" />
-                      </div>
-                    )}
+                    {/* 大标题与动态图标 */}
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <span className="text-white/80 font-bold text-4xl md:text-5xl group-hover:text-white transition-colors">
+                        {hasNext ? nextTitle : (isCompanyProject ? '企业项目已结束' : '没有更多作品了')}
+                      </span>
+                      {!hasNext && isCompanyProject && (
+                        <span className="text-zinc-500 font-mono text-sm tracking-wider group-hover:text-zinc-400 transition-colors mt-2">
+                          等等，还没完，下面还有更多个人作品哟！
+                        </span>
+                      )}
+                      
+                      {/* 极客微交互：Hover 时图标从左侧滑入/放大 */}
+                      {hasNext ? (
+                        <ArrowDown className="w-8 h-8 text-white opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
+                          <X className="w-6 h-6 text-white" />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </button>
+                </button>
+              )}
             </div>
           </div>
 
@@ -232,30 +234,32 @@ export default function UniversalModal({ isOpen, onClose, title, images, hasPrev
             <AICopilot projectId={projectId} />
 
             {/* [独立控件 C] 底部上下页翻页：永远置底常驻 */}
-            <motion.div 
-              initial={{ y: 50, opacity: 0 }} 
-              animate={{ y: 0, opacity: 1 }} 
-              transition={{ delay: 0.3 }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-[#1a1a1a]/90 backdrop-blur-md text-zinc-300 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-zinc-700/50 overflow-hidden"
-            >
-              <button 
-                onClick={onPrev} 
-                disabled={!hasPrev}
-                className={`flex items-center gap-3 px-4 py-5 font-mono text-sm tracking-widest transition-colors ${hasPrev ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
+            {(hasPrev || hasNext) && (
+              <motion.div 
+                initial={{ y: 50, opacity: 0 }} 
+                animate={{ y: 0, opacity: 1 }} 
+                transition={{ delay: 0.3 }}
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-[#1a1a1a]/90 backdrop-blur-md text-zinc-300 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-zinc-700/50 overflow-hidden"
               >
-                <ChevronLeft className="w-5 h-5" /> PREV
-              </button>
-              
-              <div className="w-px h-4 bg-zinc-700"></div>
+                <button 
+                  onClick={onPrev} 
+                  disabled={!hasPrev}
+                  className={`flex items-center gap-3 px-4 py-5 font-mono text-sm tracking-widest transition-colors ${hasPrev ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
+                >
+                  <ChevronLeft className="w-5 h-5" /> PREV
+                </button>
+                
+                <div className="w-px h-4 bg-zinc-700"></div>
 
-              <button 
-                onClick={onNext} 
-                disabled={!hasNext}
-                className={`flex items-center gap-3 px-4 py-5 font-mono text-sm tracking-widest transition-colors ${hasNext ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
-              >
-                NEXT <ChevronRight className="w-5 h-5" />
-              </button>
-            </motion.div>
+                <button 
+                  onClick={onNext} 
+                  disabled={!hasNext}
+                  className={`flex items-center gap-3 px-4 py-5 font-mono text-sm tracking-widest transition-colors ${hasNext ? 'hover:bg-white hover:text-black' : 'opacity-30 cursor-not-allowed'}`}
+                >
+                  NEXT <ChevronRight className="w-5 h-5" />
+                </button>
+              </motion.div>
+            )}
 
           </div>
 

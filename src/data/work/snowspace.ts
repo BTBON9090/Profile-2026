@@ -4,6 +4,7 @@ const snowspaceData = {
   template: "v5",
   theme: "dark",
   behanceSlices: [
+    "https://cdn.btbon.cn/snowspace/ssth3.png",
     "https://cdn.btbon.cn/snowspace/梳理中.png",
   ],
 };
