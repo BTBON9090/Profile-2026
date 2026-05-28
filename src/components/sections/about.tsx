@@ -12,14 +12,14 @@ export default function About() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:4rem_4rem][mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20"></div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-24">
+        <div className="flex flex-col md:flex-row gap-12 md:gap-24">
           
-          <div className="md:col-span-5">
+          <div className="md:w-[42%] md:flex-shrink-0">
+            <div className="md:sticky md:top-32">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="sticky top-32"
             >
               <h2 className="text-5xl md:text-7xl font-bold text-zinc-300 tracking-tight mb-6">
                 {t.about.title} <br />
@@ -52,9 +52,10 @@ export default function About() {
                 <Download className="w-4 h-4 group-hover:translate-y-0.5 group-hover:text-blue-600 transition-transform" />
               </a>
             </motion.div>
+            </div>
           </div>
 
-          <div className="md:col-span-7 space-y-16 mt-12 md:mt-0">
+          <div className="flex-1 min-w-0 space-y-16 md:mt-0">
             
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
