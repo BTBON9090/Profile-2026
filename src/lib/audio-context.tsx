@@ -196,16 +196,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         i >= targetIndex ? { ...l, time: Math.max(0, +(l.time + delta).toFixed(2)) } : l
       );
       setLyrics(updated);
-      const raw = lrcRawRef.current;
-      if (raw) {
-        const newContent = rebuildLRC(raw, updated);
-        lrcRawRef.current = newContent;
-        fetch("/api/lyrics", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lrcPath: currentTrack.lrc, content: newContent }),
-        }).catch(console.error);
-      }
     },
     [currentTrack, currentLyricIndex, lyrics]
   );
