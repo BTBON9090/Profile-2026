@@ -9,6 +9,7 @@ import Sidebar from "@/components/layout/sidebar";
 import BgmPlayer from "@/components/ui/bgm-player"; 
 import DotMatrixBackground from "@/components/visual/dot-matrix";
 import { I18nProvider } from "@/lib/i18n";
+import { AudioProvider } from "@/lib/audio-context";
 import BackToTop from "@/components/ui/back-to-top";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -42,20 +43,19 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.variable} ${jetbrainsMono.variable} bg-[#000] text-white antialiased overflow-x-clip selection:bg-blue-500/30 selection:text-blue-200`}>
         <I18nProvider>
-          <DotMatrixBackground />
-          <div className="relative z-10 flex flex-col min-h-screen">
-            <Navbar />
-            <Sidebar />
-            {/* 👇 2. 渲染 BGM 播放器 */}
-            <BgmPlayer /> 
-            <main className="relative z-10">
-              {children}
-            </main>
-
-          </div>
+          <AudioProvider>
+            <DotMatrixBackground />
+            <div className="relative z-10 flex flex-col min-h-screen">
+              <Navbar />
+              <Sidebar />
+              <BgmPlayer /> 
+              <main className="relative z-10">
+                {children}
+              </main>
+            </div>
+            <BackToTop />
+          </AudioProvider>
         </I18nProvider>
-        {/* 👇 3. 渲染返回顶部按钮 */}
-        <BackToTop />
       </body>
     </html>
   );

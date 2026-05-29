@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { usePathname } from "next/navigation"; 
 import { useI18n } from "@/lib/i18n";
 import LanguageSwitcher from "@/components/ui/language-switcher"; 
+import LyricsDisplay from "@/components/ui/lyrics-display";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -30,7 +31,7 @@ export default function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-4  transition-colors duration-500 ${navBgClass}`}
+      className={`fixed top-0 left-0 right-0 z-[100] flex items-center h-18 px-8 transition-colors duration-500 ${navBgClass}`}
     >
       <Link 
         href="/" 
@@ -43,6 +44,11 @@ export default function Navbar() {
       </Link>
 
       
+      {/* 歌词显示区域（桌面端，导航栏中央） */}
+      <div className="flex-1 flex justify-center overflow-hidden">
+        <LyricsDisplay />
+      </div>
+
       {/* 右侧导航与多语言 */}
       <div className="flex items-center gap-8">
         <div className="flex gap-8 font-mono text-sm">
