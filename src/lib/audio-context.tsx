@@ -102,12 +102,19 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     lrcUrlRef.current = track.lrc;
     setLyrics([]);
     fetch(track.lrc)
-      .then((r) => r.text())
-      .then((raw) => {
-        lrcRawRef.current = raw;
-        setLyrics(parseLRC(raw));
+      .then((r) => {
+        console.log("歌词加载状态:", r.status, r.statusText);
+        return r.text();
       })
-      .catch(() => {
+      .then((raw) => {
+        console.log("歌词内容长度:", raw.length);
+        lrcRawRef.current = raw;
+        const parsed = parseLRC(raw);
+        console.log("解析歌词行数:", parsed.length);
+        setLyrics(parsed);
+      })
+      .catch((err) => {
+        console.error("歌词加载失败:", err);
         lrcRawRef.current = "";
         setLyrics([]);
       });
