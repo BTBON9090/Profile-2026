@@ -76,7 +76,6 @@ const PlayerProgress = memo(function PlayerProgress({
 export default function BgmPlayer() {
   const {
     isPlaying,
-    isDesktop,
     currentTrack,
     currentTime,
     duration,
@@ -104,10 +103,26 @@ export default function BgmPlayer() {
   // ==========================================
   const playerRef = useRef<HTMLDivElement>(null);
   const hasWindow = typeof window !== "undefined";
+  // 视口宽度（响应横竖屏切换 / 尺寸变化），用于自适应展开宽度
+  const [vw, setVw] = useState<number>(hasWindow ? window.innerWidth : 0);
+  useEffect(() => {
+    if (!hasWindow) return;
+    const onResize = () => setVw(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [hasWindow]);
+  // 移动端：展开面板按视口宽度自适应（留 24px 边距），默认靠下居中；
+  // 桌面端：固定 320px 宽，靠下距底部 240px。
+  const isMobile = vw > 0 && vw < 768;
+  const expandedWidth = isMobile ? Math.min(vw - 24, 320) : EXPANDED_W;
   const drag = useDraggableSnap(
     playerRef,
     hasWindow ? 1 : 0,
-    hasWindow ? window.innerHeight - 240 : 0, // 默认靠下，距离底部 240px
+    hasWindow
+      ? isMobile
+        ? window.innerHeight - 140 // 移动端默认距底部 140px
+        : window.innerHeight - 240
+      : 0,
   );
 
   const onLeftSide = drag.snapSide === "left";
@@ -151,7 +166,6 @@ export default function BgmPlayer() {
     return () => window.removeEventListener("mousedown", onClick);
   }, [playlistOpen]);
 
-  if (!isDesktop) return null;
   if (!currentTrack) return null;
 
   const isLightTheme = pathname === "/work/light-branding" || pathname === "/work/ciliju-xing";
@@ -168,9 +182,9 @@ export default function BgmPlayer() {
   // 播放列表位置（触边自适应）：
   // - 水平：放在播放器外侧（贴左→列表在右；贴右→列表在左）
   // - 垂直：与播放器顶部对齐，根据剩余空间 clamp
-  const PLAYLIST_W = 320;
+  const PLAYLIST_W = expandedWidth;
   const PLAYLIST_GAP = 12;
-  const playerW = mode === "minimized" ? MINIMIZED_W : EXPANDED_W;
+  const playerW = mode === "minimized" ? MINIMIZED_W : expandedWidth;
   let playlistLeft: number;
   if (onLeftSide) {
     playlistLeft = drag.position.x + playerW + PLAYLIST_GAP;
@@ -230,10 +244,11 @@ export default function BgmPlayer() {
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
             ref={listRef}
-            className="fixed z-[99998] w-80 max-h-[420px] flex flex-col rounded-2xl border bg-zinc-950/95 border-white/10 backdrop-blur-2xl shadow-2xl overflow-hidden"
+            className="fixed z-[99998] max-h-[420px] flex flex-col rounded-2xl border bg-zinc-950/95 border-white/10 backdrop-blur-2xl shadow-2xl overflow-hidden"
             style={{
               top: `${playlistTop}px`,
               left: `${playlistLeft}px`,
+              width: `${Math.min(expandedWidth, PLAYLIST_W)}px`,
             }}
           >
             {/* Playlist header */}
@@ -365,7 +380,11 @@ export default function BgmPlayer() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.25 }}
-              onClick={() => setMode("expanded")}
+              onClick={() => {
+                // 移动端拖拽松手会补发 click，需抑制以免拖一下就误展开
+                if (drag.justDraggedRef.current) return;
+                setMode("expanded");
+              }}
               className={`relative flex items-center justify-center w-12 h-12 ${bubbleShapeClass} bg-zinc-950/95 border border-white/10 shadow-2xl backdrop-blur-xl transition-transform duration-300 active:scale-95`}
               title="点击展开播放器"
             >
@@ -388,7 +407,8 @@ export default function BgmPlayer() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className={`flex flex-col w-80 rounded-2xl border ${panelBgClass} backdrop-blur-2xl shadow-2xl overflow-hidden`}
+              className={`flex flex-col rounded-2xl border ${panelBgClass} backdrop-blur-2xl shadow-2xl overflow-hidden`}
+              style={{ width: `${expandedWidth}px` }}
             >
               {/* Top bar — Now Playing + 收起 */}
               <div className={`flex items-center justify-between px-4 py-2 border-b ${isLightTheme ? "border-zinc-200" : "border-white/5"}`}>

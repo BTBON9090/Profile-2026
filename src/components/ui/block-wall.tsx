@@ -363,6 +363,69 @@ export default function BlockWall({
     renderer.domElement.style.pointerEvents =
       interactive && !background ? "auto" : "none";
 
+    // ---------- 移动端重力感应 ----------
+    // 桌面端用鼠标位置做视差 + hover 凹陷；移动端没有鼠标，
+    // 改用 DeviceOrientation 重力感应：手机倾斜方向 = 鼠标位置，
+    // 倾斜越大指针越偏向屏幕边缘，从而驱动视差倾斜与 hover。
+    let tiltActive = false;
+    // 重力映射出的 NDC 指针目标（-1..1）
+    const tiltTarget = new THREE.Vector2(0, 0);
+    const tiltNDC = new THREE.Vector2(0, 0);
+
+    function onDeviceOrientation(e: DeviceOrientationEvent) {
+      // gamma: 左右倾斜 -90..90，beta: 前后倾斜 -180..180
+      const gamma = e.gamma ?? 0;
+      const beta = e.beta ?? 0;
+      // 归一化到 -1..1，限制灵敏度（±30° 满偏）
+      const nx = Math.max(-1, Math.min(1, gamma / 30));
+      const ny = Math.max(-1, Math.min(1, (beta - 45) / 30)); // 手持自然角约 45°
+      tiltTarget.set(nx, ny);
+      tiltNDC.set(nx, ny);
+      tiltActive = true;
+    }
+    // iOS 13+ 需要请求权限，延迟到首次用户交互后申请
+    let tiltPermissionRequested = false;
+    function requestTiltPermission() {
+      if (tiltPermissionRequested) return;
+      tiltPermissionRequested = true;
+      const D = DeviceOrientationEvent as unknown as {
+        requestPermission?: () => Promise<"granted" | "denied">;
+      };
+      if (typeof D.requestPermission === "function") {
+        D.requestPermission()
+          .then((state) => {
+            if (state === "granted") {
+              window.addEventListener(
+                "deviceorientation",
+                onDeviceOrientation as EventListener
+              );
+            }
+          })
+          .catch(() => {});
+      } else {
+        // Android 等无需权限
+        window.addEventListener(
+          "deviceorientation",
+          onDeviceOrientation as EventListener
+        );
+      }
+      window.removeEventListener("touchstart", requestTiltPermission);
+      window.removeEventListener("pointerdown", requestTiltPermission);
+    }
+    // 仅在触屏设备上启用（避免桌面端无谓监听）
+    const isTouch =
+      typeof window !== "undefined" &&
+      (window.matchMedia?.("(pointer: coarse)").matches ||
+        "ontouchstart" in window);
+    if (isTouch) {
+      window.addEventListener("touchstart", requestTiltPermission, {
+        once: true,
+      });
+      window.addEventListener("pointerdown", requestTiltPermission, {
+        once: true,
+      });
+    }
+
     // ---------- 自动翻转 ----------
     let flipTimer = 0;
     function maybeTriggerFlips(dt: number) {
@@ -422,18 +485,24 @@ export default function BlockWall({
       const time = clock.elapsedTime;
       const c = configRef.current;
 
-      // 视差
-      pointer.x += (pointerTarget.x - pointer.x) * 0.06;
-      pointer.y += (pointerTarget.y - pointer.y) * 0.06;
+      // 视差：桌面端跟随鼠标，移动端跟随重力倾斜
+      // 移动端 tiltActive 时优先用重力数据，否则用鼠标
+      const useTilt = tiltActive;
+      const tx = useTilt ? tiltTarget.x : pointerTarget.x;
+      const ty = useTilt ? tiltTarget.y : pointerTarget.y;
+      pointer.x += (tx - pointer.x) * 0.06;
+      pointer.y += (ty - pointer.y) * 0.06;
       camera.position.x = pointer.x * c.scene.parallaxAmt;
       camera.position.y = pointer.y * c.scene.parallaxAmt;
       camera.position.x += Math.sin(time * c.scene.driftSpeed) * c.scene.driftRange;
       camera.position.y += Math.cos(time * c.scene.driftSpeed * 0.75) * c.scene.driftRange * 0.66;
       camera.lookAt(0, 0, 0);
 
-      // hover 检测
-      if (interactiveRef.current && c.animation.hoverEnabled && mouseInside && mesh) {
-        raycaster.setFromCamera(mouseNDC, camera);
+      // hover 检测：移动端用重力映射的 NDC 做命中
+      const hoverNDC = useTilt ? tiltNDC : mouseNDC;
+      const hoverInside = useTilt ? tiltActive : mouseInside;
+      if (interactiveRef.current && c.animation.hoverEnabled && hoverInside && mesh) {
+        raycaster.setFromCamera(hoverNDC, camera);
         const hit = raycaster.intersectObject(mesh);
         let hoveredId = -1;
         if (hit.length > 0) hoveredId = hit[0].instanceId ?? -1;
@@ -492,6 +561,9 @@ export default function BlockWall({
       eventTarget.removeEventListener("pointermove", onPointerMove as EventListener);
       eventTarget.removeEventListener("pointerleave", onPointerLeave as EventListener);
       eventTarget.removeEventListener("click", onClick as EventListener);
+      window.removeEventListener("deviceorientation", onDeviceOrientation as EventListener);
+      window.removeEventListener("touchstart", requestTiltPermission);
+      window.removeEventListener("pointerdown", requestTiltPermission);
       if (mesh) mesh.dispose();
       if (geometry) geometry.dispose();
       if (material) material.dispose();

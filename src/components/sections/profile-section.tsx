@@ -233,8 +233,8 @@ export default function ProfileSection() {
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          {/* 区块标题 */}
-          <div className="flex items-center justify-between mb-5">
+          {/* 区块标题 — 移动端文字与图标阵列上下两行 */}
+          <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs text-blue-500">$</span>
               <span className="font-mono text-xs text-zinc-400 tracking-[0.15em] uppercase">{t.about.techStack}</span>
@@ -255,12 +255,12 @@ export default function ProfileSection() {
                   return (
                     <div
                       key={i}
-                      className="group/tool relative inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:border-zinc-700/50 hover:bg-zinc-900/30 transition-all duration-200 cursor-default"
+                      className="group/tool relative inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:border-zinc-700/50 hover:bg-zinc-900/30 active:border-zinc-700/50 active:bg-zinc-900/30 transition-all duration-200 cursor-default select-none"
                       title={item}
                     >
-                      <Icon className="w-4 h-4 transition-transform duration-200 group-hover/tool:scale-110 opacity-60 group-hover/tool:opacity-100" title={item} />
-                      {/* hover 浮层名称 */}
-                      <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/tool:opacity-100 pointer-events-none whitespace-nowrap px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 text-[10px] font-mono text-zinc-300 transition-opacity duration-200 z-20">
+                      <Icon className="w-4 h-4 transition-transform duration-200 group-hover/tool:scale-110 group-active/tool:scale-110 opacity-60 group-hover/tool:opacity-100 group-active/tool:opacity-100" title={item} />
+                      {/* hover / 长按浮层名称 */}
+                      <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/tool:opacity-100 group-active/tool:opacity-100 pointer-events-none whitespace-nowrap px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 text-[10px] font-mono text-zinc-300 transition-opacity duration-200 z-20">
                         {item}
                       </span>
                     </div>

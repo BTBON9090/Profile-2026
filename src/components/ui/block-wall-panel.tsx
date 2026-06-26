@@ -271,7 +271,8 @@ export default function BlockWallPanel({
 
   return (
     // 左侧、下移到导航下方，避开顶部 navbar
-    <div className="fixed top-20 left-2 z-50 font-mono select-none">
+    // 移动端隐藏：调参面板为桌面端调试工具，移动端屏幕狭窄且易遮挡内容。
+    <div className="fixed top-20 left-2 z-50 font-mono select-none hidden md:block">
       <motion.div
         initial={false}
         animate={{ width: collapsed ? 44 : 300 }}

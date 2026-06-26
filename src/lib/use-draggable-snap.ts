@@ -42,6 +42,8 @@ interface UseDraggableSnapReturn {
   isDragging: boolean;
   /** 最近一次吸附到的一侧（释放后更新） */
   snapSide: SnapSide;
+  /** 拖拽刚结束的标记窗口：true 时消费方应抑制随后的 click 事件 */
+  justDraggedRef: React.RefObject<boolean>;
 }
 
 const EDGE_PAD = 2; // 贴边后元素左/右边距屏幕边缘的距离
@@ -148,11 +150,21 @@ export function useDraggableSnap(
     y: null,
   });
 
+  // 是否刚刚完成了一次拖拽：用于消费方在 pointerup 后抑制随之而来的 click 事件，
+  // 避免"拖拽松手即误触打开/关闭"。
+  const justDraggedRef = useRef(false);
+
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
       if (e.button !== 0) return;
       const el = containerRef.current;
       if (!el) return;
+
+      // 触屏：立即阻止默认行为，避免浏览器把 pointer 当作滚动/点击手势，
+      // 否则 pointermove 会被动监听吞掉、preventDefault 无效，气泡根本拖不动。
+      if (e.pointerType === "touch") {
+        e.preventDefault();
+      }
 
       // 取消任何正在进行的吸附 tween，否则会和拖拽互相打架
       snapControlsRef.current.x?.stop();
@@ -180,6 +192,7 @@ export function useDraggableSnap(
           try { el.setPointerCapture?.(e.pointerId); } catch {}
           setIsDragging(true);
         }
+        // 触屏下必须 preventDefault 才能阻止页面滚动；listener 以 passive:false 注册。
         ev.preventDefault();
         const raw = {
           x: ev.clientX - dragOffsetRef.current.x,
@@ -194,6 +207,10 @@ export function useDraggableSnap(
 
       const onUp = () => {
         if (started) {
+          // 标记刚完成拖拽：随后的 click 事件应被消费方抑制
+          justDraggedRef.current = true;
+          // 短暂窗口后复位，避免误吞下一次合法点击
+          window.setTimeout(() => { justDraggedRef.current = false; }, 50);
           // 松手才 setState 一次 + 触发 spring 吸附
           const snapped = snapToNearestSideRef.current(livePosRef.current.x, livePosRef.current.y);
           const vw = window.innerWidth;
@@ -229,12 +246,13 @@ export function useDraggableSnap(
         upTarget.removeEventListener("lostpointercapture", onUp as EventListener);
       };
 
-      moveTarget.addEventListener("pointermove", onMove as EventListener);
+      // passive:false：触屏必须允许 preventDefault 阻止页面滚动，否则拖不动。
+      moveTarget.addEventListener("pointermove", onMove as EventListener, { passive: false });
       upTarget.addEventListener("pointerup", onUp as EventListener);
       upTarget.addEventListener("lostpointercapture", onUp as EventListener);
     },
     [containerRef, clampPosition, mx, my],
   );
 
-  return { onPointerDown, x: mx, y: my, position, isDragging, snapSide };
+  return { onPointerDown, x: mx, y: my, position, isDragging, snapSide, justDraggedRef };
 }

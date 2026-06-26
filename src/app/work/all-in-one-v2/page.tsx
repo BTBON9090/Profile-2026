@@ -315,7 +315,7 @@ export default function AllInOneV2Page() {
       {/* ══════════════════════════════════════════════════
           1 · HERO
           ═══════════════════════════════════════════════ */}
-      <section data-slide={0} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative overflow-hidden" style={{ scrollSnapStop: "always" }}>
+      <section data-slide={0} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative overflow-hidden py-20 md:py-0" style={{ scrollSnapStop: "always" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background:"radial-gradient(ellipse at 20% 45%, rgba(124,58,237,0.025) 0%, transparent 55%), radial-gradient(ellipse at 80% 55%, rgba(0,0,0,0.01) 0%, transparent 55%)" }} />
         <span className="absolute top-1/2 right-[5%] -translate-y-1/2 pointer-events-none select-none font-black text-transparent hidden sm:block"
           style={{ ...serif, fontSize:"min(30vw,420px)", lineHeight:1, WebkitTextStroke:"1px rgba(0,0,0,0.006)" }}>V2</span>
@@ -364,9 +364,9 @@ export default function AllInOneV2Page() {
       {/* ══════════════════════════════════════════════════
           2 · 简单工具
           ═══════════════════════════════════════════════ */}
-      <section data-slide={1} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative">
+      <section data-slide={1} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative py-20 md:py-0">
         <div className="max-w-[1400px] mx-auto w-full relative z-10">
-          <div className="mb-24 flex items-end justify-between">
+          <div className="mb-12 md:mb-24 flex items-end justify-between">
             <div><Tag n="01 · Simple Tools" /><h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08] tracking-[-0.03em] mt-2" style={serif}>简单工具集</h2><p className="mt-2 text-sm text-neutral-500 max-w-lg">15 个高频快捷操作，覆盖布局、文本、层级、样式、整理五大场景。日常设计工作中最常见的重复劳动，一键搞定。</p></div>
             <span className="hidden lg:block text-7xl font-black text-neutral-200" style={serif}>01</span>
           </div>
@@ -400,10 +400,10 @@ export default function AllInOneV2Page() {
       {/* ══════════════════════════════════════════════════
           3 · 高级工具 (dark)
           ═══════════════════════════════════════════════ */}
-      <section data-slide={2} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative bg-neutral-900 text-neutral-100 overflow-hidden">
+      <section data-slide={2} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative bg-neutral-900 text-neutral-100 overflow-hidden py-20 md:py-0">
         <div className="absolute top-0 right-0 w-[50vw] h-[50vw] rounded-full blur-[180px] pointer-events-none" style={{background:"rgba(124,58,237,0.04)"}} />
         <div className="max-w-[1400px] mx-auto w-full relative z-10">
-          <div className="mb-24 flex items-end justify-between">
+          <div className="mb-12 md:mb-24 flex items-end justify-between">
             <div><Tag n="02 · Advanced Tools" /><h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08] tracking-[-0.03em] text-white mt-2" style={serif}>高级工具集</h2><p className="mt-2 text-sm text-neutral-400 max-w-lg">深度操作 · 精准控制 · 效率进阶。超级选择器、等轴形变、时空信标等 7 大高级功能，满足复杂设计场景的专业需求。</p></div>
             <span className="hidden lg:block text-7xl font-black text-white/5" style={serif}>02</span>
           </div>
@@ -429,7 +429,7 @@ export default function AllInOneV2Page() {
       {/* ══════════════════════════════════════════════════
           4 · 用户评价 (Bubble Cloud, auto-scroll)
           ═══════════════════════════════════════════════ */}
-      <section data-slide={4} className="min-h-[100vh] flex flex-col items-center justify-center px-4 sm:px-6 md:px-16 snap-start relative overflow-hidden">
+      <section data-slide={4} className="min-h-[100vh] flex flex-col items-center justify-center px-4 sm:px-6 md:px-16 snap-start relative overflow-hidden py-20 md:py-0">
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(124,58,237,0.02) 0%, transparent 70%)" }} />
         <div className="max-w-[1200px] mx-auto w-full relative z-10 text-center mb-8">
           <Tag n="04 · Testimonials" />
@@ -501,7 +501,7 @@ export default function AllInOneV2Page() {
       {/* ══════════════════════════════════════════════════
           5 · CTA
           ═══════════════════════════════════════════════ */}
-      <section data-slide={5} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative">
+      <section data-slide={5} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative py-20 md:py-0">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div className="w-[50vw] h-[50vw] rounded-full blur-[200px]" style={{background:"rgba(124,58,237,0.03)"}} />
         </div>
@@ -542,9 +542,9 @@ function AIWithImage() {
   ];
 
   return (
-    <section data-slide={3} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative">
+    <section data-slide={3} className="min-h-[100vh] flex items-center px-4 sm:px-6 md:px-16 snap-start relative py-20 md:py-0">
       <div className="max-w-[1400px] mx-auto w-full relative z-10">
-        <div className="mb-24 flex items-end justify-between">
+        <div className="mb-12 md:mb-24 flex items-end justify-between">
           <div><Tag n="03 · AI Powered" /><h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08] tracking-[-0.03em] mt-2" style={serif}>AI 智能工具</h2><p className="mt-2 text-sm text-neutral-500 max-w-lg">AI 驱动的智能设计工具，从组件文档自动生成到多语言一键翻译，从语义命名到智能内容填充。让 AI 接管繁琐的文档与本地化工作，专注创意本身。</p>
             <div className="flex flex-wrap items-center gap-3 mt-3">
               <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 bg-neutral-100 px-2.5 py-1 rounded-full" style={{fontFamily: "var(--font-mono)"}}>

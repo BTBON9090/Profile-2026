@@ -804,11 +804,14 @@ export default function AICopilot() {
   }, [isOpen, drag.position.x, drag.position.y, drag.snapSide]);
 
   // 点击触发器：消隐气泡 + 打开/关闭
+  // 注意：移动端拖拽松手后浏览器会补发一个 click 事件，若不抑制会导致"拖一下就误打开/关闭面板"。
+  // useDraggableSnap 在拖拽结束时会把 justDraggedRef 置 true（50ms 后复位），此处据此过滤。
   const handleToggle = useCallback(() => {
+    if (drag.justDraggedRef.current) return;
     hideGreeting();
     setIsOpen((v) => !v);
     lastInteractionRef.current = Date.now();
-  }, [hideGreeting]);
+  }, [hideGreeting, drag.justDraggedRef]);
 
   return (
     <>
