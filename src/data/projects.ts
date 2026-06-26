@@ -11,7 +11,8 @@ import studio from './work/studio';
 import others from './work/others';
 import snownewtab from './work/snownewtab';
 import snowspace from './work/snowspace';
-// import allInOne from './work/all-in-one'; 
+import allInOne from './work/all-in-one';
+import allInOneV2 from './work/all-in-one-v2';
 
 // 2. 建立全局数据索引库 (Registry)
 const allProjects: Record<string, any> = {
@@ -25,6 +26,8 @@ const allProjects: Record<string, any> = {
   "others": others,
   "snownewtab": snownewtab,
   "snowspace": snowspace,
+  "all-in-one": allInOne,
+  "all-in-one-v2": allInOneV2,
 };
 
 // 3. 暴露出两个极其优雅的方法供 UI 层调用

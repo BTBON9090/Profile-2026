@@ -4,50 +4,47 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 
-const homeSections =[
-  { id: "hero", label: "00 Hero" },
-  { id: "all-in-one", label: "01 Figma Plugin" },
-  { id: "ai-translate", label: "02 Chrome Extension" },
-  { id: "snow-ecosystem", label: "03 Snowtech Ecosystem" },
-  { id: "about", label: "04 About Me" },
-  { id: "footer", label: "05 Contact" },
+const homeSections = [
+  { id: "hero", label: "Hero", sub: "HOME" },
+  { id: "profile", label: "Profile", sub: "个人简介" },
+  { id: "work-snapshots", label: "Work", sub: "PROJECT" },
+  { id: "snow-ecosystem", label: "Snowtech", sub: "雪诺生态" },
+  { id: "ai-plugins", label: "AI Plugins", sub: "AI 插件" },
+  { id: "footer", label: "Contact", sub: "联系" },
 ];
-const workSections =[
-  { id: "company", label: "01 Company" },
-  { id: "personal", label: "02 Personal" },
-  { id: "others", label: "03 Others" },
-];
-// 👇 新增：About 页面的锚点导航
-const aboutSections =[
-  { id: "biography", label: "01 Biography & Contact" },
-  { id: "experience", label: "02 Experience" },
+const workSections = [
+  { id: "company", label: "Company", sub: "企业项目" },
+  { id: "personal", label: "Personal", sub: "个人项目" },
+  { id: "others", label: "Others", sub: "其他作品" },
 ];
 
 export default function Sidebar() {
-  const pathname = usePathname(); // 获取当前路由路径
-  // 👇 新增：如果是 /about 页面，直接返回 null (不渲染侧边栏)
-  //if (pathname === "/about") { return null;}
+  const pathname = usePathname();
 
-  // 2. 动态决定当前使用哪套导航
-  const currentSections = 
-    pathname === "/work" ? workSections : // 工作页面
-    pathname === "/about" ? aboutSections : // About 页面
-    homeSections;
-  
-  // 默认激活当前路由的第一个 section
+  const currentSections =
+    pathname === "/work" ? workSections : homeSections;
+
   const [activeSection, setActiveSection] = useState(currentSections[0]?.id || "");
-
-  // 新增：点击防抖锁，防止点击平滑滚动时，沿途的模块疯狂触发监听
+  const [scrollProgress, setScrollProgress] = useState(0);
   const isClickScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // 滚动进度追踪
   useEffect(() => {
-    // 切换页面时，重置激活状态为新页面的第一个模块
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
     setActiveSection(currentSections[0]?.id || "");
-    // 优化：降低 threshold 阈值。因为 B 端项目展示区通常很长（超出屏幕）
-    // 如果 threshold 太高，会导致很长的区域无法触发 active 状态
     const observer = new IntersectionObserver(
       (entries) => {
-        // 如果正在因为点击而发生平滑滚动，则暂时挂起监听器，防止乱跳
         if (isClickScrolling.current) return;
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -55,123 +52,129 @@ export default function Sidebar() {
           }
         });
       },
-      { 
-        // 核心修复机制：
-        // 把屏幕上下各削去 40%，只留中间 20% 的“瞄准区”。
-        // threshold 设为 0（只要有任何像素进入中间这个瞄准区，就算激活）。
-        // 这样无论 Ecosystem 模块有几万像素高，依然能被完美捕获！
-        rootMargin: "-40% 0px -40% 0px", 
-        threshold: 0 
-      } 
+      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
     );
 
-    // 3. 异步挂载监听器 (重要避坑：防止 Next.js 页面切换瞬间 DOM 尚未渲染完成)
     const timeoutId = setTimeout(() => {
       currentSections.forEach(({ id }) => {
         const element = document.getElementById(id);
         if (element) observer.observe(element);
       });
-    }, 100); // 100ms 延迟足以确保 DOM 就绪
+    }, 100);
 
     return () => {
       observer.disconnect();
       clearTimeout(timeoutId);
     };
-  }, [pathname, currentSections]); // 4. 依赖项改为 pathname，路由一旦变化，就销毁旧监听并重启新监听
+  }, [pathname, currentSections]);
 
   const scrollToSection = (id: string) => {
-    // 1. 立即点亮点击的导航项，提供秒级反馈
     setActiveSection(id);
-    
-    // 2. 上锁：告诉系统“我现在是手动强行滚动，别给我瞎判定”
     isClickScrolling.current = true;
-
-    // 3. 执行平滑滚动
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
-
-    // 4. 清理上一次的定时器并设置解锁倒计时 (假设滚动耗时约 1000ms)
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     scrollTimeout.current = setTimeout(() => {
       isClickScrolling.current = false;
-    }, 1000); // 1秒后解锁监听器
+    }, 1000);
   };
 
-  // =========================================================
-  // 🟢 第三部分：页面拦截区 (只有等所有 Hooks 都走完，才能拦截)
-  // =========================================================
-  // 如果是 work 主页面，隐藏侧边栏！
-  if (pathname === "/work") { 
-    return null; 
-  }
-  // 如果是作品详情页 (如 /work/snow-ecosystem)，隐藏侧边栏！
-  if (pathname.startsWith("/work/")) { 
-    return null; 
-  }
-  // 如果是图集页 (如 /project/light-branding)，隐藏侧边栏！
-  if (pathname.startsWith("/project/")) {
-    return null;
-  }
+  if (pathname === "/work") { return null; }
+  if (pathname.startsWith("/work/")) { return null; }
+  if (pathname.startsWith("/project/")) { return null; }
 
   return (
-    <motion.div 
-      initial={{ x: -50, opacity: 0 }}
+    <motion.div
+      initial={{ x: 50, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ ease: "easeOut", duration: 0.6 }}
-      // 增加热区宽度，并加入一条极细的轨道线增加架构感
-      className="fixed left-6 top-1/2 -translate-y-1/2 z-50 hidden xl:flex flex-col items-start py-4"
+      transition={{ ease: "easeOut", duration: 0.6, delay: 0.3 }}
+      className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden xl:flex flex-col items-end py-4"
     >
-      {/* 背景轨道线 */}
-      <div className="absolute left-[11.5px] top-0 bottom-0 w-px bg-zinc-500/20 z-0"></div>
+      {/* 顶部滚动进度环 */}
+      <div className="relative w-10 h-10 mb-4 flex items-center justify-center">
+        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
+          <circle
+            cx="18" cy="18" r="16" fill="none"
+            stroke="rgba(59,130,246,0.6)" strokeWidth="1.5"
+            strokeDasharray={`${2 * Math.PI * 16}`}
+            strokeDashoffset={`${2 * Math.PI * 16 * (1 - scrollProgress / 100)}`}
+            className="transition-all duration-150"
+            strokeLinecap="round"
+          />
+        </svg>
+        <span className="font-mono text-[9px] text-zinc-500 tabular-nums">
+          {Math.round(scrollProgress)}%
+        </span>
+      </div>
 
-      {currentSections.map((section) => {
+      {/* 背景轨道线 */}
+      <div className="absolute right-[11.5px] top-14 bottom-14 w-px bg-gradient-to-b from-transparent via-zinc-500/15 to-transparent z-0"></div>
+
+      {currentSections.map((section, index) => {
         const isActive = activeSection === section.id;
 
         return (
           <button
             key={section.id}
             onClick={() => scrollToSection(section.id)}
-            // group 和 py-3 增加了极大的垂直点击热区
-            className="group relative flex items-center py-3 pr-10 cursor-pointer z-10"
+            className="group relative flex items-center py-2.5 pl-10 pr-2 cursor-pointer z-10"
           >
-            {/* 锚点指示器容器 */}
-            <div className="relative flex items-center justify-center w-6 h-8">
-              {/* 默认的灰色小点 */}
-              <div 
-                className={`absolute w-1.5 h-1.5 rounded-full bg-zinc-500 transition-all duration-300 group-hover:bg-zinc-400 group-hover:scale-150 ${
-                  isActive ? "opacity-0 scale-0" : "opacity-100"
-                }`}
-              />
-
-              {/* 激活状态的丝滑跟踪发光条 (Framer Motion 魔法) */}
-              {isActive && (
-                <motion.div
-                  layoutId="activeSidebarIndicator" // 关键：共享布局动画
-                  className="absolute w-1 h-full bg-zinc-500 rounded-full"
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 300, 
-                    damping: 30 
-                  }}
-                />
-              )}
-            </div>
-
-            {/* 悬浮/激活时浮现的文字标签 */}
-            <div 
-              className={`absolute left-8 font-mono text-[10px] tracking-widest uppercase whitespace-nowrap transition-all duration-300 ${
-                isActive 
-                  ? "text-zinc-400 opacity-100 translate-x-0" 
-                  : "text-zinc-700 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:-translate-x-2"
+            {/* 悬浮文字标签 — 从右侧弹出 */}
+            <div
+              className={`absolute right-8 flex items-center gap-2 whitespace-nowrap transition-all duration-300 ${
+                isActive
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
               }`}
             >
-              {section.label}
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-md transition-colors duration-300 ${
+                isActive
+                  ? "bg-blue-500/10 border-blue-500/30"
+                  : "bg-black/60 border-white/10 group-hover:border-white/20"
+              }`}>
+                <span className={`font-mono text-[10px] tracking-widest uppercase ${
+                  isActive ? "text-blue-400" : "text-zinc-400"
+                }`}>
+                  {section.label}
+                </span>
+                <span className="text-[9px] text-zinc-600 font-mono">
+                  {String(index).padStart(2, "0")}
+                </span>
+              </div>
+            </div>
+
+            {/* 锚点指示器 */}
+            <div className="relative flex items-center justify-center w-6 h-6">
+              {/* 默认状态 — 小点 */}
+              <div
+                className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  isActive
+                    ? "opacity-0 scale-0"
+                    : "bg-zinc-600 group-hover:bg-zinc-400 group-hover:scale-125 opacity-100"
+                }`}
+              />
+              {/* 激活状态 — 发光指示条 */}
+              {isActive && (
+                <motion.div
+                  layoutId="activeSidebarIndicator"
+                  className="absolute w-1 h-5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)]"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
             </div>
           </button>
         );
       })}
+
+      {/* 底部装饰 — 当前章节中文标签 */}
+      <div className="mt-2 pr-2">
+        <span className="font-mono text-[9px] text-zinc-700 tracking-wider">
+          {currentSections.find(s => s.id === activeSection)?.sub || ""}
+        </span>
+      </div>
     </motion.div>
   );
 }

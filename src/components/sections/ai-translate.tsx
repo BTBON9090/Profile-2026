@@ -80,7 +80,7 @@ export default function AITranslate() {
             <div className="mt-10 mb-10">
               <Link 
                 href="/work/ai-translate"
-                className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 cursor-pointer"
+                className="backdrop-blur-sm group relative inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-zinc-800/50 border border-zinc-700 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 cursor-pointer"
             >
                 <Puzzle className="w-4 h-4 text-white/60" />
                 <span className="text-xl font-mono font-bold text-zinc-300 group-hover:text-white uppercase tracking-wider">{t.aiTranslate.download}</span>

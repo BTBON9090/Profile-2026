@@ -226,7 +226,7 @@ export default function AllInOne() {
             </div>
 
             <div>
-              <div className="text-5xl font-bold text-zinc-300 group-hover:text-yellow-400 transition-colors duration-300 mb-2">300+</div>
+              <div className="text-5xl font-bold text-zinc-300 group-hover:text-yellow-400 transition-colors duration-300 mb-2">340+</div>
               <div className="text-sm text-zinc-400">{t.allInOne.users.active}</div>
             </div>
           </div>

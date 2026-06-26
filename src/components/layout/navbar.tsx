@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation"; 
 import { useI18n } from "@/lib/i18n";
-import LanguageSwitcher from "@/components/ui/language-switcher"; 
 import LyricsDisplay from "@/components/ui/lyrics-display";
 
 export default function Navbar() {
@@ -14,7 +13,7 @@ export default function Navbar() {
   // 1. 动态主题感知
   // 注意这里：如果是放在 project 路由下，记得加上 /project/ 前缀
   // ==============================================================
-  const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding";
+  const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding" || pathname === "/work/all-in-one-v2";
 
   // 提取动态 CSS 变量
   const navBgClass = isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
@@ -37,7 +36,7 @@ export default function Navbar() {
         href="/" 
         className={`font-mono text-sm tracking-widest font-bold transition-colors ${logoColorClass} uppercase`}
       >
-        AIDEN
+        BTBON
         <span className={dotColorClass}>.</span>
         <span className={dotColorClass}>D</span>
         <span className={`${isLightTheme ? "text-blue-600" : "text-blue-600"} hidden md:inline`}>ESIGN</span>
@@ -76,18 +75,8 @@ export default function Navbar() {
             }`}></span>
           </Link>
 
-          {/* 3. 关于我 (About) */}
-          <Link 
-            href="/about" 
-            className={`relative group transition-colors ${pathname === '/about' ? activeText : inactiveText}`}
-          >
-            {t.nav.biography}
-            <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-          </Link>
-
         </div>
   
-  <LanguageSwitcher />
 </div>
     </motion.nav>
   );

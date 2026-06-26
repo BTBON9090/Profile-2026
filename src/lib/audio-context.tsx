@@ -45,17 +45,22 @@ function rebuildLRC(raw: string, lyrics: LyricLine[]): string {
 interface AudioState {
   isPlaying: boolean;
   currentTime: number;
+  duration: number;
   currentTrack: Track | null;
   currentTrackIndex: number;
   isDesktop: boolean;
   playbackRate: number;
+  repeatMode: 'none' | 'one' | 'all';
   lyrics: LyricLine[];
   currentLyricIndex: number;
   togglePlay: () => void;
   playNextTrack: () => void;
+  playPrevTrack: () => void;
   replayTrack: () => void;
   seekBackward: () => void;
+  seek: (time: number) => void;
   togglePlaybackRate: () => void;
+  toggleRepeatMode: () => void;
   selectTrack: (index: number) => void;
   adjustLyricLeft: () => void;
   adjustLyricRight: () => void;
@@ -72,9 +77,11 @@ export function useAudio() {
 export function AudioProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
   const [lyrics, setLyrics] = useState<LyricLine[]>([]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -83,6 +90,12 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const lrcRawRef = useRef("");
   const lrcUrlRef = useRef("");
   const adjustingLyricIndexRef = useRef<number | null>(null);
+  const repeatModeRef = useRef<'none' | 'one' | 'all'>('none');
+
+  // Keep ref in sync with state for use in event handlers
+  useEffect(() => {
+    repeatModeRef.current = repeatMode;
+  }, [repeatMode]);
 
   const currentLyricIndex = useMemo(() => {
     if (lyrics.length === 0) return -1;
@@ -126,6 +139,41 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     audio.play().catch(() => {});
     fetchLyrics(track);
   }, [fetchLyrics]);
+
+  const playPrevTrack = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || PLAYLIST.length === 0) return;
+    adjustingLyricIndexRef.current = null;
+    // If more than 3 seconds in, restart current track
+    if (audio.currentTime > 3) {
+      audio.currentTime = 0;
+      return;
+    }
+    const prevIndex = (trackIndexRef.current - 1 + PLAYLIST.length) % PLAYLIST.length;
+    trackIndexRef.current = prevIndex;
+    const track = PLAYLIST[prevIndex];
+    setCurrentTrack(track);
+    audio.src = track.url;
+    audio.load();
+    audio.play().catch(() => {});
+    fetchLyrics(track);
+  }, [fetchLyrics]);
+
+  const seek = useCallback((time: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    adjustingLyricIndexRef.current = null;
+    audio.currentTime = Math.max(0, Math.min(time, audio.duration || 0));
+    setCurrentTime(audio.currentTime);
+  }, []);
+
+  const toggleRepeatMode = useCallback(() => {
+    setRepeatMode((prev) => {
+      if (prev === 'none') return 'all';
+      if (prev === 'all') return 'one';
+      return 'none';
+    });
+  }, []);
 
   const replayTrack = useCallback(() => {
     const audio = audioRef.current;
@@ -225,19 +273,33 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
-    const onEnded = () => playNextTrack();
+    const onEnded = () => {
+      const mode = repeatModeRef.current;
+      if (mode === 'one') {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      } else if (mode === 'all') {
+        playNextTrack();
+      } else {
+        // none — play next anyway (like a normal playlist)
+        playNextTrack();
+      }
+    };
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const onLoadedMetadata = () => setDuration(audio.duration || 0);
 
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("timeupdate", onTimeUpdate);
+    audio.addEventListener("loadedmetadata", onLoadedMetadata);
 
     return () => {
       audio.removeEventListener("play", onPlay);
       audio.removeEventListener("pause", onPause);
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("timeupdate", onTimeUpdate);
+      audio.removeEventListener("loadedmetadata", onLoadedMetadata);
       audio.pause();
       audio.src = "";
       audioRef.current = null;
@@ -250,17 +312,22 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       value={{
         isPlaying,
         currentTime,
+        duration,
         currentTrack,
         currentTrackIndex: trackIndexRef.current,
         isDesktop,
         playbackRate,
+        repeatMode,
         lyrics,
         currentLyricIndex,
         togglePlay,
         playNextTrack,
+        playPrevTrack,
         replayTrack,
         seekBackward,
+        seek,
         togglePlaybackRate,
+        toggleRepeatMode,
         selectTrack,
         adjustLyricLeft,
         adjustLyricRight,

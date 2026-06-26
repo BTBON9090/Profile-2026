@@ -1,23 +1,28 @@
 export const zh = {
   nav: {
-    home: '首页',
-    project: '作品',
+    home: 'HOME',
+    project: 'PROJECT',
     biography: '简历',
   },
   hero: {
     badge: '求职中 · 2026',
-    title: '产品 UI/UX',
-    titleHighlight: '工程化',
-    titleEnd: '设计师',
-    subtitle: '构建设计系统 · ',
-    subtitleAi: 'AI赋能设计',
-    subtitleAnd: ' & ',
-    subtitleVibe: 'Vibe Coding',
-    subtitleEnd: ' · B · C · G-End',
-    description: 'AI助力构建理性逻辑，重塑商业美学',
-    systemDesign: '系统设计',
-    aiEngineering: 'AI 工程',
+    location: '北京',
+    year: '2026',
+    mainTitle: 'PORTFOLIO',
+    name: 'NICHENG',
+    themeWords1: 'UI/UX Design',
+    themeWords2: 'AI 工程',
+    description: '构建设计系统 · AI赋能设计 · Vibe Coding',
+    tagline: 'AI助力构建理性逻辑，重塑商业美学',
     scrollHint: '向下滚动探索',
+    endType: 'B · C · G-End',
+  },
+  profile: {
+    label: 'PROFILE',
+    number: '02',
+    capabilitiesLabel: '核心能力',
+    experienceLabel: '工作经历',
+    downloadResume: '下载简历',
   },
   allInOne: {
     badge: '个人产品项目 01',
@@ -69,6 +74,92 @@ export const zh = {
         isoTransform: '等轴形变',
         langSwitch: '语言切换',
       },
+    },
+  },
+  allInOneV2: {
+    hero: {
+      versionBadge: 'V2.0 · 全新升级',
+      title: 'AllinOne',
+      titleSuffix: 'Figma 全能插件',
+      subtitle: 'AI 驱动的 Figma 设计师提效工具集',
+      description: '从 AI 组件说明书到多语言自动翻译，从等轴形变到时空信标 — AllinOne V2 带来了全新的 UI 设计和深度 AI 集成，让设计效率再次飞跃。',
+      openInFigma: '在 Figma 社区打开',
+    },
+    evolution: {
+      label: 'VERSION EVOLUTION',
+      title: 'V1 → V2',
+      subtitle: 'UI 全面升级 · AI 深度集成',
+      v1Desc: '初代版本，30+ 功能快速上线',
+      v2Desc: '全新架构，AI 原生设计体验',
+    },
+    newFeatures: {
+      label: 'WHAT\'S NEW',
+      title: '四大新功能',
+      items: {
+        aiDocs: {
+          icon: 'Sparkles',
+          title: 'AI 组件集说明书',
+          description: '选中任意组件集，AI 自动生成组件描述、使用说明和设计意图文档。让设计资产自带"使用手册"，团队协作零沟通成本。',
+          highlights: ['一键生成组件文档', 'AI 理解设计意图', '自动归类与标签'],
+        },
+        aiTranslate: {
+          icon: 'Globe',
+          title: 'AI 多语言翻译',
+          description: '智能翻译文本图层为多语言，并自动绑定为 Figma 本地 Text Variables。告别手动逐条翻译，多语言适配从数小时缩短为数秒。',
+          highlights: ['自动绑定 Text Variables', '支持 20+ 语言', '保留文本样式不变'],
+        },
+        isoTransform: {
+          icon: 'Box',
+          title: '等轴形变工具',
+          description: '一键将平面元素转换为等轴视图（Isometric）。支持保存多个自定义预设，让你的设计从 2D 轻松跃升为 2.5D。',
+          highlights: ['一键等轴形变', '自定义预设保存', '精确角度控制'],
+        },
+        spaceBeacon: {
+          icon: 'MapPin',
+          title: '时空信标 Jumpback',
+          description: '在画布任意位置放置信标，支持多条位置记录。操作到一半需要跳回？一键回到之前的位置，再也不用手动缩放寻找。',
+          highlights: ['多点位置记录', '一键快速跳回', '跨页面记忆'],
+        },
+      },
+    },
+    allFeatures: {
+      label: 'FEATURES',
+      title: '30+ 强大功能',
+      categories: {
+        ai: { title: 'AI 智能', items: ['AI 内容填充', 'AI 组件说明书', 'AI 多语言翻译', '智能命名清洗', 'AI 批量重命名'] },
+        selection: { title: '选择工具', items: ['超级选择器', '同属性选择', '锁定图层筛选', '实例筛选', '嵌套实例定位'] },
+        text: { title: '文本处理', items: ['查找替换', '文本合并', '大小写转换', '字体统计', '批量字号调整'] },
+        utility: { title: '实用工具', items: ['一键导出 PPT', '等轴形变', '时空信标', '组件实例管理', '样式快速同步', '图层列表导出', '语言切换'] },
+      },
+    },
+    designEvolution: {
+      label: 'DESIGN EVOLUTION',
+      title: 'UI 设计进化',
+      subtitle: '更干净、更统一、更专业',
+      before: 'V1 界面',
+      after: 'V2 新界面',
+      improvements: ['统一的设计语言与间距系统', '更清晰的视觉层级', '优化的交互反馈', '新增暗色/亮色双主题'],
+    },
+    aiWorkflow: {
+      label: 'AI WORKFLOW',
+      title: '100% AI 生成代码',
+      description: '由 0 编程基础的设计师，借助 AI 工具链独立完成全栈开发。',
+      poweredBy: 'Gemini × Trae IDE × Antigravity',
+      terminalLines: [
+        '正在初始化 AllinOne V2 项目结构...',
+        '解析 Figma API 节点树...',
+        '加载 AI 组件文档生成模型...',
+        '配置多语言翻译管道...',
+        '注册等轴形变数学矩阵...',
+        '启动时空信标位置服务...',
+        '✓ AllinOne V2 构建完成',
+      ],
+    },
+    cta: {
+      title: '准备好提升设计效率了吗？',
+      subtitle: '免费下载，即刻体验 AI 驱动的 Figma 新工作流。',
+      button: '前往 Figma 社区',
+      backToWork: '返回作品集',
     },
   },
   aiTranslate: {
@@ -123,7 +214,7 @@ export const zh = {
   },
   about: {
     hero: {
-      title: "BTBON",
+      title: "NI CHENG",
       titleSuffix: "UI/UX 设计师",
       subtitle: "我不只是出 UI 设计稿，我利用 Vibe Coding 构建可交互的产品，模拟产品逻辑，还原用户体验。",
       subtitleAi: "Vibe Coding",
@@ -152,23 +243,31 @@ export const zh = {
     downloadResume: '下载简历',
     capabilities: {
       systemArchitect: {
-        title: '复杂业务解构与系统化',
-        description: 'B 端设计的核心不是好看，而是逻辑自洽。擅长梳理复杂的业务流，通过构建原子化设计系统（Design System），在提升研发复用率的同时，保证多端体验的一致性与可扩展性。',
+        title: '设计系统 × 业务解构',
+        description: 'B 端设计的核心是逻辑自洽。擅长将复杂业务流拆解为原子化组件，通过 Figma Variables 统一 Token 体系，构建跨端一致的设计系统。在雪诺科技独立维护 Web + Desktop 双侧组件库，研发复用率提升 60%。',
       },
       aiEngineer: {
-        title: '技术共情与设计工程化',
-        description: '拥抱代码，是为了更好地设计。 熟练运用 Gemini/Trae 等 AI 工具链，独立开发 Figma 插件或验证 Demo。这种能力让我能预判实现难度，为团队提供"可落地、低成本、高体验"的最优解，而非天马行空的无效稿。',
+        title: 'Vibe Coding × AI 原生',
+        description: '用 AI 重塑设计工作流。熟练运用 Trae/Gemini/Antigravity 进行 Vibe Coding，独立开发 Figma 插件（340+ 用户）和 Chrome 扩展。在设计阶段即可验证技术可行性，将"设计稿→代码"的翻译损耗降至最低。',
       },
     },
     techStack: '技术栈与工具库',
     techStackData: {
       coreCompetency: {
-        category: '核心能力',
-        items: ['设计策略', '系统架构', '复杂逻辑', 'UI/UX'],
+        category: '设计核心',
+        icon: 'Layers',
+        items: ['设计系统', '组件库架构', 'B端复杂逻辑', '跨端一致性'],
       },
       techEmpoweredWorkflow: {
-        category: '技术赋能工作流',
-        items: ['AI辅助原型', 'Figma插件开发', '可行性检查', '前端基础'],
+        category: 'AI 工作流',
+        icon: 'Terminal',
+        items: ['Vibe Coding', 'Figma 插件开发', 'Trae / Gemini', '原型验证'],
+      },
+      tools: {
+        category: '工具链',
+        icon: 'Wrench',
+        // 图标展示，名称 hover 显示
+        items: ['Figma', 'Sketch', 'Photoshop', 'Illustrator', 'After Effects', 'Git', 'Trae IDE', 'zcode'],
       },
     },
     experience: {
@@ -221,7 +320,9 @@ export const zh = {
           company: '好未来-励步英语',
           logo: 'https://cdn.btbon.cn/images/tal.png',
           time: '2018.06 - 2018.08',
-          description: '负责旗下励步英语的移动端与客户管理后台设计与维护任务',
+          description: [
+            '负责旗下励步英语的移动端与客户管理后台设计与维护任务',
+          ],
           tech: ['Team Collaboration', 'CRM', 'C-End'],
         },
         {
@@ -248,6 +349,7 @@ export const zh = {
     companyProjects: "企业项目",
     personalProjects: "个人项目",
     furtherWorks: "其他作品",
+    viewAllProjects: "查看全部项目",
   },
   footer: {
     available: '欢迎新的工作机会',

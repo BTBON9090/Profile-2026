@@ -20,7 +20,13 @@ const config: Config = {
       },
     },
     extend: {
-      // 1. 定义颜色 (保留 Shadcn 的 CSS 变量映射，防止组件报错)
+      // 1. 定义字体
+      fontFamily: {
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+      },
+      
+      // 2. 定义颜色 (保留 Shadcn 的 CSS 变量映射，防止组件报错)
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

@@ -6,18 +6,23 @@ export const en = {
   },
   hero: {
     badge: 'OPEN TO WORK · 2026',
-    title: 'Product UI/UX',
-    titleHighlight: 'Engineering',
-    titleEnd: 'Designer',
-    subtitle: 'Design Systems · ',
-    subtitleAi: 'AI-Powered Design',
-    subtitleAnd: ' & ',
-    subtitleVibe: 'Vibe Coding',
-    subtitleEnd: ' · B · C · G-End',
-    description: 'AI helps build rational logic, reshaping commercial aesthetics',
-    systemDesign: 'System Design',
-    aiEngineering: 'AI Engineering',
+    location: 'BEIJING',
+    year: '2026',
+    mainTitle: 'PORTFOLIO',
+    name: 'NICHENG',
+    themeWords1: 'UI/UX Design',
+    themeWords2: 'AI Engineering',
+    description: 'Design Systems · AI-Powered Design · Vibe Coding',
+    tagline: 'AI helps build rational logic, reshaping commercial aesthetics',
     scrollHint: 'Scroll to Explore',
+    endType: 'B · C · G-End',
+  },
+  profile: {
+    label: 'PROFILE',
+    number: '02',
+    capabilitiesLabel: 'Core Capabilities',
+    experienceLabel: 'Experience',
+    downloadResume: 'Download Resume',
   },
   allInOne: {
     badge: 'SIDE PROJECT 01',
@@ -69,6 +74,92 @@ export const en = {
         isoTransform: 'Isometric Transform',
         langSwitch: 'Language Switch',
       },
+    },
+  },
+  allInOneV2: {
+    hero: {
+      versionBadge: 'V2.0 · Major Upgrade',
+      title: 'AllinOne',
+      titleSuffix: 'Figma Power Plugin',
+      subtitle: 'AI-driven efficiency toolkit for Figma designers',
+      description: 'From AI component documentation to multi-language auto-translation, from isometric transforms to space-time beacons — AllinOne V2 brings a brand new UI design and deep AI integration, taking design efficiency to the next level.',
+      openInFigma: 'Open in Figma Community',
+    },
+    evolution: {
+      label: 'VERSION EVOLUTION',
+      title: 'V1 → V2',
+      subtitle: 'Full UI Upgrade · Deep AI Integration',
+      v1Desc: 'Initial release, 30+ features shipped fast',
+      v2Desc: 'New architecture, AI-native design experience',
+    },
+    newFeatures: {
+      label: "WHAT'S NEW",
+      title: 'Four New Features',
+      items: {
+        aiDocs: {
+          icon: 'Sparkles',
+          title: 'AI Component Documentation',
+          description: 'Select any component set, and AI auto-generates descriptions, usage guides, and design intent documentation. Give your design assets their own "user manual" — zero communication cost for team collaboration.',
+          highlights: ['One-click component docs', 'AI understands design intent', 'Auto categorize & tag'],
+        },
+        aiTranslate: {
+          icon: 'Globe',
+          title: 'AI Multi-Language Translation',
+          description: 'Intelligently translate text layers into multiple languages and auto-bind as Figma native Text Variables. Say goodbye to manual translation — multi-language adaptation goes from hours to seconds.',
+          highlights: ['Auto-bind Text Variables', 'Supports 20+ languages', 'Preserves text styles'],
+        },
+        isoTransform: {
+          icon: 'Box',
+          title: 'Isometric Transform Tool',
+          description: 'Transform flat elements into isometric views with one click. Save multiple custom presets and elevate your designs from 2D to 2.5D effortlessly.',
+          highlights: ['One-click isometric', 'Custom preset saving', 'Precise angle control'],
+        },
+        spaceBeacon: {
+          icon: 'MapPin',
+          title: 'Space-Time Beacon Jumpback',
+          description: 'Place beacons anywhere on the canvas with multiple position records. Need to jump back during work? One click returns you to your previous spot — no more manual zooming and searching.',
+          highlights: ['Multi-point position records', 'One-click jump back', 'Cross-page memory'],
+        },
+      },
+    },
+    allFeatures: {
+      label: 'FEATURES',
+      title: '30+ Powerful Features',
+      categories: {
+        ai: { title: 'AI Intelligence', items: ['AI Content Fill', 'AI Component Docs', 'AI Multi-Lang Translation', 'Smart Naming Cleanup', 'AI Batch Rename'] },
+        selection: { title: 'Selection Tools', items: ['Super Selector', 'Same Property Select', 'Locked Layer Filter', 'Instance Filter', 'Nested Instance Locator'] },
+        text: { title: 'Text Processing', items: ['Find & Replace', 'Text Merge', 'Case Convert', 'Font Stats', 'Batch Font Size'] },
+        utility: { title: 'Utility Tools', items: ['Export to PPT', 'Isometric Transform', 'Space Beacon', 'Component Instance Manager', 'Quick Style Sync', 'Layer List Export', 'Language Switch'] },
+      },
+    },
+    designEvolution: {
+      label: 'DESIGN EVOLUTION',
+      title: 'UI Design Evolution',
+      subtitle: 'Cleaner, more unified, more professional',
+      before: 'V1 Interface',
+      after: 'V2 New Interface',
+      improvements: ['Unified design language & spacing system', 'Clearer visual hierarchy', 'Refined interaction feedback', 'New light/dark dual themes'],
+    },
+    aiWorkflow: {
+      label: 'AI WORKFLOW',
+      title: '100% AI-Generated Code',
+      description: 'Built entirely by a designer with zero coding background, leveraging AI toolchains for full-stack development.',
+      poweredBy: 'Gemini × Trae IDE × Antigravity',
+      terminalLines: [
+        'Initializing AllinOne V2 project structure...',
+        'Parsing Figma API node tree...',
+        'Loading AI component doc generation model...',
+        'Configuring multi-language translation pipeline...',
+        'Registering isometric transform math matrix...',
+        'Starting space-time beacon location service...',
+        '✓ AllinOne V2 build complete',
+      ],
+    },
+    cta: {
+      title: 'Ready to boost your design efficiency?',
+      subtitle: 'Free download. Experience the AI-driven Figma workflow now.',
+      button: 'Go to Figma Community',
+      backToWork: 'Back to Portfolio',
     },
   },
   aiTranslate: {
@@ -123,7 +214,7 @@ export const en = {
   },
   about: {
     hero: {
-      title: "BTBON",
+      title: "NI CHENG",
       titleSuffix: "UI/UX Designer",
       subtitle: "I don't just create UI designs. I use Vibe Coding to build interactive products, simulate product logic, and restore user experience.",
       subtitleAi: "AI Vibe Coding",
@@ -164,11 +255,19 @@ export const en = {
     techStackData: {
       coreCompetency: {
         category: 'Core Competency',
+        icon: 'Layers',
         items: ['Design Strategy', 'System Architecture', 'Complex Logic', 'UI/UX'],
       },
       techEmpoweredWorkflow: {
         category: 'Tech-Empowered Workflow',
+        icon: 'Terminal',
         items: ['AI-Assisted Prototyping', 'Figma Plugin Dev', 'Feasibility Check', 'Front-end Basics'],
+      },
+      tools: {
+        category: 'Toolchain',
+        icon: 'Wrench',
+        // Icons shown, name revealed on hover
+        items: ['Figma', 'Sketch', 'Photoshop', 'Illustrator', 'After Effects', 'Git', 'Trae IDE', 'zcode'],
       },
     },
     experience: {
@@ -221,7 +320,9 @@ export const en = {
           company: 'TAL - FIRSTLEAP',
           logo: 'https://cdn.btbon.cn/images/tal.png',
           time: '2018.06 - 2018.08',
-          description: 'Responsible for mobile and customer management backend design and maintenance for Libu English',
+          description: [
+            'Responsible for mobile and customer management backend design and maintenance for Libu English',
+          ],
           tech: ['Team Collaboration', 'CRM', 'C-End'],
         },
         {
@@ -248,6 +349,7 @@ export const en = {
     companyProjects: "Company Projects",
     personalProjects: "Personal Projects",
     furtherWorks: "Further Works",
+    viewAllProjects: "View All Projects",
   },
   footer: {
     available: 'Available for new opportunities',

@@ -1,6 +1,6 @@
 // src/app/work/[slug]/page.tsx
 "use client";
-import { use, useState, useRef } from "react";
+import { use, useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,6 +15,18 @@ import {
 // 引入你的数据获取方法
 import { getProjectBySlug } from "@/data/projects";
 import BackToTop from "@/components/ui/back-to-top";
+import { useCopilotProject } from "@/lib/copilot-context";
+
+// 向全局 AI 助手推送当前项目 id（page 作用域）
+// 弹窗打开时会用 modal 作用域覆盖它，关闭后自动回退
+function ProjectContextPusher({ slug }: { slug: string }) {
+  const { setProjectId } = useCopilotProject();
+  useEffect(() => {
+    setProjectId(slug, "page");
+    return () => setProjectId(null, "page");
+  }, [slug, setProjectId]);
+  return null;
+}
 
 // Template V5: 终极动态 Behance 模板 (黑白自适应)
 const TemplateV5 = ({ data }: { data: any }) => {
@@ -212,12 +224,18 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
   // =======================================================
   // 👇 新增：如果模板是 v5，就渲染这个万能的动态组件！
   if (data.template === "v5") {
-    return <TemplateV5 data={data} />;
+    return (
+      <>
+        <ProjectContextPusher slug={slug} />
+        <TemplateV5 data={data} />
+      </>
+    );
   }
 
   return (
-    <div className="bg-[#050505] min-h-screen selection:bg-blue-500/30 selection:text-blue-200 "> 
-      
+    <div className="bg-[#050505] min-h-screen selection:bg-blue-500/30 selection:text-blue-200 ">
+      <ProjectContextPusher slug={slug} />
+
       {/* 顶部返回键 */}
       <Link href="/work" className="fixed top-28 left-8 z-50 w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all group shadow-2xl">
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />

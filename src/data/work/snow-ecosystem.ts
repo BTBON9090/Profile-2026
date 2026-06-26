@@ -85,7 +85,7 @@ const snowEcosystemData = {
   // 结构 8: 设计系统资产
   designSystem: {
     colors:["#2563EB", "#7C3AED", "#10B981", "#EF4444", "#F59E0B"],
-    typography: { heading: "Inter / JetBrains Mono", body: "14px Regular / 1.5 Leading" }
+    typography: { heading: "Plus Jakarta Sans / JetBrains Mono", body: "14px Regular / 1.5 Leading" }
   },
 
   // 结构 9: 收益看板

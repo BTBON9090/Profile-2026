@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AllinOne V2 — Cover 3</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; background: #E8E6E1;
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+  }
+
+  .poster {
+    width: 1920px; height: 1060px; background: #F7F6F3;
+    position: relative; overflow: hidden;
+    box-shadow: 0 24px 72px rgba(0,0,0,0.10);
+    display: flex; align-items: center;
+    padding: 0 100px;
+  }
+
+  /* Ambient */
+  .bg-ambient {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse at 18% 45%, rgba(0,0,0,0.018) 0%, transparent 55%),
+      radial-gradient(ellipse at 82% 55%, rgba(0,0,0,0.012) 0%, transparent 55%);
+  }
+  .bg-grid {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.022) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  .bg-watermark {
+    position: absolute; top: 50%; right: 5%; transform: translateY(-52%);
+    font-family: 'Noto Serif SC', serif; font-size: 440px; font-weight: 900;
+    color: rgba(0,0,0,0.01); line-height: 1; z-index: 0; pointer-events: none;
+  }
+
+  /* ── Four corners ── */
+  .corner {
+    position: absolute; z-index: 20;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.14em; color: #A0A09A;
+  }
+  .corner-tl { top: 36px; left: 44px; }
+  .corner-tr { top: 36px; right: 44px; display: flex; align-items: center; gap: 8px; }
+  .corner-bl { bottom: 36px; left: 44px; }
+  .corner-br { bottom: 36px; right: 44px; }
+  .corner-dot { width: 5px; height: 5px; border-radius: 50%; background: #787774; }
+
+  /* ── Left: Content ── */
+  .content {
+    position: relative; z-index: 10;
+    width: 48%; display: flex; flex-direction: column; justify-content: center;
+  }
+
+  .logo-row {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 44px;
+  }
+  .logo-row img { border-radius: 6px; }
+
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 7px 16px; border: 1px solid rgba(0,0,0,0.10);
+    color: #787774; font-weight: 500; font-size: 15px;
+    letter-spacing: 0.08em;
+  }
+
+  .title {
+    font-family: 'Noto Serif SC', 'Songti SC', serif;
+    font-weight: 900; font-size: 108px; line-height: 1.02;
+    letter-spacing: -0.03em; color: #1A1A1A; margin-bottom: 10px;
+  }
+  .title span { color: #7C3AED; }
+
+  .subtitle {
+    font-size: 28px; font-weight: 300; color: #787774;
+    margin-bottom: 20px; line-height: 1.5;
+  }
+  .desc {
+    font-size: 17px; color: #787774; line-height: 1.6;
+    margin-bottom: 28px; max-width: 100%;
+  }
+
+  .stats-row {
+    display: flex; gap: 12px; margin-bottom: 32px;
+  }
+  .stat-item {
+    flex: 1; min-width: 0; padding: 12px 0;
+    border: 1px solid rgba(0,0,0,0.06); text-align: center;
+  }
+  .stat-value {
+    font-family: 'Noto Serif SC', serif; font-size: 28px; font-weight: 900; color: #1A1A1A;
+  }
+  .stat-label {
+    font-size: 10px; color: #A0A09A; font-weight: 500; letter-spacing: 0.1em; margin-top: 2px;
+  }
+
+  .features {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  }
+  .ft {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; font-size: 16px; color: #787774; font-weight: 400;
+    background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.2s;
+  }
+  .ft-icon {
+    width: 28px; height: 28px; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; opacity: 0.6;
+  }
+  .ft.is-new {
+    background: rgba(124,58,237,0.04); border-color: rgba(124,58,237,0.12);
+    color: #5B21B6; font-weight: 600;
+  }
+  .ft.is-new .ft-icon { opacity: 1; }
+
+  /* ── Right: Plugin panel (flat, no tilt) ── */
+  .visual {
+    position: absolute; right: 100px; top: 50%; transform: translateY(-50%);
+    width: 700px; height: 800px; z-index: 10;
+  }
+  .mockup {
+    width: 100%; height: 100%;
+    background: #fff; border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.05);
+  }
+  .mockup iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+  <div class="bg-ambient"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-watermark">V2</div>
+
+  <div class="corner corner-tl">FIGMA COMMUNITY PLUGIN</div>
+  <div class="corner corner-tr"><span class="corner-dot"></span> FREE FOREVER</div>
+  <div class="corner corner-bl">100% AI-CODED · GEMINI × TRAE × ANTIGRAVITY</div>
+  <div class="corner corner-br">V2.0 · 2024 — 2026</div>
+
+  <!-- Left -->
+  <div class="content">
+    <div class="logo-row">
+      <img src="Frame%2021.png" alt="AllinOne" width="56" height="56">
+      <span style="font-size: 22px; color: #C0C0C0;">×</span>
+      <img src="Figma.png" alt="Figma" width="56" height="56">
+      <div class="badge">✦ V2.0 全新升级 · Free Forever</div>
+    </div>
+
+    <h1 class="title">Allin<span>One</span></h1>
+    <h2 class="subtitle">AI 驱动的 Figma 设计师提效工具集</h2>
+    <p class="desc">
+      AI 组件集说明书、多语言翻译、等轴形变、时空信标 — 四大新功能 + 30 余项经典工具。
+      从 2D 到 2.5D，从单语到多语，从迷失到精准定位。
+    </p>
+
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-value">30+</div><div class="stat-label">FEATURES</div></div>
+      <div class="stat-item"><div class="stat-value">340+</div><div class="stat-label">USERS</div></div>
+      <div class="stat-item"><div class="stat-value">V2</div><div class="stat-label">VERSION</div></div>
+    </div>
+
+    <div class="features">
+      <div class="ft is-new"><span class="ft-icon">🤖</span>AI 组件集说明书</div>
+      <div class="ft is-new"><span class="ft-icon">🌐</span>AI 多语言翻译</div>
+      <div class="ft is-new"><span class="ft-icon">🔷</span>等轴形变工具</div>
+      <div class="ft is-new"><span class="ft-icon">📍</span>时空信标</div>
+      <div class="ft"><span class="ft-icon">⚡</span>简易工具集</div>
+      <div class="ft"><span class="ft-icon">✨</span>AI 智能填充</div>
+      <div class="ft"><span class="ft-icon">🎯</span>超级选择器</div>
+      <div class="ft"><span class="ft-icon">💎</span>组件清洗器</div>
+      <div class="ft"><span class="ft-icon">📊</span>一键导出 PPT</div>
+    </div>
+  </div>
+
+  <!-- Right: Flat plugin panel -->
+  <div class="visual">
+    <div class="mockup">
+      <iframe src="ui_2.html" title="AllinOne V2 Plugin UI"></iframe>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
