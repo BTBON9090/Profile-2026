@@ -377,7 +377,7 @@ export default function BlockWall({
       const gamma = e.gamma ?? 0;
       const beta = e.beta ?? 0;
       // 移动端灵敏度（tiltDiv 越小越灵敏，桌面端基准 22）
-      const tiltDiv = 22 / 2;
+      const tiltDiv = 22 / 1.5;
       const nx = Math.max(-1, Math.min(1, gamma / tiltDiv));
       const ny = Math.max(-1, Math.min(1, (beta - 45) / tiltDiv)); // 手持自然角约 45°
       tiltTarget.set(nx, ny);
@@ -488,10 +488,10 @@ export default function BlockWall({
 
       // 视差：桌面端跟随鼠标，移动端跟随重力倾斜
       // 移动端 tiltActive 时优先用重力数据，否则用鼠标
-      // 移动端晃动幅度比桌面端大 4 倍（parallaxAmt × 4），响应速度也更快
+      // 移动端晃动幅度比桌面端大 2.5 倍（parallaxAmt × 2.5），响应速度略快
       const useTilt = tiltActive;
-      const parallaxScale = useTilt ? 4 : 1;
-      const followSpeed = useTilt ? 0.12 : 0.06;
+      const parallaxScale = useTilt ? 2.5 : 1;
+      const followSpeed = useTilt ? 0.1 : 0.06;
       const tx = useTilt ? tiltTarget.x : pointerTarget.x;
       const ty = useTilt ? tiltTarget.y : pointerTarget.y;
       pointer.x += (tx - pointer.x) * followSpeed;
