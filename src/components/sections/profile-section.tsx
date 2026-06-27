@@ -1,6 +1,6 @@
 // src/components/sections/profile-section.tsx
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, createPortal } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Layers, Terminal, FileText, MapPin, Briefcase, GraduationCap, Clock, ChevronRight, Award } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
@@ -73,6 +73,7 @@ export default function ProfileSection() {
   };
 
   return (
+    <>
     <section
       id="profile"
       className="min-h-screen w-full bg-zinc-950/70 backdrop-blur-lg relative z-10 flex flex-col"
@@ -403,16 +404,22 @@ export default function ProfileSection() {
         </motion.div>
       </div>
 
-      {/* 工作经历 Tooltip — 浮动定位，不受 overflow 影响 */}
-      <AnimatePresence>
-        {hoveredExp !== null && t.about.experience.items[hoveredExp] && (
-          <WorkTooltip
-            exp={t.about.experience.items[hoveredExp]}
-            position={tooltipPos}
-          />
-        )}
-      </AnimatePresence>
     </section>
+
+      {/* 工作经历 Tooltip — Portal 到 body，脱离祖先 backdrop-blur/transform 的 containing block，
+          确保 position:fixed 真正相对视口定位，不被裁切 */}
+      {typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {hoveredExp !== null && t.about.experience.items[hoveredExp] && (
+            <WorkTooltip
+              exp={t.about.experience.items[hoveredExp]}
+              position={tooltipPos}
+            />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 }
 
