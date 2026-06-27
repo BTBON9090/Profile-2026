@@ -39,11 +39,11 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
     // 桌面端 4.3，移动端 3.0（见下方 MOBILE_OVERRIDE）
     cellSize: 4.3,
     gap: 0,
-    depth: 3.5,
+    depth: 4.0,
   },
   geometry: {
     bevelMode: "real",
-    bevelRadius: 0.07,
+    bevelRadius: 0.02,
     fakeBevelIntensity: 0.3,
   },
   material: {
