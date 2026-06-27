@@ -1,6 +1,7 @@
 // src/components/sections/profile-section.tsx
 "use client";
-import { useState, useRef, useEffect, createPortal } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Layers, Terminal, FileText, MapPin, Briefcase, GraduationCap, Clock, ChevronRight, Award } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
