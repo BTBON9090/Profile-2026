@@ -498,7 +498,9 @@ export default function BlockWall({
       pointer.x += (tx - pointer.x) * followSpeed;
       pointer.y += (ty - pointer.y) * followSpeed;
       camera.position.x = pointer.x * c.scene.parallaxAmt * parallaxScale;
-      camera.position.y = pointer.y * c.scene.parallaxAmt * parallaxScale;
+      // Y 方向取反：手机向上抬起时，相机下移看向墙的下半部分，
+      // 视觉上呈现"上半部落下变暗、下半部抬起变亮"
+      camera.position.y = -pointer.y * c.scene.parallaxAmt * parallaxScale;
       camera.position.x += Math.sin(time * c.scene.driftSpeed) * c.scene.driftRange;
       camera.position.y += Math.cos(time * c.scene.driftSpeed * 0.75) * c.scene.driftRange * 0.66;
       camera.lookAt(0, 0, 0);
