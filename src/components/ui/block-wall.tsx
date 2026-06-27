@@ -376,9 +376,11 @@ export default function BlockWall({
       // gamma: 左右倾斜 -90..90，beta: 前后倾斜 -180..180
       const gamma = e.gamma ?? 0;
       const beta = e.beta ?? 0;
-      // 归一化到 -1..1，限制灵敏度（±22° 满偏，数值越小越灵敏）
-      const nx = Math.max(-1, Math.min(1, gamma / 22));
-      const ny = Math.max(-1, Math.min(1, (beta - 45) / 22)); // 手持自然角约 45°
+      // 移动端灵敏度比桌面端高 3 倍：
+      // 桌面端基准 /22（±22° 满偏），移动端 /7.3（约 ±7.3° 即满偏，3 倍灵敏）
+      const tiltDiv = 22 / 3;
+      const nx = Math.max(-1, Math.min(1, gamma / tiltDiv));
+      const ny = Math.max(-1, Math.min(1, (beta - 45) / tiltDiv)); // 手持自然角约 45°
       tiltTarget.set(nx, ny);
       tiltNDC.set(nx, ny);
       tiltActive = true;
@@ -487,13 +489,15 @@ export default function BlockWall({
 
       // 视差：桌面端跟随鼠标，移动端跟随重力倾斜
       // 移动端 tiltActive 时优先用重力数据，否则用鼠标
+      // 移动端晃动幅度比桌面端大 3 倍（parallaxAmt × 3）
       const useTilt = tiltActive;
+      const parallaxScale = useTilt ? 3 : 1;
       const tx = useTilt ? tiltTarget.x : pointerTarget.x;
       const ty = useTilt ? tiltTarget.y : pointerTarget.y;
       pointer.x += (tx - pointer.x) * 0.06;
       pointer.y += (ty - pointer.y) * 0.06;
-      camera.position.x = pointer.x * c.scene.parallaxAmt;
-      camera.position.y = pointer.y * c.scene.parallaxAmt;
+      camera.position.x = pointer.x * c.scene.parallaxAmt * parallaxScale;
+      camera.position.y = pointer.y * c.scene.parallaxAmt * parallaxScale;
       camera.position.x += Math.sin(time * c.scene.driftSpeed) * c.scene.driftRange;
       camera.position.y += Math.cos(time * c.scene.driftSpeed * 0.75) * c.scene.driftRange * 0.66;
       camera.lookAt(0, 0, 0);
