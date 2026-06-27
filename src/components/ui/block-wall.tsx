@@ -489,13 +489,14 @@ export default function BlockWall({
 
       // 视差：桌面端跟随鼠标，移动端跟随重力倾斜
       // 移动端 tiltActive 时优先用重力数据，否则用鼠标
-      // 移动端晃动幅度比桌面端大 3 倍（parallaxAmt × 3）
+      // 移动端晃动幅度比桌面端大 6 倍（parallaxAmt × 6），响应速度也更快
       const useTilt = tiltActive;
-      const parallaxScale = useTilt ? 3 : 1;
+      const parallaxScale = useTilt ? 6 : 1;
+      const followSpeed = useTilt ? 0.15 : 0.06;
       const tx = useTilt ? tiltTarget.x : pointerTarget.x;
       const ty = useTilt ? tiltTarget.y : pointerTarget.y;
-      pointer.x += (tx - pointer.x) * 0.06;
-      pointer.y += (ty - pointer.y) * 0.06;
+      pointer.x += (tx - pointer.x) * followSpeed;
+      pointer.y += (ty - pointer.y) * followSpeed;
       camera.position.x = pointer.x * c.scene.parallaxAmt * parallaxScale;
       camera.position.y = pointer.y * c.scene.parallaxAmt * parallaxScale;
       camera.position.x += Math.sin(time * c.scene.driftSpeed) * c.scene.driftRange;
