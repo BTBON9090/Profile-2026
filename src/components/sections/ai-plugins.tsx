@@ -68,7 +68,7 @@ export default function AIPlugins() {
             <span className="text-zinc-600 mt-2 block">设计工具双星</span>
           </h2>
           <p className="text-sm md:text-base text-zinc-400 leading-relaxed max-w-2xl">
-            由 0 编程基础的设计师，借助 Gemini + DeepSeek + Trae 进行 Vibe Coding，
+            0 编程基础，借助多种 AI 大模型和 IDE 工具进行 Vibe Coding，
             独立完成全栈开发。两个插件分别服务于<span className="text-purple-400">设计效率</span>与
             <span className="text-blue-400">信息获取</span>，覆盖设计师工作全链路。
           </p>
@@ -126,18 +126,17 @@ export default function AIPlugins() {
 
               {/* 描述 */}
               <p className="text-sm text-zinc-400 leading-relaxed mb-8">
-                设计师的终极效率工具 — 集成 30+ 功能，涵盖 AI 智能填充、组件管理、文本处理与实用工具。
-                <span className="text-zinc-300 font-mono">100% AI 生成代码</span>，由 0 编程基础的设计师借助 Vibe Coding 独立打造。
+                设计师的终极效率工具 — 集成 30+ 功能，涵盖 AI 智能填充、组件管理、文本处理与实用工具。<br />目前已有 340+ 设计师使用。
               </p>
 
               {/* 功能宫格 */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
                 {allInOneFeatures.map((feature, idx) => (
                   <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-zinc-800/50 hover:border-zinc-700 transition-colors duration-300">
                     <feature.icon className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-0.5" />
                     <div className="min-w-0" >
-                      <div className="text-xs font-semibold text-zinc-300 truncate pb-1">{feature.title}</div>
-                      <div className="text-[10px] text-zinc-600 leading-snug">{feature.desc}</div>
+                      <div className="text-sm font-semibold text-zinc-300 truncate pb-1">{feature.title}</div>
+                      <div className="text-[12px] text-zinc-600 leading-snug">{feature.desc}</div>
                     </div>
                   </div>
                 ))}
@@ -182,7 +181,7 @@ export default function AIPlugins() {
               </div>
 
               {/* 产品图 - 加高 */}
-              <div className="relative flex-1 min-h-[280px] bg-black/40 rounded-lg border border-zinc-800/80 overflow-hidden mb-8 group-hover:scale-[1.01] transition-transform duration-500">
+              <div className="relative flex-1 min-h-[280px] bg-black/40 rounded-lg border border-zinc-800/80 overflow-hidden mb-12 group-hover:scale-[1.01] transition-transform duration-500">
                 <Image
                   src="https://cdn.btbon.cn/images/aitran.png"
                   alt="AI Translate Extension"
@@ -194,7 +193,7 @@ export default function AIPlugins() {
               </div>
 
               {/* 特性列表 */}
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 mb-0">
                 {translateFeatures.map((feature, idx) => (
                   <div key={idx} className="flex gap-3">
                     <div className="flex-shrink-0 w-8 h-8 rounded-lg border border-zinc-700/50 flex items-center justify-center">
@@ -219,7 +218,7 @@ export default function AIPlugins() {
             className="lg:col-span-12 border border-zinc-800/60 rounded-xl bg-black overflow-hidden"
           >
             <div className="p-6 md:p-8">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-end">
                 {/* 左侧 - Vibe Coding 叙事 */}
                 <div className="md:col-span-7">
                   <div className="flex items-center gap-2 mb-4">
@@ -229,12 +228,12 @@ export default function AIPlugins() {
                   <h3 className="text-lg md:text-2xl font-black text-zinc-200 mb-6">
                     从提示词到产品，AI 就是我的开发伙伴
                   </h3>
-                  <p className="text-sm text-zinc-400 leading-relaxed mb-4">
+                  <p className="text-sm text-zinc-600 leading-relaxed mb-4">
                     2026 年，设计行业对 AI 能力的要求已从"会用 ChatGPT"升级为"能用 AI 构建产品"。
                     我选择直接面对这个挑战 — 用 <span className="text-zinc-200 font-mono">Gemini / DeepSeek / GLM</span> 理解 API 文档与生成核心逻辑，优化代码结构与调试，
-                    用 <span className="text-zinc-200 font-mono">Trae / ZCODE</span> 作为 AI-Native 开发环境串联全流程。
+                    用 <span className="text-zinc-200 font-mono">Trae / ZCode</span> 作为 AI-Native 开发环境串联全流程。
                   </p>
-                  <p className="text-sm text-zinc-500 leading-relaxed">
+                  <p className="text-sm text-zinc-600 leading-relaxed">
                     两个插件从 0 到发布，全程 Vibe Coding — 不是照搬 AI 输出，而是将设计思维注入提示词，
                     在 AI 生成与人工审查之间找到最优解。这是设计师在 AI 时代的新竞争力。
                   </p>
@@ -242,31 +241,31 @@ export default function AIPlugins() {
 
                 {/* 右侧 - 工具链条 */}
                 <div className="md:col-span-5 space-y-1">
-                  <div className="flex items-center gap-3 p-4 rounded-lg bg-white/5">
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5">
                     <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
                       <Sparkles className="w-4 h-4 text-purple-400" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-zinc-200 mb-1">Gemini / DeepSeek / GLM</div>
-                      <div className="text-[10px] text-zinc-500">API 文档理解 · 核心逻辑生成 · 代码优化 · 结构重构 · 调试</div>
+                      <div className="text-xs font-bold text-zinc-400 mb-1">Gemini / DeepSeek / GLM</div>
+                      <div className="text-[12px] text-zinc-500">API 文档理解 · 核心逻辑生成 · 代码优化 · 结构重构 · 调试</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-4 rounded-lg bg-white/5">
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5">
                     <div className="w-10 h-10 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center flex-shrink-0">
                       <Cpu className="w-4 h-4 text-pink-400" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-zinc-200 mb-1">Seedream / Midjourney / ComfyUI</div>
-                      <div className="text-[10px] text-zinc-500">图片生成 · 视频生成</div>
+                      <div className="text-xs font-bold text-zinc-400 mb-1">Seedream / Midjourney / ComfyUI</div>
+                      <div className="text-[12px] text-zinc-500">图片生成 · 视频生成</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-4 rounded-lg bg-white/5">
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5">
                     <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
                       <Code2 className="w-4 h-4 text-blue-400" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-zinc-200 mb-1">Trae IDE / ZCODE / GitHub</div>
-                      <div className="text-[10px] text-zinc-500">AI-Native 开发环境 · 全流程串联 · 代码管理 · 版本控制 · 部署管理</div>
+                      <div className="text-xs font-bold text-zinc-400 mb-1">Trae IDE / ZCode / GitHub</div>
+                      <div className="text-[12px] text-zinc-500">AI-Native 开发环境 · 全流程串联 · 代码管理 · 版本控制 · 部署管理</div>
                     </div>
                   </div>
                 </div>

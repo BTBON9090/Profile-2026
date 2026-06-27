@@ -358,10 +358,10 @@ export default function BlockWall({
     eventTarget.addEventListener("pointermove", onPointerMove as EventListener);
     eventTarget.addEventListener("pointerleave", onPointerLeave as EventListener);
     eventTarget.addEventListener("click", onClick as EventListener);
-    // 非交互模式（完全禁用）时不拦截鼠标事件；交互模式下背景模式也不拦截
-    // （canvas 本身 pointerEvents:none），详情页模式才让 canvas 接收
-    renderer.domElement.style.pointerEvents =
-      interactive && !background ? "auto" : "none";
+    // 交互命中已由上方 window 级监听 + getBoundingClientRect 计算，
+    // canvas 本身永远不拦截指针事件，避免 fixed 全屏 canvas 挡住上层
+    // 内容（如工作经历 hover tooltip）的鼠标进入/离开事件。
+    renderer.domElement.style.pointerEvents = "none";
 
     // ---------- 移动端重力感应 ----------
     // 桌面端用鼠标位置做视差 + hover 凹陷；移动端没有鼠标，
@@ -376,9 +376,9 @@ export default function BlockWall({
       // gamma: 左右倾斜 -90..90，beta: 前后倾斜 -180..180
       const gamma = e.gamma ?? 0;
       const beta = e.beta ?? 0;
-      // 归一化到 -1..1，限制灵敏度（±30° 满偏）
-      const nx = Math.max(-1, Math.min(1, gamma / 30));
-      const ny = Math.max(-1, Math.min(1, (beta - 45) / 30)); // 手持自然角约 45°
+      // 归一化到 -1..1，限制灵敏度（±22° 满偏，数值越小越灵敏）
+      const nx = Math.max(-1, Math.min(1, gamma / 22));
+      const ny = Math.max(-1, Math.min(1, (beta - 45) / 22)); // 手持自然角约 45°
       tiltTarget.set(nx, ny);
       tiltNDC.set(nx, ny);
       tiltActive = true;
@@ -597,7 +597,10 @@ export default function BlockWall({
               inset: 0,
               width: "100vw",
               height: "100vh",
-              pointerEvents: interactive ? "auto" : "none",
+              // 容器始终不拦截指针事件：交互命中由 window 级
+              // pointermove/click 监听 + getBoundingClientRect 计算，
+              // 这样 fixed 全屏 canvas 不会挡住上层内容的 hover 事件。
+              pointerEvents: "none",
             }
       }
     />

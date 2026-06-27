@@ -1,6 +1,6 @@
 // src/lib/use-draggable-snap.ts
 "use client";
-import { useState, useCallback, useRef, useLayoutEffect, type RefObject } from "react";
+import { useState, useCallback, useRef, useLayoutEffect, useEffect, type RefObject } from "react";
 import { useMotionValue, animate, type MotionValue } from "framer-motion";
 
 /**
@@ -44,6 +44,8 @@ interface UseDraggableSnapReturn {
   snapSide: SnapSide;
   /** 拖拽刚结束的标记窗口：true 时消费方应抑制随后的 click 事件 */
   justDraggedRef: React.RefObject<boolean>;
+  /** 是否已挂载完成（hydration 后）。false 时消费方应保持与 SSR 一致的初始样式 */
+  mounted: boolean;
 }
 
 const EDGE_PAD = 2; // 贴边后元素左/右边距屏幕边缘的距离
@@ -64,6 +66,13 @@ export function useDraggableSnap(
   const dragOffsetRef = useRef({ x: 0, y: 0 });
   // 拖拽期间实时位置（不进 state）
   const livePosRef = useRef<SnapPosition>({ x: initialX, y: initialY });
+
+  // mounted 标记：SSR 与首帧客户端渲染都保持 transform:none（与 SSR 一致），
+  // 避免 useLayoutEffect 在 hydration 前就改写 MotionValue 导致
+  // "server transform:none vs client translateX(...)" 的 hydration mismatch。
+  // React 19 遇到 style 属性 hydration 不一致会放弃修补该子树的事件绑定，
+  // 这正是"AI 助手点击无反应 / hover tooltip 失效"的根因。
+  const [mounted, setMounted] = useState(false);
 
   // 动态读取元素实际宽高（收起/展开态不同）
   const getElSize = useCallback(() => {
@@ -87,8 +96,12 @@ export function useDraggableSnap(
   );
 
   // 在客户端渲染后修正初始位置（处理 SSR：innerWidth 在服务端为 undefined）
-  useLayoutEffect(() => {
+  // 用 useEffect（非 useLayoutEffect）+ mounted 标记：保证 hydration 完成后才
+  // 写入 MotionValue，避免 SSR transform:none 与客户端首帧 transform 不一致
+  // 触发 hydration mismatch，进而导致 React 放弃该子树事件绑定。
+  useEffect(() => {
     if (typeof window === "undefined") return;
+    setMounted(true);
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const { w } = getElSize();
@@ -160,7 +173,7 @@ export function useDraggableSnap(
       const el = containerRef.current;
       if (!el) return;
 
-      // 触屏：立即阻止默认行为，避免浏览器把 pointer 当作滚动/点击手势，
+      // 触屏：立即阻止默认行为，避免浏览器把 pointer 当作滚动/缩放/点击手势，
       // 否则 pointermove 会被动监听吞掉、preventDefault 无效，气泡根本拖不动。
       if (e.pointerType === "touch") {
         e.preventDefault();
@@ -171,6 +184,16 @@ export function useDraggableSnap(
       snapControlsRef.current.y?.stop();
       snapControlsRef.current = { x: null, y: null };
 
+      // 立即捕获指针：把后续 pointermove/up 全部路由到本元素，
+      // 防止 Safari/Chrome 把拖拽手势转成页面滚动或双指缩放。
+      // 关键：必须在 pointerdown 阶段就 capture，而不是等过 5px 阈值后，
+      // 否则浏览器在阈值期间已经接管手势，capture 来不及生效。
+      let captured = false;
+      try {
+        el.setPointerCapture?.(e.pointerId);
+        captured = true;
+      } catch {}
+
       let started = false;
       const startX = e.clientX;
       const startY = e.clientY;
@@ -179,8 +202,8 @@ export function useDraggableSnap(
       // 左上角语义：position.x = rect.left（Framer transform 已生效后）
       dragOffsetRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
 
-      // 优先用 window 级监听，保证鼠标移出气泡、移到面板上方时仍能持续追踪拖拽。
-      // pointer capture 在某些场景（如被 panel 的高 z-index 覆盖）会丢失事件。
+      // 用 window 级监听兜底：即便 pointer capture 因某些原因（高 z-index 遮挡、
+      // iframe）失效，仍能持续追踪拖拽。
       const moveTarget: Element | Window = window;
       const upTarget: Element | Window = window;
 
@@ -189,7 +212,6 @@ export function useDraggableSnap(
         if (!started) {
           if (Math.abs(ev.clientX - startX) < 5 && Math.abs(ev.clientY - startY) < 5) return;
           started = true;
-          try { el.setPointerCapture?.(e.pointerId); } catch {}
           setIsDragging(true);
         }
         // 触屏下必须 preventDefault 才能阻止页面滚动；listener 以 passive:false 注册。
@@ -205,7 +227,10 @@ export function useDraggableSnap(
         my.set(clamped.y);
       };
 
-      const onUp = () => {
+      const onUp = (ev: PointerEvent) => {
+        if (captured) {
+          try { el.releasePointerCapture?.(ev.pointerId); } catch {}
+        }
         if (started) {
           // 标记刚完成拖拽：随后的 click 事件应被消费方抑制
           justDraggedRef.current = true;
@@ -254,5 +279,5 @@ export function useDraggableSnap(
     [containerRef, clampPosition, mx, my],
   );
 
-  return { onPointerDown, x: mx, y: my, position, isDragging, snapSide, justDraggedRef };
+  return { onPointerDown, x: mx, y: my, position, isDragging, snapSide, justDraggedRef, mounted };
 }

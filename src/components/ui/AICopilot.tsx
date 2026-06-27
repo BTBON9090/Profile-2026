@@ -823,20 +823,24 @@ export default function AICopilot() {
       onPointerDown={drag.onPointerDown}
       // 位置完全由 MotionValue 驱动（见 use-draggable-snap），拖拽期间 set 不触发重渲染，
       // 彻底避免 Framer 用旧 state 复位 transform 导致"拖拽时气泡不动"。
+      // hydration 安全：mounted=false 时保持与 SSR 一致的初始状态（不可见、不定位），
+      // 避免 useLayoutEffect 提前写入 MotionValue 触发 hydration mismatch，
+      // 进而导致 React 放弃该子树事件绑定（点击/hover 全失灵）。
       style={{
-        x: drag.x,
-        y: drag.y,
+        x: drag.mounted ? drag.x : 0,
+        y: drag.mounted ? drag.y : 0,
         position: "fixed",
         top: 0,
         left: 0,
         zIndex: 2147483000,
         touchAction: "none",
         cursor: drag.isDragging ? "grabbing" : undefined,
-        pointerEvents: "auto",
+        pointerEvents: drag.mounted ? "auto" : "none",
         userSelect: "none",
         width: bubbleSize,
         height: bubbleSize,
         willChange: "transform",
+        visibility: drag.mounted ? "visible" : "hidden",
       }}
     >
       {/* 拟人化眼睛触发器 */}

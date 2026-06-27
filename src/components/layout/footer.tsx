@@ -88,13 +88,13 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16 max-w-4xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-16 max-w-3xl mx-auto"
         >
           {contacts.map((contact, idx) => (
             <button
               key={idx}
               onClick={() => handleCopy(contact.copyText, contact.field)}
-              className="group relative inline-flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-full border border-zinc-800/80 bg-white/[0.02] hover:bg-white/[0.04] hover:border-blue-500/30 transition-all duration-300 w-full"
+              className="group relative inline-flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl border border-zinc-800/80 bg-white/[0.02] hover:bg-white/[0.04] hover:border-blue-500/30 transition-all duration-300 w-full"
             >
               <contact.icon className="w-4 h-4 text-zinc-500 group-hover:text-blue-400 transition-colors" />
               <span className="text-sm font-mono text-zinc-300 group-hover:text-white transition-colors">{contact.value}</span>
@@ -131,7 +131,7 @@ export default function Footer() {
           <a
             href="https://cdn.btbon.cn/UI设计-倪城-2026.pdf"
             download="UI设计-倪城-2026.pdf"
-            className="group inline-flex items-center gap-3 px-6 py-3.5 bg-zinc-100 text-black rounded-full hover:bg-blue-500 hover:text-white transition-all duration-300 font-mono text-sm font-bold uppercase tracking-wider"
+            className="group inline-flex items-center gap-3 px-6 py-3.5 bg-zinc-100 text-black rounded-xl hover:bg-blue-500 hover:text-white transition-all duration-300 font-mono text-sm font-bold uppercase tracking-wider"
           >
             <FileText className="w-4 h-4" />
             {t.footer.downloadReminder}

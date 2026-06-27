@@ -259,13 +259,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!isDesktop || PLAYLIST.length === 0) return;
+    if (PLAYLIST.length === 0) return;
 
     const initialIndex = Math.floor(Math.random() * PLAYLIST.length);
     trackIndexRef.current = initialIndex;
     const track = PLAYLIST[initialIndex];
     setCurrentTrack(track);
-    fetchLyrics(track);
+    // 歌词仅在桌面端拉取（移动端隐藏歌词组件，无需请求）
+    if (isDesktop) fetchLyrics(track);
 
     const audio = new Audio(track.url);
     audio.volume = 0.4;

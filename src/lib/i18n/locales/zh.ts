@@ -216,13 +216,13 @@ export const zh = {
     hero: {
       title: "NI CHENG",
       titleSuffix: "UI/UX 设计师",
-      subtitle: "我不只是出 UI 设计稿，我利用 Vibe Coding 构建可交互的产品，模拟产品逻辑，还原用户体验。",
+      subtitle: "利用 Vibe Coding 构建可交互的产品，模拟产品逻辑，还原用户体验。",
       subtitleAi: "Vibe Coding",
       baseStats: "Base Stats",
       role: "B 端产品 UI 设计师",
       experience: "10 年工作经验",
       education: "工业设计系",
-      school: "内蒙古科技大学·本科理工类",
+      school: "内蒙古科技大学·本科理工",
       location: "北京市朝阳区",
       locationDetail: "鸟巢旁边",
       designEngineering: "Design Engineering",
@@ -244,11 +244,11 @@ export const zh = {
     capabilities: {
       systemArchitect: {
         title: '设计系统 × 业务解构',
-        description: 'B 端设计的核心是逻辑自洽。擅长将复杂业务流拆解为原子化组件，通过 Figma Variables 统一 Token 体系，构建跨端一致的设计系统。在雪诺科技独立维护 Web + Desktop 双侧组件库，研发复用率提升 60%。',
+        description: 'B 端设计的核心是逻辑自洽。擅长将复杂业务流拆解为原子化组件，通过 Variables 统一 Token 体系，构建跨端一致的设计系统。独立维护 Web + Mobile 双侧组件库，研发复用率提升 60%。',
       },
       aiEngineer: {
         title: 'Vibe Coding × AI 原生',
-        description: '用 AI 重塑设计工作流。熟练运用 Trae/Gemini/Antigravity 进行 Vibe Coding，独立开发 Figma 插件（340+ 用户）和 Chrome 扩展。在设计阶段即可验证技术可行性，将"设计稿→代码"的翻译损耗降至最低。',
+        description: '用 AI 重塑设计工作流。熟练运用 Trae / Gemini / ZCode 进行氛围编程，曾独立开发 Figma 和 Chrome 扩展。可在设计阶段验证技术可行性，将"设计稿→代码"的翻译损耗降至最低。',
       },
     },
     techStack: '技术栈与工具库',
@@ -261,7 +261,7 @@ export const zh = {
       techEmpoweredWorkflow: {
         category: 'AI 工作流',
         icon: 'Terminal',
-        items: ['Vibe Coding', 'Figma 插件开发', 'Trae / Gemini', '原型验证'],
+        items: ['Vibe Coding', 'Figma 插件开发', '原型验证'],
       },
       tools: {
         category: '工具链',
@@ -300,7 +300,7 @@ export const zh = {
             '商业化部门内的 Figma 设计培训与 Figma 插件设计开发',
             '负责 2023 年快手春节招商活动品牌坑位相关跨团队协作设计任务',
           ],
-          tech: ['Figma Teaching', '磁力聚星', 'CNY Marketing', 'Team Collaboration'],
+          tech: ['Figma Teaching', '磁力聚星', 'CNY Marketing',],
         },
         {
           id: 3,

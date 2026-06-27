@@ -348,9 +348,10 @@ export default function BgmPlayer() {
         onPointerDown={drag.onPointerDown}
         // 位置完全由 MotionValue 驱动（见 use-draggable-snap），拖拽期间 set 不触发重渲染，
         // 彻底避免 Framer 用旧 state 复位 transform 导致"拖拽时不动"。
+        // hydration 安全：mounted=false 时与 SSR 一致（不可见），避免 hydration mismatch。
         style={{
-          x: drag.x,
-          y: drag.y,
+          x: drag.mounted ? drag.x : 0,
+          y: drag.mounted ? drag.y : 0,
           position: "fixed",
           top: 0,
           left: 0,
@@ -359,6 +360,8 @@ export default function BgmPlayer() {
           cursor: drag.isDragging ? "grabbing" : "grab",
           userSelect: "none",
           willChange: "transform",
+          visibility: drag.mounted ? "visible" : "hidden",
+          pointerEvents: drag.mounted ? "auto" : "none",
         }}
         onMouseEnter={() => {
           hoverRef.current = true;

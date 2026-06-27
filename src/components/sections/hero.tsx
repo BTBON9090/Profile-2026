@@ -65,9 +65,11 @@ export default function Hero() {
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.4, ease: [0.175, 0.885, 0.32, 1.1] }}
-            className="text-[15vw] md:text-[12vw] lg:text-[10rem] font-black leading-[0.82] tracking-[-0.05em] text-zinc-100 select-none"
+            className="text-[26vw] md:text-[12vw] lg:text-[10rem] font-black leading-[0.82] tracking-[-0.05em] text-zinc-100 select-none"
           >
-            {t.hero.mainTitle}
+            {/* 移动端：PORT \n FOLIO.  桌面端：PORTFOLIO. */}
+            <span className="md:hidden">PORT<br/>FOLIO</span>
+            <span className="hidden md:inline">PORTFOLIO</span>
             <span className="text-blue-500">.</span>
           </motion.h1>
 
@@ -76,7 +78,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex items-center gap-3 md:gap-4 mt-6 md:mt-8 flex-wrap"
+            className="flex items-center gap-3 md:gap-4 mt-16 md:mt-24 flex-wrap"
           >
             <span className="text-sm md:text-base font-mono text-zinc-200 tracking-[0.1em] uppercase">
               {t.hero.themeWords1}
@@ -103,7 +105,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.1 }}
-            className="group inline-flex items-center gap-2 mt-8 md:mt-10 px-5 py-3 rounded-full bg-white/0 border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300"
+            className="group inline-flex items-center gap-2 mt-8 md:mt-10 px-4 py-3 rounded-xl bg-white/3 backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300"
           >
             <Sparkles className="w-4 h-4 text-white" />
             <span className="text-sm font-mono font-bold text-white group-hover:text-white uppercase tracking-wider">

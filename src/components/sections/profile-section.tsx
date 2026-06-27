@@ -158,27 +158,27 @@ export default function ProfileSection() {
                     <span className="text-xs text-zinc-400 font-mono">/ UI · UX Designer</span>
                   </div>
                 </div>
-                <p className="text-sm text-zinc-300 mt-4 leading-relaxed drop-shadow">
+                <p className="text-sm text-zinc-300 mt-12 md:mt-4 leading-relaxed drop-shadow">
                   {t.about.hero.subtitle}
                 </p>
 
                 {/* 中部 — 关键信息网格（icon 与正文垂直居中对齐） */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-6 md:mt-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-12 md:mt-8">
                   <div className="flex items-center gap-2.5">
                     <Briefcase className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                      <div className="text-xs text-zinc-200 mt-0.5">{t.about.hero.role}</div>
+                      <div className="text-xs text-zinc-400 mt-0.5">{t.about.hero.role}</div>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Clock className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                      <div className="text-xs text-zinc-200 mt-0.5">{t.about.hero.experience}</div>
+                      <div className="text-xs text-zinc-400 mt-0.5">{t.about.hero.experience}</div>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <GraduationCap className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                      <div className="text-xs text-zinc-200 mt-0.5">{t.about.hero.education}</div>
+                      <div className="text-xs text-zinc-400 mt-0.5">{t.about.hero.education}</div>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <MapPin className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                      <div className="text-xs text-zinc-200 mt-0.5">{t.about.hero.location}</div>
+                      <div className="text-xs text-zinc-400 mt-0.5">{t.about.hero.location}</div>
                   </div>
                 </div>
 
@@ -186,13 +186,13 @@ export default function ProfileSection() {
                 <div className="flex items-center justify-between mt-6 pt-5 border-t border-white/10">
                   <div>
                     <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-0.5">School</div>
-                    <div className="text-xs text-zinc-300">{t.about.hero.school}</div>
+                    <div className="text-xs text-zinc-400">{t.about.hero.school}</div>
                   </div>
                   {/* 弱化的下载简历按钮 — 从醒目的白色实心改为幽灵按钮 */}
                   <a
                     href="https://cdn.btbon.cn/UI设计-倪城-2026.pdf"
                     download="UI设计-倪城-2026.pdf"
-                    className="group inline-flex items-center gap-1.5 px-3 py-1.5 border border-zinc-600 text-zinc-300 rounded-full hover:border-white/50 hover:text-white hover:bg-white/5 transition-all duration-300 text-[11px] font-mono tracking-wider"
+                    className="group inline-flex items-center gap-1.5 px-3 py-1.5 border border-white/10 text-zinc-300 rounded-md hover:border-white/50 hover:text-white hover:bg-white/5 transition-all duration-300 text-[11px] font-mono tracking-wider"
                   >
                     <FileText className="w-3 h-3" />
                     <span className="uppercase">{t.profile.downloadResume}</span>
@@ -210,7 +210,7 @@ export default function ProfileSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mb-12 md:mb-16 max-w-4xl"
+          className="mt-8 md:mt-0 mb-20 md:mb-24 max-w-4xl"
         >
           <h2 className="text-2xl md:text-4xl font-black text-zinc-100 tracking-tight leading-[1.2] mb-5">
             设计不止于交付<span className="text-blue-500">.</span>
@@ -218,7 +218,7 @@ export default function ProfileSection() {
             <span className="text-zinc-600">是逻辑的可视化与落地的预演</span>
           </h2>
           <p className="text-sm md:text-base text-zinc-400 leading-relaxed max-w-2xl">
-            在 AI 重塑生产力的 2026 年，单纯的"视觉交付"已不再是设计终点。
+            在 AI 重塑生产力的当下，单纯的"视觉交付"已不再是设计终点。
             我将<span className="text-blue-400">工程思维</span>前置到设计阶段——
             利用 Vibe Coding 构建可交互原型与提效工具，在开发介入前验证技术可行性，
             将设计稿到代码的<span className="text-blue-400">翻译损耗降至最低</span>。
@@ -231,7 +231,7 @@ export default function ProfileSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-12"
+          className="mb-20"
         >
           {/* 区块标题 — 移动端文字与图标阵列上下两行 */}
           <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -298,7 +298,7 @@ export default function ProfileSection() {
                 {/* 核心能力标签 */}
                 <div className="flex flex-wrap gap-1.5">
                   {t.about.techStackData.coreCompetency.items.map((item: string, i: number) => (
-                    <span key={i} className="px-2 py-1 bg-blue-500/5 border border-blue-500/20 rounded text-[10px] font-mono text-blue-300/80">
+                    <span key={i} className="px-2 py-1 bg-blue-500/5 border border-blue-500/20 rounded-md text-[10px] font-mono text-blue-300/80">
                       {item}
                     </span>
                   ))}
@@ -330,7 +330,7 @@ export default function ProfileSection() {
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {t.about.techStackData.techEmpoweredWorkflow.items.map((item: string, i: number) => (
-                    <span key={i} className="px-2 py-1 bg-purple-500/5 border border-purple-500/20 rounded text-[10px] font-mono text-purple-300/80">
+                    <span key={i} className="px-2 py-1 bg-purple-500/5 border border-purple-500/20 rounded-md text-[10px] font-mono text-purple-300/80">
                       {item}
                     </span>
                   ))}
@@ -357,7 +357,7 @@ export default function ProfileSection() {
           </div>
 
           {/* 表头 */}
-          <div className="hidden md:grid grid-cols-[130px_minmax(200px,1fr)_160px_1fr] gap-8 px-6 py-3 border-b border-zinc-800 font-mono text-[10px] text-zinc-600 uppercase tracking-widest">
+          <div className="hidden md:grid grid-cols-[130px_minmax(200px,1fr)_160px_1fr] gap-8 px-6 py-3 font-mono text-[10px] text-zinc-600 uppercase tracking-widest">
             <span>Time</span>
             <span>Company</span>
             <span>Role</span>
@@ -376,7 +376,7 @@ export default function ProfileSection() {
                 transition={{ duration: 0.4, delay: index * 0.08 }}
                 onMouseEnter={() => { setHoveredExp(index); updateTooltipPos(index); }}
                 onMouseLeave={() => setHoveredExp(null)}
-                className="group grid grid-cols-1 md:grid-cols-[130px_minmax(200px,1fr)_160px_1fr] gap-6 md:gap-8 px-6 py-4 border-b border-zinc-900 hover:bg-white/[0.03] transition-colors cursor-default relative"
+                className="group grid grid-cols-1 md:grid-cols-[130px_minmax(200px,1fr)_160px_1fr] gap-4 md:gap-8 px-6 md:px-6 py-6 md:py-8 border-b border-zinc-800/40 md:border-hidden rounded-0 md:rounded-2xl  hover:bg-white/[0.03] transition-colors cursor-default relative"
               >
                 <span className="font-mono text-xs text-zinc-500 tracking-wider whitespace-nowrap flex items-center">{exp.time}</span>
                 <div className="flex items-center gap-2">
@@ -389,10 +389,10 @@ export default function ProfileSection() {
                   {/* hover 提示图标 */}
                   <ChevronRight className={`w-3 h-3 text-zinc-600 transition-all duration-300 ${hoveredExp === index ? 'translate-x-0 opacity-100' : '-translate-x-1 opacity-0 group-hover:opacity-60 group-hover:translate-x-0'}`} />
                 </div>
-                <span className="text-xs text-zinc-400 flex items-center">{exp.role}</span>
+                <span className="text-xs text-zinc-400 flex items-center hidden md:flex">{exp.role}</span>
                 <div className="flex flex-wrap gap-1.5">
                   {exp.tech.slice(0, 4).map((tag: string, i: number) => (
-                    <span key={i} className="h-auto flex px-2 py-1 bg-zinc-900/80 border border-zinc-800 rounded text-[10px] font-mono text-zinc-500 leading-normal">
+                    <span key={i} className="h-auto flex px-2 py-0.5 bg-zinc-900/80 border border-zinc-800 rounded-md text-[10px] font-mono text-zinc-500 leading-normal">
                       {tag}
                     </span>
                   ))}

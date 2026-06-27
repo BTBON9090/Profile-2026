@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -35,8 +35,17 @@ const jetbrainsMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "倪城 | 10 年 B 端产品 UI/UX 设计师",
-  description: "设计系统构建 0-1. 设计工程化思维. AI 赋能. SaaS. Native.",
+  title: "Ni Cheng | 10y B-end Product UI/UX Designer",
+  description: "Design system 0-1. Design engineering. AI empowerment. SaaS. Native.",
+};
+
+// 显式 viewport：移动端必须禁用双击缩放/用户缩放，否则 Safari 会把长按拖拽
+// 识别成缩放手势，与 touchAction:none 冲突，导致 AI 助手气泡拖不动。
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

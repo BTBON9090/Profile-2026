@@ -156,7 +156,7 @@ export default function SnowEcosystem() {
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => setShowModal(true)}
-                  className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-300 cursor-pointer"
+                  className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-300 cursor-pointer"
                 >
                   <Eye className="w-4 h-4 text-blue-400" />
                   <span className="text-sm font-mono font-bold text-blue-300 group-hover:text-white uppercase tracking-wider">
@@ -167,7 +167,7 @@ export default function SnowEcosystem() {
                   href="https://www.snowtech.com.cn/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-zinc-800/50 border border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800 transition-all duration-300 cursor-pointer"
+                  className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-zinc-800/50 border border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800 transition-all duration-300 cursor-pointer"
                 >
                   <Globe className="w-4 h-4 text-zinc-400" />
                   <span className="text-sm font-mono font-bold text-zinc-300 group-hover:text-white uppercase tracking-wider">
@@ -189,7 +189,7 @@ export default function SnowEcosystem() {
               {highlights.map((item, idx) => (
                 <div
                   key={idx}
-                  className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-zinc-800/50 hover:border-blue-500/40 transition-all duration-500"
+                  className="group relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-zinc-800/50 hover:border-blue-500/40 transition-all duration-500"
                 >
                   {/* 背景装饰 - 大号序号 */}
                   <span className="absolute -top-2 -right-2 text-[5rem] font-black text-white/[0.03] select-none pointer-events-none group-hover:text-blue-500/[0.05] transition-colors duration-500">
@@ -197,11 +197,11 @@ export default function SnowEcosystem() {
                   </span>
 
                   {/* 顶部渐变线 */}
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block" />
 
-                  <div className="relative p-5">
+                  <div className="relative p-4 md:p-5">
                     {/* 图标 + 标签 */}
-                    <div className="flex items-center justify-between mb-12">
+                    <div className="flex items-center justify-between mb-8 md:mb-12">
                       <div className="relative">
                         <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
@@ -216,7 +216,7 @@ export default function SnowEcosystem() {
                     </h3>
 
                     {/* 底部装饰线 */}
-                    <div className="mt-4 mb-4 h-px bg-gradient-to-r from-blue-500/0 via-blue-500/20 to-blue-500/0 w-0 group-hover:w-full transition-all duration-500" />
+                    <div className="mt-4 mb-4 h-px bg-gradient-to-r from-blue-500/0 via-blue-500/20 to-blue-500/0 w-0 group-hover:w-full transition-all duration-500 hidden md:block" />
 
                     {/* 描述 */}
                     <p className="text-sm text-zinc-500 font-mono leading-relaxed group-hover:text-zinc-400 transition-colors">
@@ -238,7 +238,7 @@ export default function SnowEcosystem() {
             transition={{ duration: 0.7 }}
             className="relative"
           >
-            <div className="relative rounded-[2px] md:rounded-2xl overflow-hidden border border-zinc-800/40 bg-black">
+            <div className="relative rounded-[8px] md:rounded-2xl overflow-hidden border border-zinc-800/40 bg-black">
               {/* 视频区域 - 不用object-cover，让视频自适应 */}
               <div className="relative w-full bg-zinc-950">
                 <video

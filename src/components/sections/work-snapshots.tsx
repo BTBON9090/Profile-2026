@@ -202,7 +202,6 @@ export default function WorkSnapshots() {
                 .tile-cell {
                   grid-column: var(--gc);
                   grid-row: var(--gr);
-                  box-shadow: 0 0 0 1px #09090b;
                 }
               }
               @media (max-width: 800px) {
@@ -214,7 +213,6 @@ export default function WorkSnapshots() {
                 .tile-cell-mobile {
                   grid-column: var(--m-gc);
                   grid-row: var(--m-gr);
-                  box-shadow: 0 0 0 1px #09090b;
                 }
               }
             `}</style>
@@ -230,7 +228,7 @@ export default function WorkSnapshots() {
           >
             <Link
               href="/work"
-              className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full border border-zinc-700 hover:border-white bg-transparent hover:bg-white/5 transition-all duration-300"
+              className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-xl border border-zinc-700 hover:border-white bg-transparent hover:bg-white/5 transition-all duration-300"
             >
               <span className="text-sm md:text-base font-medium text-zinc-200 group-hover:text-white tracking-wide transition-colors">
                 {t.work.viewAllProjects}
