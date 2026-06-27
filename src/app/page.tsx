@@ -1,7 +1,7 @@
 // src/app/page.tsx
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Hero from "@/components/sections/hero";
 import ProfileSection from "@/components/sections/profile-section";
@@ -36,7 +36,8 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
   grid: {
     cols: 26,
     rows: 16,
-    cellSize: 3.0,
+    // 桌面端 4.3，移动端 3.0（见下方 MOBILE_OVERRIDE）
+    cellSize: 4.3,
     gap: 0,
     depth: 3.5,
   },
@@ -94,14 +95,40 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
 };
 
 export default function Home() {
+  // 桌面端用 HOME_BLOCK_WALL_CONFIG（cellSize 4.3），
+  // 移动端覆盖为 cellSize 3.0（更小方格、更高密度）。
   const [config, setConfig] = useState<BlockWallConfig>(
     () => JSON.parse(JSON.stringify(HOME_BLOCK_WALL_CONFIG)) as BlockWallConfig
   );
 
+  // 响应式：根据视口宽度切换 cellSize，避免 SSR/首屏 hydration mismatch
+  useEffect(() => {
+    const applyResponsive = () => {
+      setConfig((prev) => {
+        const isMobile = window.innerWidth < 768;
+        const targetCellSize = isMobile ? 3.0 : 4.3;
+        if (prev.grid.cellSize === targetCellSize) return prev;
+        return {
+          ...prev,
+          grid: { ...prev.grid, cellSize: targetCellSize },
+        };
+      });
+    };
+    applyResponsive();
+    window.addEventListener("resize", applyResponsive);
+    return () => window.removeEventListener("resize", applyResponsive);
+  }, []);
+
   const handleReset = useCallback(() => {
-    setConfig(
-      JSON.parse(JSON.stringify(HOME_BLOCK_WALL_CONFIG)) as BlockWallConfig
-    );
+    const isMobile =
+      typeof window !== "undefined" ? window.innerWidth < 768 : false;
+    setConfig((prev) => {
+      const base = JSON.parse(
+        JSON.stringify(HOME_BLOCK_WALL_CONFIG)
+      ) as BlockWallConfig;
+      base.grid.cellSize = isMobile ? 3.0 : 4.3;
+      return base;
+    });
   }, []);
 
   return (
