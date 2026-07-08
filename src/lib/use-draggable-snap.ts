@@ -178,21 +178,19 @@ export function useDraggableSnap(
       if (e.pointerType === "touch") {
         e.preventDefault();
       }
-
       // 取消任何正在进行的吸附 tween，否则会和拖拽互相打架
       snapControlsRef.current.x?.stop();
       snapControlsRef.current.y?.stop();
       snapControlsRef.current = { x: null, y: null };
 
-      // 立即捕获指针：把后续 pointermove/up 全部路由到本元素，
-      // 防止 Safari/Chrome 把拖拽手势转成页面滚动或双指缩放。
-      // 关键：必须在 pointerdown 阶段就 capture，而不是等过 5px 阈值后，
-      // 否则浏览器在阈值期间已经接管手势，capture 来不及生效。
+      // 注意：此处**不**立即 setPointerCapture。
+      // 触发器（onClick）是嵌套在拖拽容器内的子元素，若在 pointerdown 阶段就把指针
+      // capture 到外层容器，桌面端浏览器会把随后的 click 派发给捕获元素（外层 div），
+      // 而非实际命中的子元素，导致"点气泡打不开面板"——移动端因走 preventDefault 分支
+      // 不受影响，故该 bug 仅桌面端复现。
+      // 改为过 5px 拖拽阈值后再 capture：纯点击不 capture → click 正常命中；
+      // 真正拖拽时 5px 内浏览器尚来不及接管手势，capture 仍能及时生效。
       let captured = false;
-      try {
-        el.setPointerCapture?.(e.pointerId);
-        captured = true;
-      } catch {}
 
       let started = false;
       const startX = e.clientX;
@@ -212,6 +210,11 @@ export function useDraggableSnap(
         if (!started) {
           if (Math.abs(ev.clientX - startX) < 5 && Math.abs(ev.clientY - startY) < 5) return;
           started = true;
+          // 真正进入拖拽后再捕获指针，防止浏览器把拖拽手势转成页面滚动/双指缩放。
+          try {
+            el.setPointerCapture?.(e.pointerId);
+            captured = true;
+          } catch {}
           setIsDragging(true);
         }
         // 触屏下必须 preventDefault 才能阻止页面滚动；listener 以 passive:false 注册。
