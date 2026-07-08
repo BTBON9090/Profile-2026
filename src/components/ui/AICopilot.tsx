@@ -748,7 +748,7 @@ export default function AICopilot() {
   const hasWindow = typeof window !== "undefined";
   const copilotRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [panelPos, setPanelPos] = useState<{ left: number; top: number } | null>(null);
+  const [panelPos, setPanelPos] = useState<{ left: number; top: number; height: number } | null>(null);
   const drag = useDraggableSnap(
     copilotRef,
     hasWindow ? window.innerWidth - 56 : 0, // 左上角语义：留出 56px 触发器宽度
@@ -788,15 +788,20 @@ export default function AICopilot() {
         }
       }
 
-      // 垂直：面板与触发器顶部对齐，上下 clamp
-      const panelH = isMobile ? Math.min(window.innerHeight * 0.7, 600) : Math.min(window.innerHeight * 0.75, 700);
+      // 垂直：面板与触发器顶部对齐，高度 + top 统一由 JS 计算并写入 style，
+      // 避免 Tailwind h-[Xvh] 与 JS maxTop 计算脱节导致底部输入框被遮挡。
+      const vh = window.innerHeight;
+      // 理想高度：移动端 70vh 最高 600，桌面 75vh 最高 700
+      const idealH = isMobile ? Math.min(vh * 0.7, 600) : Math.min(vh * 0.75, 700);
+      // 触发器顶部对齐为初始 top，再向上 clamp 确保面板底部不超出视口
       let top = drag.position.y;
-      // 当触发器被拖拽到屏幕偏下时，面板顶部若与触发器对齐会让底部输入框被视口底部遮挡。
-      // 此时让面板底部对齐视口底部安全区，确保输入框始终可见。
-      const maxTop = window.innerHeight - panelH - 16;
+      const SAFE_PAD = 16; // 距视口上下边缘的最小间距
+      const maxTop = vh - idealH - SAFE_PAD;
       if (top > maxTop) top = maxTop;
-      if (top < 16) top = 16;
-      setPanelPos({ left, top });
+      if (top < SAFE_PAD) top = SAFE_PAD;
+      // 若视口真的太矮（极端横屏），压缩面板高度而不是让它溢出
+      const panelH = Math.min(idealH, vh - top - SAFE_PAD);
+      setPanelPos({ left, top, height: panelH });
     };
     compute();
     window.addEventListener("resize", compute);
@@ -1018,8 +1023,8 @@ export default function AICopilot() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed z-[2147483600] w-[calc(100vw-32px)] md:w-[480px] h-[70vh] md:h-[75vh] max-h-[800px] bg-zinc-950/95 backdrop-blur-3xl border border-zinc-800/80 shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden flex flex-col"
-            style={{ top: `${panelPos.top}px`, left: `${panelPos.left}px` }}
+            className="fixed z-[2147483600] w-[calc(100vw-32px)] md:w-[480px] bg-zinc-950/95 backdrop-blur-3xl border border-zinc-800/80 shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden flex flex-col"
+            style={{ top: `${panelPos.top}px`, left: `${panelPos.left}px`, height: `${panelPos.height}px` }}
             role="dialog"
             aria-label="AI 助手对话"
           >
