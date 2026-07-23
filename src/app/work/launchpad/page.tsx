@@ -37,7 +37,7 @@ import ProductBackButton from "@/components/ui/product-back-button";
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
 const DOWNLOAD_URL =
-  "https://lightapp-1317980685.cos.ap-shanghai.myqcloud.com/launchpad/releases/1.1.6/LaunchPad-1.1.6-arm64.dmg";
+  "https://lightapp-1317980685.cos.ap-shanghai.myqcloud.com/launchpad/releases/1.1.7/LaunchPad-1.1.7-arm64.dmg";
 
 /* 四种唤起方式 */
 const triggers = [
