@@ -13,7 +13,7 @@ export default function Navbar() {
   // 1. 动态主题感知
   // 注意这里：如果是放在 project 路由下，记得加上 /project/ 前缀
   // ==============================================================
-  const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding" || pathname === "/work/all-in-one-v2";
+  const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding" || pathname === "/work/all-in-one-v2" || pathname === "/work/aura";
 
   // 提取动态 CSS 变量
   const navBgClass = isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色

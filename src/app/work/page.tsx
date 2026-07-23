@@ -180,6 +180,28 @@ const projects: ProjectSection[] = [
         badge: "免费",
       },
       {
+        id: "launchpad",
+        title: "LaunchPad — macOS 原生启动台",
+        description: "为 macOS 重新找回熟悉的启动体验，支持快捷键、F4、触控板手势与触发角唤起。",
+        image: "/product-assets/launchpad-icon.png",
+        date: "2026",
+        useModal: false,
+        link: "/work/launchpad",
+        tags: ["macOS", "SwiftUI", "原生应用"],
+        badge: "新",
+      },
+      {
+        id: "aura",
+        title: "Aura — 私密图片画廊",
+        description: "本地优先的私密影像管理工具，覆盖标签整理、物理隔离、幻灯片与入口伪装。",
+        image: "/product-assets/aura-logo.png",
+        date: "2026",
+        useModal: false,
+        link: "/work/aura",
+        tags: ["Android", "Flutter", "隐私产品"],
+        badge: "新",
+      },
+      {
         id: "others",
         title: "其他作品",
         description: "自驱型业务项目、个人外包项目、日常练习作品。",
@@ -411,6 +433,7 @@ export default function WorkProject() {
                         const isModal = project.useModal && project.dataSlug;
                         const isExternal = project.link && (project.link.startsWith('http://') || project.link.startsWith('https://'));
                         const projectTags = project.tags || [];
+                        const isProductApp = project.id === "launchpad" || project.id === "aura";
                         
                         let Wrapper: any = "div";
                         let wrapperProps: any = {};
@@ -458,7 +481,13 @@ export default function WorkProject() {
                               <article className="relative bg-zinc-900/40 border border-zinc-800/60 rounded-xl overflow-hidden hover:border-zinc-600/80 hover:bg-zinc-900/60 transition-all duration-400 h-full flex flex-col group-hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]">
                                 
                                 {/* 图片区 — 严谨的宽高比和加载状态 */}
-                                <div className="relative aspect-[16/10] w-full bg-zinc-900 overflow-hidden flex-shrink-0">
+                                <div className={`relative aspect-[16/10] w-full overflow-hidden flex-shrink-0 ${
+                                  project.id === "launchpad"
+                                    ? "bg-[radial-gradient(circle_at_50%_45%,#1748a8,#070b22_68%)]"
+                                    : project.id === "aura"
+                                      ? "bg-[radial-gradient(circle_at_50%_42%,#eadff1,#bca6cc_72%)]"
+                                      : "bg-zinc-900"
+                                }`}>
                                   {/* 骨架屏 */}
                                   {!imageLoaded[project.id] && (
                                     <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-800/50 to-zinc-900 animate-pulse"></div>
@@ -470,7 +499,7 @@ export default function WorkProject() {
                                     unoptimized
                                     loading={forceEager ? "eager" : "lazy"}
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                                    className="object-cover object-top group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+                                    className={`${isProductApp ? "object-contain p-8 md:p-10 drop-shadow-[0_18px_30px_rgba(0,0,0,.28)]" : "object-cover object-top"} group-hover:scale-[1.04] transition-transform duration-700 ease-out`}
                                     onLoad={() => setImageLoaded(prev => ({ ...prev, [project.id]: true }))}
                                   />
                                   
@@ -541,5 +570,4 @@ export default function WorkProject() {
     </div>
   );
 }
-
 
