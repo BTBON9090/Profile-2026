@@ -115,7 +115,7 @@ export default function AIPlugins() {
               {/* 预览图 */}
               <div className="relative aspect-[16/9] bg-black/40 rounded-lg border border-zinc-800/80 overflow-hidden mb-6 group-hover:scale-[1.01] transition-transform duration-500">
                 <Image
-                  src="https://cdn.btbon.cn/images/ALO.jpg"
+                  src="https://cdn.btbon.cn/images/ALO.webp"
                   alt="AllinOne Figma Plugin"
                   fill
                   unoptimized
@@ -183,7 +183,7 @@ export default function AIPlugins() {
               {/* 产品图 - 加高 */}
               <div className="relative flex-1 min-h-[280px] bg-black/40 rounded-lg border border-zinc-800/80 overflow-hidden mb-12 group-hover:scale-[1.01] transition-transform duration-500">
                 <Image
-                  src="https://cdn.btbon.cn/images/aitran.png"
+                  src="https://cdn.btbon.cn/images/aitran.webp"
                   alt="AI Translate Extension"
                   fill
                   unoptimized

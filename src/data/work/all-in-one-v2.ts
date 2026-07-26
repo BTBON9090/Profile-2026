@@ -5,9 +5,9 @@ const allInOneV2Data = {
   theme: "light",
   title: "AllinOne V2 — Figma 全能插件",
   subtitle: "AI 驱动的 Figma 设计师提效工具集 · 瑞士国际风格全新设计",
-  heroImage: "https://cdn.btbon.cn/images/ALO.jpg",
+  heroImage: "https://cdn.btbon.cn/images/ALO.webp",
   behanceSlices: [
-    "https://cdn.btbon.cn/images/ALO.jpg",
+    "https://cdn.btbon.cn/images/ALO.webp",
   ],
   nextProject: {
     slug: "ai-translate",

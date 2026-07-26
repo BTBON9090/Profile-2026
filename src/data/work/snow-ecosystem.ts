@@ -151,7 +151,7 @@ const snowEcosystemData = {
 
   // 结构 10: 全景大图与下一篇
   fullWidthImage: "https://cdn.btbon.cn/images/snow-admin.png",
-  masonryImages:["https://cdn.btbon.cn/images/snow-admin.png", "https://cdn.btbon.cn/images/snow-browser.png", "https://cdn.btbon.cn/images/plugin-ui.png", "https://cdn.btbon.cn/images/ai-translate.png"],
+  masonryImages:["https://cdn.btbon.cn/images/snow-admin.png", "https://cdn.btbon.cn/images/snow-browser.png", "https://cdn.btbon.cn/images/plugin-ui.webp", "https://cdn.btbon.cn/images/ai-translate.png"],
   nextProject: { slug: "all-in-one", name: "AllinOne Figma Plugin" },
 
   

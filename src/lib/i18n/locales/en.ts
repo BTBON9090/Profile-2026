@@ -279,7 +279,7 @@ export const en = {
           id: 1,
           role: 'Product Designer',
           company: 'SNOWTECH',
-          logo: 'https://cdn.btbon.cn/images/snowtech.png',
+          logo: 'https://cdn.btbon.cn/images/snowtech.webp',
           time: '2024.08 - Present',
           description: [
             'Led end-to-end design of enterprise security browser and workspace console from 0 to 1',
@@ -292,7 +292,7 @@ export const en = {
           id: 2,
           role: 'Product Designer',
           company: 'Kwai - Magnetic Star‌',
-          logo: 'https://cdn.btbon.cn/images/kuaishou.png',
+          logo: 'https://cdn.btbon.cn/images/kuaishou.webp',
           time: '2021.08 - 2023.04',
           description: [
             'Responsible for Magnolia Star user and client sides, and dual-platform business system design and maintenance',
@@ -306,7 +306,7 @@ export const en = {
           id: 3,
           role: 'UX Designer',
           company: 'AVIC - Zhonghang Jinwang',
-          logo: 'https://cdn.btbon.cn/images/avic.png',
+          logo: 'https://cdn.btbon.cn/images/avic.webp',
           time: '2018.08 - 2021.08',
           description: [
             'Led end-to-end design of group office tool "Shangwang Office" App and its SaaS applications from 0 to 1. Built dual-platform component library',
@@ -318,7 +318,7 @@ export const en = {
           id: 4,
           role: 'UI Designer',
           company: 'TAL - FIRSTLEAP',
-          logo: 'https://cdn.btbon.cn/images/tal.png',
+          logo: 'https://cdn.btbon.cn/images/tal.webp',
           time: '2018.06 - 2018.08',
           description: [
             'Responsible for mobile and customer management backend design and maintenance for Libu English',
@@ -329,7 +329,7 @@ export const en = {
           id: 5,
           role: 'UI Designer',
           company: 'CloudDeepTechnology',
-          logo: 'https://cdn.btbon.cn/images/yunshen.png',
+          logo: 'https://cdn.btbon.cn/images/yunshen.webp',
           time: '2016.09 - 2018.04',
           description: [
             'Responsible for dual-platform enterprise browser and native developer tool interaction UI design',

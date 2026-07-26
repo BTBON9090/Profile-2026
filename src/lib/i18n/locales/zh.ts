@@ -279,7 +279,7 @@ export const zh = {
           id: 1,
           role: 'Product Designer',
           company: '北京雪诺科技',
-          logo: 'https://cdn.btbon.cn/images/snowtech.png',
+          logo: 'https://cdn.btbon.cn/images/snowtech.webp',
           time: '2024.08 - Present',
           description: [
             '主导了从 0 到 1 的企业安全浏览器及工作空间控制台的全链路设计',
@@ -292,7 +292,7 @@ export const zh = {
           id: 2,
           role: 'Product Designer',
           company: '快手-磁力聚星',
-          logo: 'https://cdn.btbon.cn/images/kuaishou.png',
+          logo: 'https://cdn.btbon.cn/images/kuaishou.webp',
           time: '2021.08 - 2023.04',
           description: [
             '负责磁力聚星用户端与客户端，及双端业务系统设计与维护',
@@ -306,7 +306,7 @@ export const zh = {
           id: 3,
           role: 'UX Designer',
           company: '中国航空工业-中航金网',
-          logo: 'https://cdn.btbon.cn/images/avic.png',
+          logo: 'https://cdn.btbon.cn/images/avic.webp',
           time: '2018.08 - 2021.08',
           description: [
             '主导了集团办公工具"商网办公" App 及其 SaaS 应用从 0 到 1 的全链路设计。建立双端组件库',
@@ -318,7 +318,7 @@ export const zh = {
           id: 4,
           role: 'UI Designer',
           company: '好未来-励步英语',
-          logo: 'https://cdn.btbon.cn/images/tal.png',
+          logo: 'https://cdn.btbon.cn/images/tal.webp',
           time: '2018.06 - 2018.08',
           description: [
             '负责旗下励步英语的移动端与客户管理后台设计与维护任务',
@@ -329,7 +329,7 @@ export const zh = {
           id: 5,
           role: 'UI Designer',
           company: '云深互联',
-          logo: 'https://cdn.btbon.cn/images/yunshen.png',
+          logo: 'https://cdn.btbon.cn/images/yunshen.webp',
           time: '2016.09 - 2018.04',
           description: [
             '负责双端企业浏览器、原生开发者工具交互 UI 设计',

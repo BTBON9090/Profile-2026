@@ -159,7 +159,7 @@ function ImageCarousel({ items, active, dark, onPrev, onNext, sideFade = true }:
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     {/* 插件界面预览图 — 轮播展示各功能的 UI 截图，fallback 为默认插件界面 */}
-                    <img src={x.img||"https://cdn.btbon.cn/images/plugin-ui.png"} alt={x.title}
+                    <img src={x.img||"https://cdn.btbon.cn/images/plugin-ui.webp"} alt={x.title}
                       className="w-full h-full object-cover" loading="lazy" />
                   </>
                 )}

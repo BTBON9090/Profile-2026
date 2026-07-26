@@ -4,11 +4,11 @@ const amazeuiData = {
   template: "v5",
   theme: "dark",
   behanceSlices: [
-    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-01.png", 
-    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-02.png",
-    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-03.png",
-    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-04.png",
-    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-05.png",
+    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-01.webp", 
+    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-02.webp",
+    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-03.webp",
+    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-04.webp",
+    "https://cdn.btbon.cn/YSP-AmazeUI/Project05-05.webp",
   ],
 };
 
