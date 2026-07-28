@@ -90,7 +90,7 @@ export default function Sidebar() {
       initial={{ x: 50, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ ease: "easeOut", duration: 0.6, delay: 0.3 }}
-      className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden xl:flex flex-col items-end py-4"
+      className="site-sidebar fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden xl:flex flex-col items-end py-4"
     >
       {/* 顶部滚动进度环 */}
       <div className="relative w-10 h-10 mb-4 flex items-center justify-center">

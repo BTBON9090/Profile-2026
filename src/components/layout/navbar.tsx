@@ -5,10 +5,13 @@ import { motion } from "framer-motion";
 import { usePathname } from "next/navigation"; 
 import { useI18n } from "@/lib/i18n";
 import LyricsDisplay from "@/components/ui/lyrics-display";
+import UIVersionSwitch from "@/components/ui/ui-version-switch";
+import { useUIVersion } from "@/lib/ui-version-context";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { t } = useI18n();
+  const { isV2 } = useUIVersion();
   // ==============================================================
   // 1. 动态主题感知
   // 注意这里：如果是放在 project 路由下，记得加上 /project/ 前缀
@@ -16,7 +19,9 @@ export default function Navbar() {
   const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding" || pathname === "/work/all-in-one-v2" || pathname === "/work/aura";
 
   // 提取动态 CSS 变量
-  const navBgClass = isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
+  const navBgClass = isV2
+    ? "v2-navbar"
+    : isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
   const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white/90"; // logo 颜色
   const dotColorClass = isLightTheme ? "text-blue-600" : "text-blue-600"; // 点颜色
   
@@ -30,7 +35,7 @@ export default function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-[100] flex items-center h-18 px-8 transition-colors duration-500 ${navBgClass}`}
+      className={`site-navbar fixed top-0 left-0 right-0 z-[100] flex items-center h-18 px-8 transition-colors duration-500 ${navBgClass}`}
     >
       <Link 
         href="/" 
@@ -44,12 +49,12 @@ export default function Navbar() {
 
       
       {/* 歌词显示区域（桌面端，导航栏中央） */}
-      <div className="flex-1 flex justify-center overflow-hidden">
+      <div className="site-navbar__lyrics flex-1 flex justify-center overflow-hidden">
         <LyricsDisplay />
       </div>
 
       {/* 右侧导航与多语言 */}
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-4 md:gap-8">
         <div className="flex gap-8 font-mono text-sm">
           
           {/* 1. 首页 (Home) */}
@@ -76,6 +81,7 @@ export default function Navbar() {
           </Link>
 
         </div>
+        <UIVersionSwitch />
   
 </div>
     </motion.nav>

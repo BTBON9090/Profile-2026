@@ -49,7 +49,7 @@ const TemplateV5 = ({ data }: { data: any }) => {
 
   return (
     // 加上了 pt-[88px] 防止被顶部导航栏遮挡
-    <div className={`min-h-screen pt-[88px] ${bgClass} ${textClass} ${selectionClass}`}>
+    <div className={`site-case-v5 min-h-screen pt-[88px] ${bgClass} ${textClass} ${selectionClass}`}>
       
       <Link href="/work" className={`fixed top-28 left-8 z-50 w-12 h-12 backdrop-blur-md border rounded-full flex items-center justify-center transition-all group ${btnClass}`}>
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -233,7 +233,7 @@ export default function UniversalCaseStudyPage({ params }: { params: Promise<{ s
   }
 
   return (
-    <div className="bg-[#050505] min-h-screen selection:bg-blue-500/30 selection:text-blue-200 ">
+    <div className="site-case-page bg-[#050505] min-h-screen selection:bg-blue-500/30 selection:text-blue-200 ">
       <ProjectContextPusher slug={slug} />
 
       {/* 顶部返回键 */}

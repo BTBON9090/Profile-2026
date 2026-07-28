@@ -10,6 +10,8 @@ import { useSearchParams } from "next/navigation";
 import UniversalModal from "@/components/ui/UniversalModal";
 import { getProjectBySlug } from "@/data/projects";
 import Footer from "@/components/layout/footer";
+import WorkGalleryV2 from "@/components/v2/work-gallery-v2";
+import { useUIVersion } from "@/lib/ui-version-context";
 
 // 1. 结构化你的作品数据 (方便以后随时增删改)
 type ProjectItem = {
@@ -232,6 +234,11 @@ function ModalHandler({ modalList, setCurrentModalIndex }: { modalList: any[], s
 }
 
 export default function WorkProject() {
+  const { isV2 } = useUIVersion();
+  return isV2 ? <WorkGalleryV2 /> : <WorkProjectV1 />;
+}
+
+function WorkProjectV1() {
   const { t } = useI18n();
   const [currentModalIndex, setCurrentModalIndex] = useState<number | null>(null);
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
@@ -570,4 +577,3 @@ export default function WorkProject() {
     </div>
   );
 }
-
