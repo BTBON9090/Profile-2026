@@ -9,11 +9,12 @@ import {
   type ReactNode,
 } from "react";
 
-export type UIVersion = "1" | "2";
+export type UIVersion = "1" | "3";
+
+const UI_VERSIONS: UIVersion[] = ["1", "3"];
 
 type UIVersionContextValue = {
   version: UIVersion;
-  isV2: boolean;
   setVersion: (version: UIVersion) => void;
   toggleVersion: () => void;
 };
@@ -32,7 +33,8 @@ function subscribe(callback: () => void) {
 }
 
 function getSnapshot(): UIVersion {
-  return window.localStorage.getItem(UI_VERSION_KEY) === "2" ? "2" : "1";
+  const stored = window.localStorage.getItem(UI_VERSION_KEY);
+  return UI_VERSIONS.includes(stored as UIVersion) ? (stored as UIVersion) : "1";
 }
 
 function getServerSnapshot(): UIVersion {
@@ -53,12 +55,13 @@ export function UIVersionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleVersion = useCallback(() => {
-    setVersion(version === "1" ? "2" : "1");
+    const nextIndex = (UI_VERSIONS.indexOf(version) + 1) % UI_VERSIONS.length;
+    setVersion(UI_VERSIONS[nextIndex]);
   }, [setVersion, version]);
 
   return (
     <UIVersionContext.Provider
-      value={{ version, isV2: version === "2", setVersion, toggleVersion }}
+      value={{ version, setVersion, toggleVersion }}
     >
       {children}
     </UIVersionContext.Provider>

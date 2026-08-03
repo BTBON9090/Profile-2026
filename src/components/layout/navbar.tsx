@@ -11,7 +11,7 @@ import { useUIVersion } from "@/lib/ui-version-context";
 export default function Navbar() {
   const pathname = usePathname();
   const { t } = useI18n();
-  const { isV2 } = useUIVersion();
+  const { version } = useUIVersion();
   // ==============================================================
   // 1. 动态主题感知
   // 注意这里：如果是放在 project 路由下，记得加上 /project/ 前缀
@@ -19,9 +19,10 @@ export default function Navbar() {
   const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding" || pathname === "/work/all-in-one-v2" || pathname === "/work/aura";
 
   // 提取动态 CSS 变量
-  const navBgClass = isV2
-    ? "v2-navbar"
-    : isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
+  const navBgClass =
+    version === "3"
+      ? "v3-navbar"
+      : isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
   const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white/90"; // logo 颜色
   const dotColorClass = isLightTheme ? "text-blue-600" : "text-blue-600"; // 点颜色
   

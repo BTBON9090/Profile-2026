@@ -2,148 +2,146 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, ArrowUpRight, Check, Copy } from "lucide-react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import UniversalModal from "@/components/ui/UniversalModal";
 import { getProjectBySlug } from "@/data/projects";
 
 type Category = "all" | "company" | "lab";
 
-type GalleryProject = {
+type IndexProject = {
   id: string;
   title: string;
   en: string;
+  description: string;
   year: string;
   image: string;
   category: Exclude<Category, "all">;
-  type: string;
   href?: string;
   dataSlug?: string;
-  featured?: boolean;
 };
 
-const galleryProjects: GalleryProject[] = [
+const indexProjects: IndexProject[] = [
   {
     id: "snownewtab",
     title: "雪诺企业安全浏览器",
     en: "Snow Enterprise Browser",
-    year: "2024—26",
+    description: "替代繁重的 VDI 与 VPN 方案，从访问入口守护企业核心资产。",
+    year: "2024—2026",
     image: "https://cdn.btbon.cn/snownewtab/AI-NEWTAB.webp",
     category: "company",
-    type: "Product / Security",
     dataSlug: "snownewtab",
-    featured: true,
   },
   {
     id: "all-in-one-v2",
     title: "AllinOne V2",
     en: "Figma Power Plugin",
+    description: "瑞士国际风格设计，AI 组件说明书、多语言翻译与等轴形变。",
     year: "2025",
     image: "https://cdn.btbon.cn/images/ALO.webp",
     category: "lab",
-    type: "Solo product / AI",
     href: "/work/all-in-one-v2",
-    featured: true,
   },
   {
     id: "kwai-magnetic-star",
     title: "磁力聚星",
     en: "Kwai Creator Marketing",
+    description: "达人营销平台全链路改版，老用户下单效率提升 22%。",
     year: "2024",
     image: "https://cdn.btbon.cn/Kwai-磁力聚星/them03-01.webp",
     category: "company",
-    type: "Growth / Redesign",
     dataSlug: "kwai-magnetic-star",
   },
   {
     id: "snowspace",
     title: "雪诺安全工作空间",
-    en: "SnowSpaces",
-    year: "2024—26",
+    en: "SnowSpaces Admin",
+    description: "企业安全办公管理系统与浏览器后台体验设计。",
+    year: "2024—2026",
     image: "https://cdn.btbon.cn/snowspace/ssth3.webp",
     category: "company",
-    type: "B-end / Admin",
     dataSlug: "snowspace",
   },
   {
     id: "ai-translate",
     title: "AI Translate",
     en: "Browser Extension",
+    description: "自定义 AI 模型的悬浮翻译插件，双语对照与划词翻译。",
     year: "2024",
     image: "https://cdn.btbon.cn/images/aitran.webp",
     category: "lab",
-    type: "Solo product / AI",
     href: "/work/ai-translate",
   },
   {
     id: "enterplorer",
     title: "Enterplorer 企业浏览器",
     en: "Zero-trust Browser",
-    year: "2018—20",
+    description: "以零信任为核心，桌面端与移动端无缝衔接的企业浏览器。",
+    year: "2018—2020",
     image: "https://cdn.btbon.cn/YSP-Enterporer/them06-01.webp",
     category: "company",
-    type: "Product / Cross-platform",
     dataSlug: "enterplorer",
   },
   {
     id: "studio",
     title: "Enterplorer Studio",
     en: "Developer Tool",
-    year: "2018—20",
+    description: "网页移动端适配开发工具，降低适配门槛，提升开发效率。",
+    year: "2018—2020",
     image: "https://cdn.btbon.cn/YSP-Studio/them04-01.webp",
     category: "company",
-    type: "Developer experience",
     dataSlug: "studio",
   },
   {
     id: "amazeui",
     title: "AmazeUI",
     en: "Open Design System",
-    year: "2018—20",
+    description: "独立建立的移动端适配设计系统，组件、样式与图标库。",
+    year: "2018—2020",
     image: "https://cdn.btbon.cn/YSP-AmazeUI/them05-01.webp",
     category: "company",
-    type: "Design system / Open source",
     dataSlug: "amazeui",
   },
   {
     id: "avic",
     title: "商网办公系统",
     en: "AVIC Collaboration",
+    description: "为国企定制的 IM 协同系统，视频会议、行程与活动统筹。",
     year: "2019",
     image: "https://cdn.btbon.cn/AVIC-商网/them07-01.webp",
     category: "company",
-    type: "Collaboration / IM",
     dataSlug: "avic",
   },
   {
     id: "launchpad",
     title: "LaunchPad",
     en: "Native macOS Launcher",
+    description: "为 macOS 找回熟悉的启动台，快捷键、手势与触发角唤起。",
     year: "2026",
     image: "/product-assets/launchpad-icon.png",
     category: "lab",
-    type: "macOS / SwiftUI",
     href: "/work/launchpad",
   },
   {
     id: "aura",
     title: "Aura",
     en: "Private Photo Gallery",
+    description: "本地优先的私密影像管理，标签整理、物理隔离与入口伪装。",
     year: "2026",
     image: "/product-assets/aura-logo.png",
     category: "lab",
-    type: "Android / Privacy",
     href: "/work/aura",
   },
   {
     id: "others",
     title: "其他作品",
     en: "Selected Experiments",
-    year: "2015—25",
+    description: "自驱型业务项目、个人外包与日常练习作品合集。",
+    year: "2015—2025",
     image: "https://cdn.btbon.cn/Other/them09-01.webp",
     category: "lab",
-    type: "Archive / Experiments",
     dataSlug: "others",
   },
 ];
@@ -154,19 +152,39 @@ const filters: { key: Category; label: string }[] = [
   { key: "lab", label: "个人实验" },
 ];
 
-export default function WorkGalleryV2() {
+function ModalParamHandler({ onOpen }: { onOpen: (slug: string) => void }) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const slug = searchParams.get("project");
+    if (slug && indexProjects.some((project) => project.dataSlug === slug)) {
+      onOpen(slug);
+    }
+  }, [searchParams, onOpen]);
+
+  return null;
+}
+
+export default function WorkGalleryV3() {
   const [category, setCategory] = useState<Category>("all");
   const [modalId, setModalId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const copyEmail = async () => {
+    await navigator.clipboard.writeText("nc0032@qq.com");
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  };
 
   const visibleProjects = useMemo(
     () =>
       category === "all"
-        ? galleryProjects
-        : galleryProjects.filter((project) => project.category === category),
+        ? indexProjects
+        : indexProjects.filter((project) => project.category === category),
     [category]
   );
 
-  const modalIndex = galleryProjects.findIndex(
+  const modalIndex = indexProjects.findIndex(
     (project) => project.dataSlug === modalId
   );
   const modalProject = modalId ? getProjectBySlug(modalId) : null;
@@ -175,40 +193,43 @@ export default function WorkGalleryV2() {
     let next = modalIndex + direction;
     while (
       next >= 0 &&
-      next < galleryProjects.length &&
-      !galleryProjects[next].dataSlug
+      next < indexProjects.length &&
+      !indexProjects[next].dataSlug
     ) {
       next += direction;
     }
-    if (next >= 0 && next < galleryProjects.length) {
-      setModalId(galleryProjects[next].dataSlug ?? null);
+    if (next >= 0 && next < indexProjects.length) {
+      setModalId(indexProjects[next].dataSlug ?? null);
     }
   };
 
   return (
-    <div className="v2-gallery">
-      <header className="v2-gallery__hero">
-        <div className="v2-shell">
-          <Link href="/" className="v2-gallery__back">
-            <ArrowLeft size={15} /> 返回首页
+    <div className="v3-gallery">
+      <Suspense fallback={null}>
+        <ModalParamHandler onOpen={setModalId} />
+      </Suspense>
+
+      <header className="v3-gallery__hero">
+        <div className="v3-shell">
+          <Link href="/" className="v3-gallery__back">
+            <ArrowLeft size={13} /> 返回首页
           </Link>
-          <div className="v2-gallery__title-row">
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            >
-              项目索引
-              <span>Archive</span>
-            </motion.h1>
-            <p>
-              这里收录企业产品、增长项目与个人实验。
-              <br />
-              按你关心的方向筛选，或从头开始慢慢看。
-            </p>
-          </div>
-          <div className="v2-gallery__controls" role="group" aria-label="项目筛选">
-            <span><SlidersHorizontal size={14} /> Filter</span>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            项目索引
+            <span>{indexProjects.length} 个收录</span>
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="v3-gallery__filters"
+            role="group"
+            aria-label="项目筛选"
+          >
             {filters.map((filter) => (
               <button
                 type="button"
@@ -219,78 +240,87 @@ export default function WorkGalleryV2() {
                 {filter.label}
                 <sup>
                   {filter.key === "all"
-                    ? galleryProjects.length
-                    : galleryProjects.filter((item) => item.category === filter.key)
+                    ? indexProjects.length
+                    : indexProjects.filter((item) => item.category === filter.key)
                         .length}
                 </sup>
               </button>
             ))}
-          </div>
+          </motion.div>
         </div>
       </header>
 
-      <main className="v2-shell v2-gallery__main">
+      <main className="v3-shell v3-gallery__main">
         <AnimatePresence mode="popLayout">
           {visibleProjects.map((project, index) => {
-            const content = (
+            const row = (
               <>
-                <div className="v2-gallery-card__image">
+                <span className="v3-project__index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="v3-project__thumb">
                   <Image
                     src={project.image}
                     alt={`${project.title} 项目封面`}
                     fill
                     unoptimized
-                    sizes="(max-width: 760px) 100vw, 50vw"
-                    className="object-cover"
+                    sizes="(max-width: 800px) 96px, 144px"
                   />
-                  <span><ArrowUpRight size={16} /></span>
-                </div>
-                <div className="v2-gallery-card__info">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <small>{project.en}</small>
-                    <h2>{project.title}</h2>
-                  </div>
-                  <div>
-                    <small>{project.type}</small>
-                    <time>{project.year}</time>
-                  </div>
-                </div>
+                </span>
+                <span className="v3-project__body">
+                  <span className="v3-project__title">
+                    {project.title}
+                    <em>{project.en}</em>
+                  </span>
+                  <span className="v3-project__desc">{project.description}</span>
+                </span>
+                <span className="v3-project__aside">
+                  <time>{project.year}</time>
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </span>
               </>
             );
 
             return (
-              <motion.article
+              <motion.div
                 layout
                 key={project.id}
-                initial={{ opacity: 0, y: 18 }}
+                initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.45, delay: index * 0.025 }}
-                className={project.featured ? "is-featured" : ""}
+                exit={{ opacity: 0, scale: 0.99 }}
+                transition={{ duration: 0.4, delay: index * 0.02 }}
               >
                 {project.href ? (
-                  <Link href={project.href}>{content}</Link>
+                  <Link href={project.href} className="v3-project">
+                    {row}
+                  </Link>
                 ) : (
                   <button
                     type="button"
+                    className="v3-project"
                     onClick={() => setModalId(project.dataSlug ?? null)}
                   >
-                    {content}
+                    {row}
                   </button>
                 )}
-              </motion.article>
+              </motion.div>
             );
           })}
         </AnimatePresence>
       </main>
 
-      <footer className="v2-gallery__footer">
-        <div className="v2-shell">
+      <footer className="v3-gallery__footer">
+        <div className="v3-shell">
           <p>看到合适的项目了？</p>
-          <a href="mailto:nc0032@qq.com">
-            说说你正在做什么 <ArrowUpRight size={18} />
-          </a>
+          <button
+            type="button"
+            onClick={copyEmail}
+            className="v3-capsule"
+            aria-live="polite"
+          >
+            {copied ? "已复制" : "邮箱 · nc0032@qq.com"}
+            {copied ? <Check size={13} /> : <Copy size={13} />}
+          </button>
         </div>
       </footer>
 
@@ -301,7 +331,7 @@ export default function WorkGalleryV2() {
           title={modalProject.title}
           images={modalProject.behanceSlices ?? []}
           hasPrev={modalIndex > 0}
-          hasNext={modalIndex < galleryProjects.length - 1}
+          hasNext={modalIndex < indexProjects.length - 1}
           onPrev={() => changeModal(-1)}
           onNext={() => changeModal(1)}
           projectId={modalId as string}

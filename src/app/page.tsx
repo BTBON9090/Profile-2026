@@ -10,7 +10,7 @@ import SnowEcosystem from "@/components/sections/snow-ecosystem";
 import AIPlugins from "@/components/sections/ai-plugins";
 import Footer from "@/components/layout/footer";
 import type { BlockWallConfig } from "@/components/ui/block-wall-types";
-import HomeV2 from "@/components/v2/home-v2";
+import HomeV3 from "@/components/v3/home-v3";
 import { useUIVersion } from "@/lib/ui-version-context";
 
 // three.js 必须 client-only，禁用 SSR
@@ -97,8 +97,9 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
 };
 
 export default function Home() {
-  const { isV2 } = useUIVersion();
-  return isV2 ? <HomeV2 /> : <HomeV1 />;
+  const { version } = useUIVersion();
+  if (version === "3") return <HomeV3 />;
+  return <HomeV1 />;
 }
 
 function HomeV1() {
