@@ -98,7 +98,7 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
 
 export default function Home() {
   const { version } = useUIVersion();
-  if (version === "3") return <HomeV3 />;
+  if (version === "2") return <HomeV3 />;
   return <HomeV1 />;
 }
 

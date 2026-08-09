@@ -34,7 +34,7 @@ export default function BackToTop() {
   // ==============================================================
   // 🟢 动态主题感知逻辑 (与 BgmPlayer 保持绝对的视觉统一)
   // ==============================================================
-  const isLightTheme = pathname === "/work/light-branding" || pathname === "/work/ciliju-xing";
+  const isLightTheme = pathname.startsWith("/appbox") || pathname === "/work/light-branding" || pathname === "/work/ciliju-xing";
 
   // 极致大厂质感的背景与边框
   const btnClass = isLightTheme 

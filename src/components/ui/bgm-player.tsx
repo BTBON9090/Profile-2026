@@ -87,6 +87,11 @@ export default function BgmPlayer() {
     seek,
     toggleRepeatMode,
     selectTrack,
+    lyricColorCycle,
+    lyricFillMode,
+    lyricColor,
+    toggleLyricColorCycle,
+    setLyricFillMode,
   } = useAudio();
   const pathname = usePathname();
 
@@ -124,6 +129,18 @@ export default function BgmPlayer() {
         : window.innerHeight - 240
       : 0,
   );
+
+  // 面板切换尺寸时，首帧和过渡结束后各校正一次位置，确保新增设置项
+  // 不会沿用收起态坐标而落到视口外。
+  useEffect(() => {
+    if (!drag.mounted) return;
+    const frame = requestAnimationFrame(drag.reclampToViewport);
+    const timer = window.setTimeout(drag.reclampToViewport, 340);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [drag.mounted, drag.reclampToViewport, expandedWidth, mode]);
 
   const onLeftSide = drag.snapSide === "left";
   // 拖拽中→圆形；贴边态→半圆半方（贴边侧方角、外侧圆角）
@@ -529,6 +546,69 @@ export default function BgmPlayer() {
                 >
                   <ListMusic className="w-3.5 h-3.5" />
                 </button>
+              </div>
+
+              <div className={`grid gap-3 border-t px-4 py-3 ${isLightTheme ? "border-zinc-200" : "border-white/5"}`}>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className={`text-[11px] font-medium ${accentClass}`}>颜色轮换</div>
+                    <div className={`mt-0.5 text-[9px] leading-relaxed ${mutedTextClass}`}>
+                      {lyricColorCycle ? "缓慢循环全部颜色" : "每首歌使用一种随机颜色"}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-label="歌词颜色轮换"
+                    aria-checked={lyricColorCycle}
+                    onClick={toggleLyricColorCycle}
+                    className={`relative h-5 w-9 flex-shrink-0 rounded-full border transition-colors ${
+                      lyricColorCycle
+                        ? "border-zinc-200 bg-zinc-100"
+                        : isLightTheme
+                          ? "border-zinc-300 bg-zinc-200"
+                          : "border-white/10 bg-white/10"
+                    }`}
+                  >
+                    <span
+                      className={`absolute left-0 top-0.5 h-3.5 w-3.5 rounded-full transition-transform ${
+                        lyricColorCycle
+                          ? "translate-x-[19px] bg-zinc-900"
+                          : "translate-x-0.5 bg-zinc-500"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span
+                      className="h-3 w-3 flex-shrink-0 rounded-full border border-white/20"
+                      style={{ background: lyricColor }}
+                      aria-hidden="true"
+                    />
+                    <span className={`text-[11px] font-medium ${accentClass}`}>歌词样式</span>
+                  </div>
+                  <div className={`flex rounded-lg p-0.5 ${isLightTheme ? "bg-zinc-100" : "bg-white/5"}`} role="group" aria-label="歌词显示样式">
+                    {(["gradient", "solid"] as const).map((fillMode) => (
+                      <button
+                        type="button"
+                        key={fillMode}
+                        aria-pressed={lyricFillMode === fillMode}
+                        onClick={() => setLyricFillMode(fillMode)}
+                        className={`rounded-md px-2.5 py-1 text-[9px] transition-colors ${
+                          lyricFillMode === fillMode
+                            ? isLightTheme
+                              ? "bg-white text-zinc-900 shadow-sm"
+                              : "bg-white/12 text-white"
+                            : mutedTextClass
+                        }`}
+                      >
+                        {fillMode === "gradient" ? "渐变" : "纯色"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}

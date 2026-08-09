@@ -1,0 +1,121 @@
+import "server-only";
+
+import { randomUUID } from "node:crypto";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+export type StoredFeedback = {
+  id: string;
+  scope: string;
+  parentId: string | null;
+  author: string;
+  content: string;
+  createdAt: string;
+  likedBy: string[];
+};
+
+export type PublicFeedback = Omit<StoredFeedback, "likedBy"> & {
+  likeCount: number;
+  liked: boolean;
+};
+
+type FeedbackDatabase = {
+  version: 1;
+  entries: StoredFeedback[];
+};
+
+const DATA_DIR = path.join(process.cwd(), ".data");
+const DATA_FILE = path.join(DATA_DIR, "appbox-feedback.json");
+let writeQueue: Promise<void> = Promise.resolve();
+
+async function readDatabase(): Promise<FeedbackDatabase> {
+  try {
+    const raw = await readFile(DATA_FILE, "utf8");
+    const parsed = JSON.parse(raw) as FeedbackDatabase;
+    if (!Array.isArray(parsed.entries)) throw new Error("Invalid feedback database");
+    return parsed;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return { version: 1, entries: [] };
+    }
+    throw error;
+  }
+}
+
+async function writeDatabase(database: FeedbackDatabase) {
+  await mkdir(DATA_DIR, { recursive: true });
+  const temporaryFile = `${DATA_FILE}.${process.pid}.tmp`;
+  await writeFile(temporaryFile, JSON.stringify(database, null, 2), "utf8");
+  await rename(temporaryFile, DATA_FILE);
+}
+
+function mutate<T>(operation: (database: FeedbackDatabase) => Promise<T> | T): Promise<T> {
+  const pending = writeQueue.then(async () => {
+    const database = await readDatabase();
+    const result = await operation(database);
+    await writeDatabase(database);
+    return result;
+  });
+  writeQueue = pending.then(() => undefined, () => undefined);
+  return pending;
+}
+
+function toPublic(entry: StoredFeedback, visitorId?: string): PublicFeedback {
+  const { likedBy, ...feedback } = entry;
+  return {
+    ...feedback,
+    likeCount: likedBy.length,
+    liked: Boolean(visitorId && likedBy.includes(visitorId)),
+  };
+}
+
+export async function listFeedback(scope: string, visitorId?: string) {
+  const database = await readDatabase();
+  return database.entries
+    .filter((entry) => entry.scope === scope)
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+    .map((entry) => toPublic(entry, visitorId));
+}
+
+export async function createFeedback(input: {
+  scope: string;
+  parentId?: string | null;
+  author: string;
+  content: string;
+}) {
+  return mutate(async (database) => {
+    let parentId = input.parentId ?? null;
+    if (parentId) {
+      const parent = database.entries.find((entry) => entry.id === parentId && entry.scope === input.scope);
+      if (!parent) throw new Error("留言不存在或已经被移除");
+      parentId = parent.parentId ?? parent.id;
+    }
+
+    const entry: StoredFeedback = {
+      id: randomUUID(),
+      scope: input.scope,
+      parentId,
+      author: input.author,
+      content: input.content,
+      createdAt: new Date().toISOString(),
+      likedBy: [],
+    };
+    database.entries.push(entry);
+    return toPublic(entry);
+  });
+}
+
+export async function toggleFeedbackLike(input: {
+  scope: string;
+  id: string;
+  visitorId: string;
+}) {
+  return mutate(async (database) => {
+    const entry = database.entries.find((item) => item.id === input.id && item.scope === input.scope);
+    if (!entry) throw new Error("留言不存在或已经被移除");
+    const index = entry.likedBy.indexOf(input.visitorId);
+    if (index >= 0) entry.likedBy.splice(index, 1);
+    else entry.likedBy.push(input.visitorId);
+    return toPublic(entry, input.visitorId);
+  });
+}

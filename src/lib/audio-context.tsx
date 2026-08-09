@@ -7,6 +7,29 @@ export interface LyricLine {
   text: string;
 }
 
+export type LyricFillMode = "gradient" | "solid";
+
+const LYRIC_COLORS = [
+  "#ffffff",
+  "#ff7676",
+  "#f2a45f",
+  "#e8cf68",
+  "#72c58a",
+  "#63b5dc",
+  "#7488ed",
+  "#b47ad5",
+];
+
+function getTrackLyricColor(track: Track | null) {
+  if (!track) return LYRIC_COLORS[0];
+  const key = `${track.title}:${track.artist}`;
+  let hash = 0;
+  for (let index = 0; index < key.length; index += 1) {
+    hash = ((hash << 5) - hash + key.charCodeAt(index)) | 0;
+  }
+  return LYRIC_COLORS[Math.abs(hash) % LYRIC_COLORS.length];
+}
+
 const ADJUST_STEP = 1;
 const LRC_TIME_RE = /\[(\d{2}):(\d{2})[.:](\d{2,3})\](.*)/;
 
@@ -53,6 +76,9 @@ interface AudioState {
   repeatMode: 'none' | 'one' | 'all';
   lyrics: LyricLine[];
   currentLyricIndex: number;
+  lyricColorCycle: boolean;
+  lyricFillMode: LyricFillMode;
+  lyricColor: string;
   togglePlay: () => void;
   playNextTrack: () => void;
   playPrevTrack: () => void;
@@ -64,6 +90,8 @@ interface AudioState {
   selectTrack: (index: number) => void;
   adjustLyricLeft: () => void;
   adjustLyricRight: () => void;
+  toggleLyricColorCycle: () => void;
+  setLyricFillMode: (mode: LyricFillMode) => void;
 }
 
 const AudioCtx = createContext<AudioState | null>(null);
@@ -83,6 +111,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [playbackRate, setPlaybackRate] = useState(1);
   const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
   const [lyrics, setLyrics] = useState<LyricLine[]>([]);
+  const [lyricColorCycle, setLyricColorCycle] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("btbon-lyric-color-cycle") === "true";
+  });
+  const [lyricFillMode, setLyricFillModeState] = useState<LyricFillMode>(() => {
+    if (typeof window === "undefined") return "gradient";
+    return window.localStorage.getItem("btbon-lyric-fill-mode") === "solid" ? "solid" : "gradient";
+  });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const trackIndexRef = useRef(0);
@@ -109,6 +145,21 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
     return idx;
   }, [lyrics, currentTime]);
+
+  const lyricColor = useMemo(() => getTrackLyricColor(currentTrack), [currentTrack]);
+
+  const toggleLyricColorCycle = useCallback(() => {
+    setLyricColorCycle((current) => {
+      const next = !current;
+      window.localStorage.setItem("btbon-lyric-color-cycle", String(next));
+      return next;
+    });
+  }, []);
+
+  const setLyricFillMode = useCallback((mode: LyricFillMode) => {
+    window.localStorage.setItem("btbon-lyric-fill-mode", mode);
+    setLyricFillModeState(mode);
+  }, []);
 
   const fetchLyrics = useCallback((track: Track) => {
     if (!track.lrc || lrcUrlRef.current === track.lrc) return;
@@ -321,6 +372,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         repeatMode,
         lyrics,
         currentLyricIndex,
+        lyricColorCycle,
+        lyricFillMode,
+        lyricColor,
         togglePlay,
         playNextTrack,
         playPrevTrack,
@@ -332,6 +386,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         selectTrack,
         adjustLyricLeft,
         adjustLyricRight,
+        toggleLyricColorCycle,
+        setLyricFillMode,
       }}
     >
       {children}

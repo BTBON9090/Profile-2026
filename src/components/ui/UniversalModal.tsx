@@ -1,11 +1,12 @@
 // src/components/ui/UniversalModal.tsx
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Layers } from "lucide-react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Layers, ArrowUpRight } from "lucide-react";
+import { useState, useEffect, useRef, useCallback, type PointerEvent as ReactPointerEvent } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useCopilotProject } from "@/lib/copilot-context";
+import type { ProjectResource } from "@/data/project-resources";
 
 interface ModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface ModalProps {
   projectId: string;
   nextTitle?: string;
   isCompanyProject?: boolean;
+  resources?: ProjectResource[];
 }
 
 export default function UniversalModal({
@@ -32,7 +34,8 @@ export default function UniversalModal({
   onNext,
   projectId,
   nextTitle,
-  isCompanyProject
+  isCompanyProject,
+  resources = [],
 }: ModalProps) {
   const [mounted, setMounted] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -40,9 +43,16 @@ export default function UniversalModal({
   const [showThumbnails, setShowThumbnails] = useState(false);
   const [thumbnailsRendered, setThumbnailsRendered] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
+  const [activeResourceIndex, setActiveResourceIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const thumbnailStripRef = useRef<HTMLDivElement>(null);
+  const thumbnailDragRef = useRef({
+    pointerId: -1,
+    startX: 0,
+    startScrollLeft: 0,
+    didDrag: false,
+  });
 
   // 向全局 AI 助手推送当前项目上下文（modal 作用域，优先级高于详情页）
   // 弹窗挂载时推送，卸载时清除——实现"打开弹窗即聚焦该项目"
@@ -59,6 +69,7 @@ export default function UniversalModal({
       setCurrentImageIndex(0);
       setImageLoaded({});
       setThumbnailsRendered(false);
+      setActiveResourceIndex(0);
     }
   }, [title]);
 
@@ -184,10 +195,44 @@ export default function UniversalModal({
     }
   }, []);
 
+  const handleThumbnailPointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    const strip = event.currentTarget;
+    thumbnailDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: strip.scrollLeft,
+      didDrag: false,
+    };
+    strip.setPointerCapture(event.pointerId);
+    strip.dataset.dragging = "true";
+  }, []);
+
+  const handleThumbnailPointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = thumbnailDragRef.current;
+    if (drag.pointerId !== event.pointerId) return;
+    const distance = event.clientX - drag.startX;
+    if (Math.abs(distance) > 4) drag.didDrag = true;
+    event.currentTarget.scrollLeft = drag.startScrollLeft - distance;
+  }, []);
+
+  const stopThumbnailDrag = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const strip = event.currentTarget;
+    if (thumbnailDragRef.current.pointerId !== event.pointerId) return;
+    if (strip.hasPointerCapture(event.pointerId)) strip.releasePointerCapture(event.pointerId);
+    thumbnailDragRef.current.pointerId = -1;
+    delete strip.dataset.dragging;
+  }, []);
+
   if (!mounted) return null;
 
   const totalImages = images.length;
+  const safeTitle = title?.trim() || "项目";
   const progressPercent = totalImages > 0 ? ((currentImageIndex + 1) / totalImages) * 100 : 0;
+  const activeResource = resources[activeResourceIndex];
+  const activeResourceEmbedUrl = activeResource
+    ? `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(activeResource.href)}`
+    : null;
 
   const modalContent = (
     <AnimatePresence>
@@ -217,11 +262,11 @@ export default function UniversalModal({
             onClick={onClose}
             role="dialog"
             aria-modal="true"
-            aria-label={`${title} 作品详情`}
+            aria-label={`${safeTitle} 作品详情`}
           >
             {/* 内容画布 — 严谨的宽度和边距控制 */}
             <div
-              className="w-full max-w-[1440px] mx-auto bg-[#0a0a0a] min-h-screen my-0 md:my-16 relative z-10 isolate cursor-default border border-zinc-800/60 shadow-[0_0_120px_rgba(0,0,0,0.9)]"
+              className="w-full max-w-[1440px] mx-auto bg-[#0a0a0a] min-h-screen my-0 md:my-16 relative z-10 isolate cursor-default border-0 shadow-none"
               onClick={(e) => e.stopPropagation()}
             >
               {/* 顶部进度条 — 始终贴顶，置于标题栏之上 */}
@@ -244,7 +289,7 @@ export default function UniversalModal({
                       PROJECT
                     </div>
                     <h2 className="font-semibold text-sm md:text-base text-zinc-50 truncate max-w-[60vw] md:max-w-[400px]">
-                      {title}
+                      {safeTitle}
                     </h2>
                   </div>
                 </div>
@@ -267,6 +312,59 @@ export default function UniversalModal({
               </div>
 
               
+
+              {activeResource && activeResourceEmbedUrl && (
+                <section className="border-b border-white/[0.08] bg-zinc-950 px-4 py-8 md:px-8 md:py-10" aria-label={`${safeTitle} Figma 资源`}>
+                  <div className="mx-auto max-w-[1320px]">
+                    <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+                      <div>
+                        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-400">Figma 交互预览</p>
+                        <h3 className="mt-2 text-xl font-semibold tracking-tight text-zinc-50 md:text-2xl">在弹窗中查看设计文件</h3>
+                        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">可以直接拖动画布、缩放并切换页面。需要完整编辑器时，再在新页签打开 Figma。</p>
+                      </div>
+                      <a
+                        href={activeResource.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 px-4 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:border-white/35 hover:bg-white/[0.06]"
+                      >
+                        在 Figma 打开 <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    </div>
+
+                    <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="选择 Figma 文件">
+                      {resources.map((resource, index) => (
+                        <button
+                          key={resource.href}
+                          type="button"
+                          role="tab"
+                          aria-selected={activeResourceIndex === index}
+                          onClick={() => setActiveResourceIndex(index)}
+                          className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                            activeResourceIndex === index
+                              ? "border-blue-400 bg-blue-500/15 text-blue-300"
+                              : "border-white/10 text-zinc-400 hover:border-white/25 hover:text-zinc-100"
+                          }`}
+                        >
+                          {resource.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 aspect-[16/9] min-h-[420px] overflow-hidden rounded-xl border border-white/10 bg-zinc-900">
+                      <iframe
+                        key={activeResource.href}
+                        src={activeResourceEmbedUrl}
+                        title={`${safeTitle} ${activeResource.label} Figma 预览`}
+                        className="h-full w-full border-0"
+                        loading="lazy"
+                        allowFullScreen
+                        onLoad={() => scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" })}
+                      />
+                    </div>
+                  </div>
+                </section>
+              )}
 
               {/* ========================================== */}
               {/* 图片流 — 严谨的加载状态和序号水印            */}
@@ -297,7 +395,7 @@ export default function UniversalModal({
 
                     <img
                       src={img}
-                      alt={`${title} - 第 ${idx + 1} 张`}
+                      alt={`${safeTitle} 第 ${idx + 1} 张`}
                       loading={idx === 0 ? "eager" : "lazy"}
                       onLoad={() => setImageLoaded(prev => ({ ...prev, [idx]: true }))}
                       className="w-full h-auto block m-0 p-0 transition-opacity duration-500"
@@ -419,7 +517,7 @@ export default function UniversalModal({
               onClick={onClose}
               aria-label="关闭弹窗 (ESC)"
               title="关闭 (ESC)"
-              className="fixed top-20 right-4 md:top-24 md:right-8 z-[100000] w-11 h-11 md:w-12 md:h-12 bg-zinc-900/80 backdrop-blur-xl hover:bg-white text-zinc-300 hover:text-zinc-950 rounded-full flex items-center justify-center transition-all duration-300 border border-zinc-700/50 hover:border-white pointer-events-auto shadow-2xl hover:scale-110 hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="fixed top-20 right-4 md:top-24 md:right-8 z-[100000] w-11 h-11 md:w-12 md:h-12 bg-zinc-900/80 backdrop-blur-xl hover:bg-white text-zinc-300 hover:text-zinc-950 rounded-full flex items-center justify-center transition-all duration-300 border border-zinc-700/50 hover:border-white pointer-events-auto shadow-none hover:scale-110 hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             >
               <X className="w-4 h-4 md:w-5 md:h-5" />
             </button>
@@ -432,7 +530,7 @@ export default function UniversalModal({
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: isAtBottom ? 100 : 0, opacity: isAtBottom ? 0 : 1 }}
                 transition={{ delay: 0.3, duration: 0.4 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-zinc-900/90 backdrop-blur-xl text-zinc-300 rounded-full shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-zinc-700/50 overflow-hidden"
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center bg-zinc-900/90 backdrop-blur-xl text-zinc-300 rounded-full shadow-none border border-zinc-700/50 overflow-hidden"
               >
                 <button
                   onClick={onPrev}
@@ -497,7 +595,7 @@ export default function UniversalModal({
                   transition={{ duration: 0.3 }}
                   className="absolute bottom-28 left-1/2 -translate-x-1/2 z-40 pointer-events-auto"
                 >
-                  <div className="bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 rounded-2xl p-3 shadow-2xl max-w-[90vw]">
+                  <div className="bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 rounded-2xl p-3 shadow-none max-w-[90vw]">
                     <div className="flex items-center gap-2 px-2 pb-2 mb-2 border-b border-zinc-700/50">
                       <ImageIcon className="w-3.5 h-3.5 text-blue-400" />
                       <span className="font-mono text-[10px] text-zinc-400 tracking-widest uppercase">Thumbnails</span>
@@ -512,7 +610,18 @@ export default function UniversalModal({
                     </div>
                     <div
                       ref={thumbnailStripRef}
-                      className="flex gap-2 overflow-x-auto max-w-[80vw] md:max-w-[600px] pb-1 custom-scrollbar"
+                      className="flex gap-2 overflow-x-auto max-w-[80vw] md:max-w-[600px] pb-1 custom-scrollbar cursor-grab data-[dragging=true]:cursor-grabbing select-none touch-pan-y"
+                      aria-label="可左右拖拽的缩略图导航"
+                      onPointerDown={handleThumbnailPointerDown}
+                      onPointerMove={handleThumbnailPointerMove}
+                      onPointerUp={stopThumbnailDrag}
+                      onPointerCancel={stopThumbnailDrag}
+                      onClickCapture={(event) => {
+                        if (!thumbnailDragRef.current.didDrag) return;
+                        event.preventDefault();
+                        event.stopPropagation();
+                        thumbnailDragRef.current.didDrag = false;
+                      }}
                     >
                       {images.map((img, idx) => (
                         <button

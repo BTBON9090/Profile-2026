@@ -84,6 +84,7 @@ export default function Sidebar() {
   if (pathname === "/work") { return null; }
   if (pathname.startsWith("/work/")) { return null; }
   if (pathname.startsWith("/project/")) { return null; }
+  if (pathname.startsWith("/appbox")) { return null; }
 
   return (
     <motion.div

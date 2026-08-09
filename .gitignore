@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .netlify
+
+# local persistent feedback store (production should use a managed database)
+/.data/

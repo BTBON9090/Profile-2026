@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAudio, type LyricLine } from "@/lib/audio-context";
 
@@ -13,7 +13,7 @@ const LAYERS_PER_BATCH = 4;
 const MAX_VISIBLE_BATCHES = 3;
 
 // -- 随机位置 --
-const X_RANGE = 150;          // [调参] X 偏移范围：0 ~ 这个值 px
+const X_RANGE = 260;          // [调参] X 偏移范围：0 ~ 这个值 px
 const Y_RANGE = 16;          // [调参] Y 偏移范围：±(这个值的一半) px
 
 // -- 随机外观 --
@@ -44,7 +44,7 @@ const EXIT_DURATION = 1;   // [调参] 退场动画时长 (秒)
 // ================================================================
 
 function hash(n: number): number {
-  let h = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+  const h = Math.sin(n * 127.1 + 311.7) * 43758.5453;
   return h - Math.floor(h);
 }
 
@@ -136,7 +136,16 @@ function makeSideLayers(
 // 主组件
 // ================================================================
 export default function LyricsDisplay() {
-  const { currentTime, currentTrack, isDesktop, togglePlay, lyrics, currentLyricIndex } = useAudio();
+  const {
+    currentTrack,
+    isDesktop,
+    togglePlay,
+    lyrics,
+    currentLyricIndex,
+    lyricColorCycle,
+    lyricFillMode,
+    lyricColor,
+  } = useAudio();
 
   const { currentLine, nextLine } = useMemo(() => {
     if (lyrics.length === 0)
@@ -161,17 +170,52 @@ export default function LyricsDisplay() {
   if (lyrics.length === 0) return null;
   if (!currentLine) return null;
 
+  const lyricTextStyle: CSSProperties = lyricFillMode === "gradient"
+    ? {
+        animation: "none",
+        background: "linear-gradient(to bottom, currentColor 0%, color-mix(in srgb, currentColor 12%, transparent) 100%)",
+        backgroundClip: "text",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+      }
+    : {
+        animation: "none",
+        background: "none",
+        WebkitTextFillColor: "currentColor",
+      };
+
   return (
-    <div
-      className="hidden lg:grid items-start select-none cursor-pointer"
-      style={{ gridTemplateColumns: "100px 360px 100px" }}
-      onClick={togglePlay}
-    >
+    <>
+      <style>{`
+        @keyframes lyrics-sky-spectrum-v2 {
+          0%, 100% { color: #ffffff; }
+          12.5% { color: #ff7676; }
+          25% { color: #f2a45f; }
+          37.5% { color: #e8cf68; }
+          50% { color: #72c58a; }
+          62.5% { color: #63b5dc; }
+          75% { color: #7488ed; }
+          87.5% { color: #b47ad5; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .lyrics-sky-v2 { animation: none !important; }
+        }
+      `}</style>
+      <div
+        className={`lyrics-sky lyrics-sky-v2 ${lyricColorCycle ? "is-color-cycling" : "is-track-color"} ${lyricFillMode === "gradient" ? "is-gradient" : "is-solid"} hidden lg:grid items-start select-none cursor-pointer`}
+        style={{
+          gridTemplateColumns: "180px minmax(300px, 360px) 180px",
+          color: lyricColor,
+          animation: lyricColorCycle ? "lyrics-sky-spectrum-v2 112s linear infinite" : "none",
+          "--lyrics-color": lyricColor,
+        } as CSSProperties}
+        onClick={togglePlay}
+      >
       {/* 左列 */}
       <div className="relative h-14 self-center overflow-visible">
         <AnimatePresence>
           {leftLayers.map(({ layer, stage }) => (
-            <DriftLayer key={layer.id} layer={layer} side="left" stage={stage} />
+            <DriftLayer key={layer.id} layer={layer} side="left" stage={stage} textStyle={lyricTextStyle} />
           ))}
         </AnimatePresence>
       </div>
@@ -182,7 +226,8 @@ export default function LyricsDisplay() {
           <AnimatePresence mode="sync">
             <motion.span
               key={currentLyricIndex}
-              className="absolute top-1/2 left-1/2 text-[13px] font-medium text-white whitespace-nowrap"
+              className="lyrics-sky-color absolute top-1/2 left-1/2 text-[13px] font-medium whitespace-nowrap"
+              style={lyricTextStyle}
               initial={{ x: "-50%", y: 8, scale: 0.85, opacity: 0.3 }}
               animate={{ x: "-50%", y: -10, scale: 1.06, opacity: 0.75 }}
               exit={{ x: "-50%", y: -14, scale: 1.2, opacity: 0, filter: "blur(6px)" }}
@@ -198,7 +243,8 @@ export default function LyricsDisplay() {
             {nextLine && (
               <motion.span
                 key={`next-${currentLyricIndex}`}
-                className="absolute top-1/2 left-1/2 text-[10px] text-white/35 whitespace-nowrap"
+                className="lyrics-sky-color absolute top-1/2 left-1/2 text-[10px] whitespace-nowrap"
+                style={lyricTextStyle}
                 initial={{ x: "-50%", y: "-30%", opacity: 0 }}
                 animate={{ x: "-50%", y: "-50%", opacity: 0.6, scale: 1 }}
                 exit={{ x: "-50%", y: "-70%", opacity: 0 }}
@@ -215,11 +261,12 @@ export default function LyricsDisplay() {
       <div className="relative h-14 self-center overflow-visible">
         <AnimatePresence>
           {rightLayers.map(({ layer, stage }) => (
-            <DriftLayer key={layer.id} layer={layer} side="right" stage={stage} />
+            <DriftLayer key={layer.id} layer={layer} side="right" stage={stage} textStyle={lyricTextStyle} />
           ))}
         </AnimatePresence>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -232,10 +279,12 @@ function DriftLayer({
   layer,
   side,
   stage,
+  textStyle,
 }: {
   layer: BatchLayer;
   side: "left" | "right";
   stage: number;
+  textStyle: CSSProperties;
 }) {
   const xBase = side === "left" ? "right" : "left";
   const anchorX = side === "left" ? -layer.anchorX : layer.anchorX;
@@ -288,9 +337,9 @@ function DriftLayer({
       }}
     >
       <span
-        className="block text-[10px] whitespace-nowrap font-medium"
+        className="lyrics-sky-color block text-[10px] whitespace-nowrap font-medium"
         style={{
-          color: stage === 0 ? "rgba(255,255,255,0.85)" : undefined,
+          ...textStyle,
           transform: driftOn
             ? `translate(${anchorX + layer.driftX}px, ${anchorY + layer.driftY}px)`
             : `translate(${anchorX}px, ${anchorY}px)`,

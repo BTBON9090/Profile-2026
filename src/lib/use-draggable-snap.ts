@@ -46,6 +46,8 @@ interface UseDraggableSnapReturn {
   justDraggedRef: React.RefObject<boolean>;
   /** 是否已挂载完成（hydration 后）。false 时消费方应保持与 SSR 一致的初始样式 */
   mounted: boolean;
+  /** 元素尺寸改变后，重新贴边并确保完整位于视口内 */
+  reclampToViewport: () => void;
 }
 
 const EDGE_PAD = 2; // 贴边后元素左/右边距屏幕边缘的距离
@@ -141,6 +143,19 @@ export function useDraggableSnap(
     snapToNearestSideRef.current = snapToNearestSide;
   });
 
+  const reclampToViewport = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const el = containerRef.current;
+    if (!el) return;
+    const prev = { x: mx.get(), y: my.get() };
+    const snapped = snapToNearestSideRef.current(prev.x, prev.y);
+    livePosRef.current = snapped;
+    mx.set(snapped.x);
+    my.set(snapped.y);
+    setSnapSide(snapped.x + el.offsetWidth / 2 < window.innerWidth / 2 ? "left" : "right");
+    setPositionState(snapped);
+  }, [containerRef, mx, my]);
+
   // 窗口尺寸变化：重新 clamp 位置，避免被裁切或跑到屏幕外
   useLayoutEffect(() => {
     const onResize = () => {
@@ -156,6 +171,18 @@ export function useDraggableSnap(
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, [containerRef, mx, my]);
+
+  // 收起与展开会改变播放器本身的尺寸。同步重新夹取位置，避免展开后的
+  // 面板沿用气泡坐标而被视口底部裁掉，也让后续增加设置项时仍可完整显示。
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const observer = new ResizeObserver(reclampToViewport);
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [containerRef, reclampToViewport]);
 
   // 记录当前进行中的吸附动画控制句柄，便于在新的拖拽开始时取消
   const snapControlsRef = useRef<{ x: ReturnType<typeof animate> | null; y: ReturnType<typeof animate> | null }>({
@@ -282,5 +309,15 @@ export function useDraggableSnap(
     [containerRef, clampPosition, mx, my],
   );
 
-  return { onPointerDown, x: mx, y: my, position, isDragging, snapSide, justDraggedRef, mounted };
+  return {
+    onPointerDown,
+    x: mx,
+    y: my,
+    position,
+    isDragging,
+    snapSide,
+    justDraggedRef,
+    mounted,
+    reclampToViewport,
+  };
 }

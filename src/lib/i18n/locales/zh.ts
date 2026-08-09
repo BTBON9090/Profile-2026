@@ -2,6 +2,7 @@ export const zh = {
   nav: {
     home: 'HOME',
     project: 'PROJECT',
+    appbox: 'APPBOX',
     biography: '简历',
   },
   hero: {
@@ -345,7 +346,7 @@ export const zh = {
   work: {
     title: "所有项目",
     titleHighlight: "项目",
-    description: "我的专业和独立项目的综合展示。从企业架构到AI赋能的工具。",
+    description: "聚焦真实企业场景中的复杂系统、协同效率与业务增长。",
     companyProjects: "企业项目",
     personalProjects: "个人项目",
     furtherWorks: "其他作品",

@@ -9,9 +9,9 @@ import {
   type ReactNode,
 } from "react";
 
-export type UIVersion = "1" | "3";
+export type UIVersion = "1" | "2";
 
-const UI_VERSIONS: UIVersion[] = ["1", "3"];
+const UI_VERSIONS: UIVersion[] = ["1", "2"];
 
 type UIVersionContextValue = {
   version: UIVersion;
@@ -34,6 +34,8 @@ function subscribe(callback: () => void) {
 
 function getSnapshot(): UIVersion {
   const stored = window.localStorage.getItem(UI_VERSION_KEY);
+  // 兼容曾经误标为 UI 3.0 的温润主题。
+  if (stored === "3") return "2";
   return UI_VERSIONS.includes(stored as UIVersion) ? (stored as UIVersion) : "1";
 }
 
@@ -46,6 +48,9 @@ export function UIVersionProvider({ children }: { children: ReactNode }) {
   const version = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
+    if (window.localStorage.getItem(UI_VERSION_KEY) === "3") {
+      window.localStorage.setItem(UI_VERSION_KEY, "2");
+    }
     document.documentElement.dataset.uiVersion = version;
   }, [version]);
 

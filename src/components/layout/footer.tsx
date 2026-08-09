@@ -153,7 +153,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-1.5 text-zinc-500 hover:text-zinc-300 transition-colors"
             >
-              <img src="/小红书.png" alt="小红书" className="w-4 h-4" />
+              <img src="/%E5%B0%8F%E7%BA%A2%E4%B9%A6.png" alt="小红书" className="w-4 h-4" />
               <span className="text-xs">小红书</span>
               <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>

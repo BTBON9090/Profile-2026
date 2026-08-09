@@ -7,7 +7,7 @@ import { useUIVersion, type UIVersion } from "@/lib/ui-version-context";
 
 const VERSION_OPTIONS: { value: UIVersion; label: string; hint: string }[] = [
   { value: "1", label: "UI 1.0", hint: "暗夜方块" },
-  { value: "3", label: "UI 3.0", hint: "温润小品" },
+  { value: "2", label: "UI 2.0", hint: "温润小品" },
 ];
 
 export default function UIVersionSwitch() {

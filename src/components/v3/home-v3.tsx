@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Check, Copy } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { WindowScene } from "@/components/v3/illustrations";
-import ScrollHint from "@/components/v3/scroll-hint";
+import ScrollHint, { SectionNavigator } from "@/components/v3/scroll-hint";
 import { useBeijingTime } from "@/components/v3/use-beijing-time";
 
 // 项目时间与 UI 1.0 对齐
@@ -16,7 +16,7 @@ const featuredProjects = [
     title: "雪诺企业安全浏览器",
     en: "Snow Enterprise Browser",
     description: "从访问入口重构企业安全体验，让零信任不再成为用户的负担。",
-    meta: "2024—2026",
+    meta: "2024-2026",
     image: "https://cdn.btbon.cn/snownewtab/AI-NEWTAB.webp",
     href: "/work?project=snownewtab",
   },
@@ -25,7 +25,7 @@ const featuredProjects = [
     title: "AllinOne",
     en: "Figma Power Plugin",
     description: "把 30+ 高频动作收进一个设计师真正愿意每天打开的工具。",
-    meta: "2024—2025",
+    meta: "2024-2025",
     image: "https://cdn.btbon.cn/images/ALO.webp",
     href: "/work/all-in-one-v2",
   },
@@ -51,10 +51,10 @@ const featuredProjects = [
 
 // 真实职业经历（与 UI 1.0 一致，按用户确认的四段归纳）
 const experience = [
-  ["2024—NOW", "雪诺科技", "产品设计师"],
-  ["2021—2023", "快手 · 商业化（磁力聚星）", "产品设计师"],
-  ["2018—2021", "中航金网（航空工业）", "体验设计师"],
-  ["2016—2018", "云适配（云生互联）", "UI 设计师"],
+  ["2024-NOW", "雪诺科技", "产品设计师"],
+  ["2021-2023", "快手 · 商业化（磁力聚星）", "产品设计师"],
+  ["2018-2021", "中航金网（航空工业）", "体验设计师"],
+  ["2016-2018", "云适配（云生互联）", "UI 设计师"],
 ];
 
 const capabilities = [
@@ -74,9 +74,9 @@ const capabilities = [
 
 const stats = [
   ["10", "年产品设计经验"],
-  ["30+", "AllinOne 插件功能"],
-  ["340+", "插件设计师用户"],
-  ["2", "款独立上架插件"],
+  ["B/C/G", "多端产品项目经验"],
+  ["AI", "Coding 与辅助设计能力"],
+  ["360+", "累计服务用户"],
 ];
 
 const EMAIL = "nc0032@qq.com";
@@ -92,7 +92,24 @@ const reveal = {
 
 export default function HomeV3() {
   const time = useBeijingTime();
+  const reduceMotion = useReducedMotion();
+  const heroRef = useRef<HTMLElement>(null);
   const [copied, setCopied] = useState<"email" | "wechat" | null>(null);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => hero.classList.toggle("is-scene-active", entry.isIntersecting),
+      { threshold: 0.08 }
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
+  const sectionReveal = reduceMotion
+    ? { initial: false as const }
+    : reveal;
 
   const copyText = async (text: string, field: "email" | "wechat") => {
     await navigator.clipboard.writeText(text);
@@ -102,8 +119,9 @@ export default function HomeV3() {
 
   return (
     <div className="v3-home">
+      <SectionNavigator />
       {/* ── 第一屏 · Hero ─────────────────────────────── */}
-      <section id="hero" className="v3-hero">
+      <section id="hero" ref={heroRef} className="v3-hero is-scene-active">
         {/* 动态背景：整面窗、丁达尔光、窗外的鸟与落叶、桌上的 iMac */}
         <div className="v3-hero__scene" aria-hidden="true">
           <WindowScene />
@@ -111,7 +129,7 @@ export default function HomeV3() {
 
         <div className="v3-shell">
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
             className="v3-hero__eyebrow"
@@ -126,7 +144,7 @@ export default function HomeV3() {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
@@ -136,13 +154,13 @@ export default function HomeV3() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className="v3-hero__intro"
           >
             我是倪城，B 端产品设计师，在这行第十年。
-            我相信视觉只是结果——先把业务逻辑想清楚，
+            我相信视觉只是结果。先把业务逻辑想清楚，
             再用可交互的原型验证一遍，设计才算完成。
             这里收录的，就是那些想清楚、也做成了的东西。
           </motion.p>
@@ -155,18 +173,15 @@ export default function HomeV3() {
         {/* ── 第二屏 · 精选项目 ────────────────────────── */}
         <section id="selected-work" className="v3-section">
           <div className="v3-shell">
-            <motion.header {...reveal} className="v3-section-head">
-              <span className="v3-section-index">01</span>
+            <motion.header {...sectionReveal} className="v3-section-head">
               <h2>精选项目</h2>
               <p>四个项目，四种不同尺度的问题</p>
             </motion.header>
 
             <div className="v3-projects">
-              {featuredProjects.map((project, index) => (
-                <motion.div
+              {featuredProjects.map((project) => (
+                <div
                   key={project.title}
-                  {...reveal}
-                  transition={{ ...reveal.transition, delay: index * 0.05 }}
                 >
                   <Link href={project.href} className="v3-project">
                     <span className="v3-project__index">{project.index}</span>
@@ -176,6 +191,7 @@ export default function HomeV3() {
                         alt={`${project.title} 项目封面`}
                         fill
                         unoptimized
+                        loading="eager"
                         sizes="(max-width: 800px) 96px, 132px"
                       />
                     </span>
@@ -193,11 +209,11 @@ export default function HomeV3() {
                       <ArrowUpRight size={15} aria-hidden="true" />
                     </span>
                   </Link>
-                </motion.div>
+                </div>
               ))}
             </div>
 
-            <motion.div {...reveal} className="v3-all-work">
+            <motion.div {...sectionReveal} className="v3-all-work">
               <Link href="/work" className="v3-link">
                 浏览全部项目
                 <ArrowUpRight size={13} />
@@ -211,53 +227,58 @@ export default function HomeV3() {
         {/* ── 第三屏 · 关于我 ─────────────────────────── */}
         <section id="profile" className="v3-section">
           <div className="v3-shell">
-            <motion.header {...reveal} className="v3-section-head">
-              <span className="v3-section-index">02</span>
+            <motion.header {...sectionReveal} className="v3-section-head">
               <h2>关于我</h2>
               <p>设计观与职业经历</p>
             </motion.header>
 
-            <div className="v3-about__cols">
-              <motion.div {...reveal}>
+            <div className="v3-about">
+              <motion.div {...sectionReveal} className="v3-about__overview">
                 <p className="v3-about__label">设计观</p>
-                <p className="v3-about__statement">
-                  设计不止于交付，是<strong>逻辑的可视化</strong>，
-                  也是<strong>落地的预演</strong>。
-                </p>
-                <p className="v3-about__sub">
-                  我习惯把工程思维前置到设计阶段：用 AI
-                  快速搭出可交互的原型，在开发介入前验证逻辑，
-                  让设计稿到代码的损耗降到最低。
-                </p>
+                <div className="v3-about__overview-copy">
+                  <p className="v3-about__statement">
+                    设计不止于交付，是<strong>逻辑的可视化</strong>，
+                    也是<strong>落地的预演</strong>。
+                  </p>
+                  <p className="v3-about__sub">
+                    我把工程思维前置到设计阶段，用 AI 快速搭出可交互原型，
+                    在开发介入前验证逻辑，减少设计稿到代码之间的损耗。
+                  </p>
+                </div>
+              </motion.div>
 
-                <div className="v3-cap">
-                  {capabilities.map((cap) => (
-                    <div key={cap.index} className="v3-cap__item">
-                      <span>{cap.index}</span>
-                      <div>
-                        <strong>{cap.title}</strong>
-                        <p>{cap.description}</p>
+              <div className="v3-about__details">
+                <motion.div {...sectionReveal} className="v3-about__strengths">
+                  <p className="v3-about__label">两点优势</p>
+                  <div className="v3-cap">
+                    {capabilities.map((cap) => (
+                      <div key={cap.index} className="v3-cap__item">
+                        <span>{cap.index}</span>
+                        <div>
+                          <strong>{cap.title}</strong>
+                          <p>{cap.description}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
 
-              <motion.div {...reveal}>
-                <p className="v3-about__label">职业经历</p>
-                <div className="v3-exp">
-                  {experience.map(([year, company, role]) => (
-                    <div key={company} className="v3-exp__row">
-                      <span>{year}</span>
-                      <strong>{company}</strong>
-                      <em>{role}</em>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+                <motion.div {...sectionReveal} className="v3-about__career">
+                  <p className="v3-about__label">职业经历</p>
+                  <div className="v3-exp">
+                    {experience.map(([year, company, role]) => (
+                      <div key={company} className="v3-exp__row">
+                        <span>{year}</span>
+                        <strong>{company}</strong>
+                        <em>{role}</em>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </div>
 
-            <motion.div {...reveal} className="v3-stats">
+            <motion.div {...sectionReveal} className="v3-stats">
               {stats.map(([value, label]) => (
                 <div key={label}>
                   <strong>{value}</strong>
@@ -274,17 +295,16 @@ export default function HomeV3() {
       {/* ── 第四屏 · 联系 ────────────────────────────── */}
       <footer id="footer" className="v3-footer">
         <div className="v3-shell">
-          <motion.header {...reveal} className="v3-section-head">
-            <span className="v3-section-index">03</span>
+          <motion.header {...sectionReveal} className="v3-section-head">
             <h2>联系</h2>
             <p>有合适的机会，或只是想聊聊设计</p>
           </motion.header>
 
-          <motion.p {...reveal} className="v3-footer__line">
+          <motion.p {...sectionReveal} className="v3-footer__line">
             一起做点经得起用的好东西。
           </motion.p>
 
-          <motion.div {...reveal} className="v3-footer__actions">
+          <motion.div {...sectionReveal} className="v3-footer__actions">
             <button
               type="button"
               onClick={() => copyText(EMAIL, "email")}
@@ -330,11 +350,11 @@ export default function HomeV3() {
               className="v3-xhs"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/小红书.png" alt="" />
+              <img src="/%E5%B0%8F%E7%BA%A2%E4%B9%A6.png" alt="" />
               在小红书关注我
               <ArrowUpRight size={12} />
             </a>
-            <span>Songti SC · Plus Jakarta Sans · JetBrains Mono</span>
+            <span>Songti SC / Plus Jakarta Sans / JetBrains Mono</span>
           </div>
         </div>
       </footer>

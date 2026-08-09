@@ -8,6 +8,15 @@ import LyricsDisplay from "@/components/ui/lyrics-display";
 import UIVersionSwitch from "@/components/ui/ui-version-switch";
 import { useUIVersion } from "@/lib/ui-version-context";
 
+const APPBOX_TOPIC_ROUTES = new Set([
+  "/work/launchpad",
+  "/work/aura",
+  "/work/all-in-one",
+  "/work/all-in-one-v2",
+  "/work/ai-translate",
+  "/work/block-wall",
+]);
+
 export default function Navbar() {
   const pathname = usePathname();
   const { t } = useI18n();
@@ -16,11 +25,15 @@ export default function Navbar() {
   // 1. 动态主题感知
   // 注意这里：如果是放在 project 路由下，记得加上 /project/ 前缀
   // ==============================================================
-  const isLightTheme = pathname === "/project/light-branding" || pathname === "/work/light-branding" || pathname === "/work/all-in-one-v2" || pathname === "/work/aura";
+  const isAppBox = pathname.startsWith("/appbox");
+  const isAppBoxExperience = isAppBox || APPBOX_TOPIC_ROUTES.has(pathname);
+  const isLightTheme = isAppBoxExperience || pathname === "/project/light-branding" || pathname === "/work/light-branding";
 
   // 提取动态 CSS 变量
   const navBgClass =
-    version === "3"
+    isAppBoxExperience
+      ? "appbox-navbar"
+      : version === "2"
       ? "v3-navbar"
       : isLightTheme ? "bg-white/90 border-b border-zinc-200" : "bg-black/90 border-b border-white/5"; // 背景颜色
   const logoColorClass = isLightTheme ? "text-zinc-900 hover:text-black" : "text-zinc-300 hover:text-white/90"; // logo 颜色
@@ -72,12 +85,25 @@ export default function Navbar() {
           <Link 
             href="/work" 
             className={`relative group transition-colors ${
-              pathname.startsWith('/work') || pathname.startsWith('/project') ? activeText : inactiveText
+              !isAppBoxExperience && (pathname.startsWith('/work') || pathname.startsWith('/project')) ? activeText : inactiveText
             }`}
           >
             {t.nav.project}
             <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${
-              pathname.startsWith('/work') || pathname.startsWith('/project') ? 'w-full' : 'w-0 group-hover:w-full'
+              !isAppBoxExperience && (pathname.startsWith('/work') || pathname.startsWith('/project')) ? 'w-full' : 'w-0 group-hover:w-full'
+            }`}></span>
+          </Link>
+
+          {/* 3. 独立产品商店 */}
+          <Link
+            href="/appbox"
+            className={`relative group transition-colors ${
+              isAppBoxExperience ? activeText : inactiveText
+            }`}
+          >
+            {t.nav.appbox}
+            <span className={`absolute -bottom-1 left-0 h-px bg-blue-500 transition-all ${
+              isAppBoxExperience ? "w-full" : "w-0 group-hover:w-full"
             }`}></span>
           </Link>
 

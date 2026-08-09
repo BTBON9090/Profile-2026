@@ -2,6 +2,7 @@ export const en = {
   nav: {
     home: 'HOME',
     project: 'PROJECT',
+    appbox: 'APPBOX',
     biography: 'BIO.',
   },
   hero: {
@@ -345,7 +346,7 @@ export const en = {
   work: {
     title: "All Work.",
     titleHighlight: "Work.",
-    description: "A comprehensive showcase of my professional and independent projects. From enterprise architecture to AI-powered tools.",
+    description: "Selected enterprise work across complex systems, collaboration, and business growth.",
     companyProjects: "Company Projects",
     personalProjects: "Personal Projects",
     furtherWorks: "Further Works",
