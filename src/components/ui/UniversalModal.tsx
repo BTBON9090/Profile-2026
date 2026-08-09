@@ -23,6 +23,25 @@ interface ModalProps {
   resources?: ProjectResource[];
 }
 
+function buildFigmaEmbedUrl(href: string) {
+  try {
+    const source = new URL(href);
+    const parts = source.pathname.split("/").filter(Boolean);
+    const fileKey = parts[1];
+    const fileName = parts[2] || "design-file";
+    if (!fileKey) return null;
+    const embed = new URL(`https://embed.figma.com/design/${fileKey}/${fileName}`);
+    embed.searchParams.set("embed-host", "btbon-portfolio");
+    embed.searchParams.set("page-selector", "true");
+    embed.searchParams.set("viewport-controls", "true");
+    embed.searchParams.set("footer", "true");
+    embed.searchParams.set("theme", "dark");
+    return embed.toString();
+  } catch {
+    return null;
+  }
+}
+
 export default function UniversalModal({
   isOpen,
   onClose,
@@ -231,7 +250,7 @@ export default function UniversalModal({
   const progressPercent = totalImages > 0 ? ((currentImageIndex + 1) / totalImages) * 100 : 0;
   const activeResource = resources[activeResourceIndex];
   const activeResourceEmbedUrl = activeResource
-    ? `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(activeResource.href)}`
+    ? buildFigmaEmbedUrl(activeResource.href)
     : null;
 
   const modalContent = (
@@ -320,7 +339,7 @@ export default function UniversalModal({
                       <div>
                         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-400">Figma 交互预览</p>
                         <h3 className="mt-2 text-xl font-semibold tracking-tight text-zinc-50 md:text-2xl">在弹窗中查看设计文件</h3>
-                        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">可以直接拖动画布、缩放并切换页面。需要完整编辑器时，再在新页签打开 Figma。</p>
+                        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">使用预览框左上角的页面选择器切换文件内 Page，也可以拖动画布和缩放。需要完整编辑器时，再在新页签打开 Figma。</p>
                       </div>
                       <a
                         href={activeResource.href}
@@ -351,7 +370,7 @@ export default function UniversalModal({
                       ))}
                     </div>
 
-                    <div className="mt-4 aspect-[16/9] min-h-[420px] overflow-hidden rounded-xl border border-white/10 bg-zinc-900">
+                    <div className="mt-4 aspect-[16/9] min-h-[520px] overflow-hidden rounded-xl border border-white/10 bg-zinc-900">
                       <iframe
                         key={activeResource.href}
                         src={activeResourceEmbedUrl}

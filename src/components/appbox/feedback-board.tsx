@@ -98,6 +98,7 @@ export default function FeedbackBoard({
       setAuthor(resolvedAuthor);
       localStorage.setItem("appbox-feedback-author", resolvedAuthor);
       await loadEntries(visitorId);
+      window.dispatchEvent(new CustomEvent("appbox-feedback-updated", { detail: { scope } }));
       if (parentId) {
         setReplyContent("");
         setReplyingTo(null);

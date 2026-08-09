@@ -22,6 +22,13 @@ export type PublicFeedback = Omit<StoredFeedback, "likedBy"> & {
 type FeedbackDatabase = {
   version: 1;
   entries: StoredFeedback[];
+  productLikes?: Record<string, string[]>;
+};
+
+export type ProductStats = {
+  likeCount: number;
+  commentCount: number;
+  liked: boolean;
 };
 
 const DATA_DIR = path.join(process.cwd(), ".data");
@@ -33,10 +40,11 @@ async function readDatabase(): Promise<FeedbackDatabase> {
     const raw = await readFile(DATA_FILE, "utf8");
     const parsed = JSON.parse(raw) as FeedbackDatabase;
     if (!Array.isArray(parsed.entries)) throw new Error("Invalid feedback database");
+    if (!parsed.productLikes || typeof parsed.productLikes !== "object") parsed.productLikes = {};
     return parsed;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return { version: 1, entries: [] };
+      return { version: 1, entries: [], productLikes: {} };
     }
     throw error;
   }
@@ -117,5 +125,38 @@ export async function toggleFeedbackLike(input: {
     if (index >= 0) entry.likedBy.splice(index, 1);
     else entry.likedBy.push(input.visitorId);
     return toPublic(entry, input.visitorId);
+  });
+}
+
+export async function listProductStats(productIds: string[], visitorId?: string) {
+  const database = await readDatabase();
+  const likes = database.productLikes ?? {};
+  return productIds.reduce<Record<string, ProductStats>>((result, productId) => {
+    const likedBy = likes[productId] ?? [];
+    result[productId] = {
+      likeCount: likedBy.length,
+      commentCount: database.entries.filter((entry) => entry.scope === `product:${productId}`).length,
+      liked: Boolean(visitorId && likedBy.includes(visitorId)),
+    };
+    return result;
+  }, {});
+}
+
+export async function toggleProductLike(input: {
+  productId: string;
+  visitorId: string;
+}) {
+  return mutate(async (database) => {
+    const likes = (database.productLikes ||= {});
+    const likedBy = (likes[input.productId] ||= []);
+    const index = likedBy.indexOf(input.visitorId);
+    if (index >= 0) likedBy.splice(index, 1);
+    else likedBy.push(input.visitorId);
+
+    return {
+      likeCount: likedBy.length,
+      commentCount: database.entries.filter((entry) => entry.scope === `product:${input.productId}`).length,
+      liked: likedBy.includes(input.visitorId),
+    } satisfies ProductStats;
   });
 }

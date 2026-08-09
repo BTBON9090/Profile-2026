@@ -8,6 +8,8 @@ import {
   CheckCircle2,
   Download,
   Globe2,
+  Heart,
+  MessageCircle,
   PackageOpen,
   Plug,
   Search,
@@ -23,6 +25,12 @@ import {
 import FeedbackBoard from "@/components/appbox/feedback-board";
 
 type Filter = "all" | AppBoxKind;
+
+type ProductStat = {
+  likeCount: number;
+  commentCount: number;
+  liked: boolean;
+};
 
 const filters: { value: Filter; label: string; icon?: typeof Download }[] = [
   { value: "all", label: "全部" },
@@ -65,6 +73,7 @@ function ProductIcon({ product, large = false }: { product: AppBoxProduct; large
 export default function AppBoxPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [productStats, setProductStats] = useState<Record<string, ProductStat>>({});
   const searchRef = useRef<HTMLInputElement>(null);
   const featured = appBoxProducts.find((product) => product.featured) ?? appBoxProducts[0];
 
@@ -77,6 +86,30 @@ export default function AppBoxPage() {
     };
     window.addEventListener("keydown", focusSearch);
     return () => window.removeEventListener("keydown", focusSearch);
+  }, []);
+
+  useEffect(() => {
+    const visitorId = localStorage.getItem("appbox-feedback-visitor") || crypto.randomUUID();
+    localStorage.setItem("appbox-feedback-visitor", visitorId);
+    const loadStats = () => {
+      fetch(`/api/appbox/stats?visitorId=${encodeURIComponent(visitorId)}`, { cache: "no-store" })
+        .then(async (response) => {
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "互动数据加载失败");
+          setProductStats(data.stats ?? {});
+        })
+        .catch(() => setProductStats({}));
+    };
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") loadStats();
+    };
+    loadStats();
+    window.addEventListener("focus", loadStats);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("focus", loadStats);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, []);
 
   const visibleProducts = useMemo(() => {
@@ -245,9 +278,15 @@ export default function AppBoxPage() {
                       {product.tags.map((tag) => <span key={tag}>{tag}</span>)}
                     </div>
                     <div className="appbox-card__footer">
-                      <div className="appbox-card__meta">
-                        <span>{product.platform}</span>
-                        <span>{product.version}</span>
+                      <div className="appbox-card__footer-info">
+                        <div className="appbox-card__meta">
+                          <span>{product.platform}</span>
+                          <span>{product.version}</span>
+                        </div>
+                        <div className="appbox-card__signals" aria-label={`${product.name} 互动数据`}>
+                          <span><Heart size={12} /> {productStats[product.id]?.likeCount ?? 0}</span>
+                          <span><MessageCircle size={12} /> {productStats[product.id]?.commentCount ?? 0}</span>
+                        </div>
                       </div>
                       <div className="appbox-card__open">
                         阅读介绍 <ArrowRight size={14} />

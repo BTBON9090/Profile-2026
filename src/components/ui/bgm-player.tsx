@@ -186,7 +186,6 @@ export default function BgmPlayer() {
   if (!currentTrack) return null;
 
   const isLightTheme = pathname === "/work/light-branding" || pathname === "/work/ciliju-xing";
-
   const accentClass = isLightTheme ? "text-zinc-800" : "text-zinc-100";
   const mutedTextClass = isLightTheme ? "text-zinc-500" : "text-zinc-400";
   const panelBgClass = isLightTheme

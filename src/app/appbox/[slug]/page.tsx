@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Download } from "lucide-react";
 import FeedbackBoard from "@/components/appbox/feedback-board";
+import ProductLikeButton from "@/components/appbox/product-like-button";
 import ScrollReset from "@/components/ui/scroll-reset";
 import { appBoxArticles } from "@/data/appbox-articles";
 import { appBoxKindLabels, appBoxProducts } from "@/data/appbox";
@@ -108,6 +109,8 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
             </section>
           ))}
         </article>
+
+        <ProductLikeButton productId={product.id} />
 
         {(hasPrimaryAction || hasDetailAction) && (
           <aside className="app-article__end-actions">

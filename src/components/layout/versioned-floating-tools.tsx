@@ -9,14 +9,17 @@ export default function VersionedFloatingTools() {
   const { version } = useUIVersion();
   const pathname = usePathname();
 
-  // UI 2.0 is deliberately content-first. The experimental music
-  // player and AI companion remain available in the original UI 1.0 experience.
-  if (version !== "1" || pathname.startsWith("/appbox")) return null;
+  // UI 2.0 remains content-first. AppBox keeps the UI 1.0 music experience,
+  // while the AI companion stays out of product-reading and tool routes.
+  if (version !== "1") return null;
+
+  const isAppBoxExperience = pathname.startsWith("/appbox") || pathname.startsWith("/tools/");
+  const hasDedicatedPlayer = pathname.startsWith("/tools/lyrics-skyline");
 
   return (
     <>
-      <BgmPlayer />
-      <AICopilot />
+      {!hasDedicatedPlayer && <BgmPlayer />}
+      {!isAppBoxExperience && <AICopilot />}
     </>
   );
 }

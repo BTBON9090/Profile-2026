@@ -203,4 +203,34 @@ export const appBoxArticles: Record<string, AppBoxArticle> = {
       },
     ],
   },
+  "lyrics-skyline": {
+    productId: "lyrics-skyline",
+    lead: "Lyric Skyline 把主站正在使用的歌词天际屏做成一个独立的音乐视觉实验室。用户可以完整试听、调整层次与动效，并把参数和模板导出到自己的项目。",
+    readingTime: "约 4 分钟",
+    cover: "/product-assets/lyrics-skyline-icon.png",
+    coverAlt: "Lyric Skyline 歌词天际屏播放器图标",
+    coverFit: "contain",
+    sections: [
+      {
+        title: "从固定效果变成可调的歌词空间",
+        paragraphs: [
+          "经典模式保留主站当前使用的前景、中景和背景歌词层。展示宽度、随机分布、水平与垂直离散、字体、字重和模糊程度都可以实时调整。",
+          "工具会读取同一套播放列表与歌词时间轴，因此在调参时看到的不是静态样例，而是真实歌曲中的连续变化。",
+        ],
+      },
+      {
+        title: "凝聚与弥散是独立效果模式",
+        paragraphs: [
+          "粒子凝聚会让分散字符逐步回到可读歌词，弥散湮灭则让完整文字向两侧拆解。它们与经典天际屏分开实现，切换效果不会改变主站默认方案。",
+        ],
+        points: ["经典前中后景天际屏", "粒子凝聚成文字", "歌词弥散与湮灭", "低动态偏好自动降级"],
+      },
+      {
+        title: "完整播放控制与方案导出",
+        paragraphs: [
+          "播放器提供歌曲选择、时间轴拖动、前后十秒、循环、倍速和歌词同步微调。完成视觉设置后，可以导出 JSON 参数，或下载一个独立 HTML 模板继续开发。",
+        ],
+      },
+    ],
+  },
 };

@@ -26,7 +26,8 @@ export default function Navbar() {
   // 注意这里：如果是放在 project 路由下，记得加上 /project/ 前缀
   // ==============================================================
   const isAppBox = pathname.startsWith("/appbox");
-  const isAppBoxExperience = isAppBox || APPBOX_TOPIC_ROUTES.has(pathname);
+  const isAppBoxTool = pathname.startsWith("/tools/");
+  const isAppBoxExperience = isAppBox || isAppBoxTool || APPBOX_TOPIC_ROUTES.has(pathname);
   const isLightTheme = isAppBoxExperience || pathname === "/project/light-branding" || pathname === "/work/light-branding";
 
   // 提取动态 CSS 变量
