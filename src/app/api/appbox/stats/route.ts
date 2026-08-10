@@ -32,8 +32,13 @@ export async function GET(request: Request) {
   const requestedIds = requestedProductId && productIdSet.has(requestedProductId)
     ? [requestedProductId]
     : productIds;
-  const stats = await listProductStats(requestedIds, visitorId);
-  return NextResponse.json({ stats }, { headers: { "Cache-Control": "no-store" } });
+  try {
+    const stats = await listProductStats(requestedIds, visitorId);
+    return NextResponse.json({ stats }, { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "认可数据加载失败";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {

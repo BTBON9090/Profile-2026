@@ -41,8 +41,13 @@ export async function GET(request: Request) {
   if (!SCOPE_PATTERN.test(scope)) {
     return NextResponse.json({ error: "无效的留言板范围" }, { status: 400 });
   }
-  const entries = await listFeedback(scope, visitorId);
-  return NextResponse.json({ entries }, { headers: { "Cache-Control": "no-store" } });
+  try {
+    const entries = await listFeedback(scope, visitorId);
+    return NextResponse.json({ entries }, { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "留言加载失败";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
