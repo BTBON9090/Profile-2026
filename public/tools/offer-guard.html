@@ -6,6 +6,12 @@
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#f1f4fa">
   <title>薪算器 · 拆薪资、算到手、做比较</title>
+  <script>
+    // 嵌入站点 iframe 时（?embedded=1）隐藏独立版顶栏，避免与站点导航重复堆叠
+    if (new URLSearchParams(location.search).has("embedded")) {
+      document.documentElement.classList.add("embedded");
+    }
+  </script>
   <style>
     :root {
       --page: #f1f4fa;
@@ -49,6 +55,8 @@
     input[type="number"] { appearance: textfield; }
 
     .shell { width: min(1680px, 100%); margin: 0 auto; padding: 12px 16px 32px; }
+    html.embedded .shell { padding-top: 8px; }
+    html.embedded .topbar { display: none; }
     .topbar {
       position: sticky;
       top: 0;
