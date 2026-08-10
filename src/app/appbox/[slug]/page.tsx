@@ -110,8 +110,6 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
           ))}
         </article>
 
-        <ProductLikeButton productId={product.id} />
-
         {(hasPrimaryAction || hasDetailAction) && (
           <aside className="app-article__end-actions">
             <div>
@@ -132,6 +130,8 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
             </div>
           </aside>
         )}
+
+        <ProductLikeButton productId={product.id} />
 
         <FeedbackBoard
           scope={`product:${product.id}`}

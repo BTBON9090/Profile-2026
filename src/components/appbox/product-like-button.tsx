@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, MessageCircle } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type ProductStat = {
@@ -17,28 +17,20 @@ export default function ProductLikeButton({ productId }: { productId: string }) 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [pop, setPop] = useState(false);
 
   useEffect(() => {
     const id = localStorage.getItem("appbox-feedback-visitor") || crypto.randomUUID();
     localStorage.setItem("appbox-feedback-visitor", id);
     setVisitorId(id);
-    const loadStat = () => {
-      fetch(`/api/appbox/stats?productId=${encodeURIComponent(productId)}&visitorId=${encodeURIComponent(id)}`, { cache: "no-store" })
-        .then(async (response) => {
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.error || "认可数据加载失败");
-          setStat(data.stats?.[productId] ?? emptyStat);
-        })
-        .catch((reason) => setError(reason instanceof Error ? reason.message : "认可数据加载失败"))
-        .finally(() => setLoading(false));
-    };
-    const handleFeedbackUpdated = (event: Event) => {
-      const detail = (event as CustomEvent<{ scope?: string }>).detail;
-      if (detail?.scope === `product:${productId}`) loadStat();
-    };
-    loadStat();
-    window.addEventListener("appbox-feedback-updated", handleFeedbackUpdated);
-    return () => window.removeEventListener("appbox-feedback-updated", handleFeedbackUpdated);
+    fetch(`/api/appbox/stats?productId=${encodeURIComponent(productId)}&visitorId=${encodeURIComponent(id)}`, { cache: "no-store" })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "认可数据加载失败");
+        setStat(data.stats?.[productId] ?? emptyStat);
+      })
+      .catch((reason) => setError(reason instanceof Error ? reason.message : "认可数据加载失败"))
+      .finally(() => setLoading(false));
   }, [productId]);
 
   const toggleLike = async () => {
@@ -50,6 +42,7 @@ export default function ProductLikeButton({ productId }: { productId: string }) 
       likeCount: Math.max(0, stat.likeCount + (stat.liked ? -1 : 1)),
     };
     setStat(optimistic);
+    if (!stat.liked) setPop(true);
     setSaving(true);
     setError("");
     try {
@@ -72,14 +65,21 @@ export default function ProductLikeButton({ productId }: { productId: string }) 
   return (
     <section className="app-article__approval" aria-label="产品认可">
       <button type="button" aria-pressed={stat.liked} onClick={() => void toggleLike()} disabled={loading || saving}>
-        <span className="app-article__approval-icon"><Heart fill={stat.liked ? "currentColor" : "none"} /></span>
+        <span
+          className={pop ? "app-article__approval-icon is-pop" : "app-article__approval-icon"}
+          onAnimationEnd={() => setPop(false)}
+        >
+          <Heart fill={stat.liked ? "currentColor" : "none"} />
+        </span>
         <span className="app-article__approval-copy">
           <b>{stat.liked ? "感谢你的认可" : "认可这个产品"}</b>
-          <small>{stat.liked ? "你的认可已经记录" : "如果它对你有帮助，可以点一下"}</small>
+          <small>{stat.liked ? "你的认可已经记录，再点一次可取消" : "如果它对你有帮助，点一下告诉作者"}</small>
         </span>
-        <strong>{loading ? "-" : stat.likeCount}</strong>
+        <span className="app-article__approval-count">
+          <strong>{loading ? "–" : stat.likeCount}</strong>
+          <small>次认可</small>
+        </span>
       </button>
-      <span className="app-article__approval-comments"><MessageCircle size={15} /> {stat.commentCount} 条留言</span>
       {error && <p role="alert">{error}</p>}
     </section>
   );

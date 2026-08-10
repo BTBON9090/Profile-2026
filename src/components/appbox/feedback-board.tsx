@@ -1,7 +1,7 @@
 "use client";
 
-import { Heart, MessageCircle, Send } from "lucide-react";
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { Heart, MessageCircle, Send, Undo2 } from "lucide-react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type FeedbackEntry = {
   id: string;
@@ -12,6 +12,7 @@ type FeedbackEntry = {
   createdAt: string;
   likeCount: number;
   liked: boolean;
+  mine: boolean;
 };
 
 type FeedbackBoardProps = {
@@ -39,6 +40,26 @@ function createGuestName() {
   return `${guestNames[index]}${String(number).padStart(2, "0")}`;
 }
 
+function avatarStyle(name: string) {
+  let hash = 0;
+  for (let index = 0; index < name.length; index += 1) {
+    hash = (hash * 31 + name.charCodeAt(index)) >>> 0;
+  }
+  const hue = hash % 360;
+  return {
+    backgroundColor: `hsl(${hue} 72% 90%)`,
+    color: `hsl(${hue} 45% 36%)`,
+  };
+}
+
+function Avatar({ name, small = false }: { name: string; small?: boolean }) {
+  return (
+    <span className={small ? "feedback-avatar feedback-avatar--small" : "feedback-avatar"} style={avatarStyle(name)} aria-hidden="true">
+      {name.trim().slice(0, 1) || "客"}
+    </span>
+  );
+}
+
 export default function FeedbackBoard({
   scope,
   title = "留言与反馈",
@@ -50,9 +71,11 @@ export default function FeedbackBoard({
   const [visitorId, setVisitorId] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
+  const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const deleteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadEntries = useCallback(async (currentVisitorId: string) => {
     const response = await fetch(`/api/feedback?scope=${encodeURIComponent(scope)}&visitorId=${encodeURIComponent(currentVisitorId)}`, {
@@ -73,6 +96,9 @@ export default function FeedbackBoard({
     loadEntries(savedVisitorId)
       .catch((reason) => setError(reason instanceof Error ? reason.message : "留言加载失败"))
       .finally(() => setLoading(false));
+    return () => {
+      if (deleteTimer.current) clearTimeout(deleteTimer.current);
+    };
   }, [loadEntries]);
 
   const threads = useMemo(() => entries.filter((entry) => !entry.parentId).reverse(), [entries]);
@@ -91,7 +117,7 @@ export default function FeedbackBoard({
       const response = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scope, author: resolvedAuthor, content: message, parentId, website: "" }),
+        body: JSON.stringify({ scope, author: resolvedAuthor, content: message, parentId, visitorId, website: "" }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "留言保存失败");
@@ -136,11 +162,71 @@ export default function FeedbackBoard({
     }
   };
 
+  const deleteEntry = async (entry: FeedbackEntry) => {
+    setError("");
+    setEntries((current) => current.filter((item) => item.id !== entry.id && item.parentId !== entry.id));
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delete", scope, id: entry.id, visitorId }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "撤回失败");
+      window.dispatchEvent(new CustomEvent("appbox-feedback-updated", { detail: { scope } }));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "撤回失败");
+      void loadEntries(visitorId);
+    }
+  };
+
+  const requestDelete = (entry: FeedbackEntry) => {
+    if (confirmingDelete === entry.id) {
+      if (deleteTimer.current) clearTimeout(deleteTimer.current);
+      setConfirmingDelete(null);
+      void deleteEntry(entry);
+      return;
+    }
+    setConfirmingDelete(entry.id);
+    if (deleteTimer.current) clearTimeout(deleteTimer.current);
+    deleteTimer.current = setTimeout(() => setConfirmingDelete(null), 3000);
+  };
+
+  const renderActions = (entry: FeedbackEntry, replyTarget?: FeedbackEntry) => (
+    <div className="feedback-thread__actions">
+      <button type="button" aria-pressed={entry.liked} onClick={() => void toggleLike(entry)}>
+        <Heart size={13} fill={entry.liked ? "currentColor" : "none"} /> {entry.likeCount || "点赞"}
+      </button>
+      {replyTarget && (
+        <button type="button" onClick={() => { setReplyingTo(replyingTo === replyTarget.id ? null : replyTarget.id); setReplyContent(""); }}>
+          <MessageCircle size={13} /> 回复{repliesByParent[replyTarget.id]?.length ? ` ${repliesByParent[replyTarget.id].length}` : ""}
+        </button>
+      )}
+      {entry.mine && (
+        <button
+          type="button"
+          className="feedback-action--danger"
+          data-confirm={confirmingDelete === entry.id ? "" : undefined}
+          onClick={() => requestDelete(entry)}
+        >
+          <Undo2 size={13} /> {confirmingDelete === entry.id ? "确认撤回？" : "撤回"}
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <section className="feedback-board" aria-labelledby={`feedback-${scope.replace(":", "-")}`}>
       <header className="feedback-board__header">
-        <h2 id={`feedback-${scope.replace(":", "-")}`}>{title}</h2>
-        <p>{description}</p>
+        <div>
+          <h2 id={`feedback-${scope.replace(":", "-")}`}>{title}</h2>
+          <p>{description}</p>
+        </div>
+        {!loading && (
+          <span className="feedback-board__count">
+            <MessageCircle size={14} /> {entries.length} 条留言
+          </span>
+        )}
       </header>
 
       <form className="feedback-composer" onSubmit={submitMain}>
@@ -156,7 +242,7 @@ export default function FeedbackBoard({
         <div className="feedback-composer__footer">
           <small>{content.length}/800</small>
           <button type="submit" disabled={submitting || content.trim().length < 2}>
-            <Send size={15} /> {submitting ? "保存中" : "发布留言"}
+            <Send size={14} /> {submitting ? "保存中" : "发布留言"}
           </button>
         </div>
       </form>
@@ -173,34 +259,33 @@ export default function FeedbackBoard({
           </div>
         ) : threads.map((entry) => (
           <article className="feedback-thread" key={entry.id}>
-            <div className="feedback-thread__body">
-              <div className="feedback-thread__meta">
+            <header className="feedback-thread__meta">
+              <Avatar name={entry.author} />
+              <div>
                 <b>{entry.author}</b>
                 <time dateTime={entry.createdAt}>{formatDate(entry.createdAt)}</time>
               </div>
-              <p>{entry.content}</p>
-              <div className="feedback-thread__actions">
-                <button type="button" aria-pressed={entry.liked} onClick={() => void toggleLike(entry)}>
-                  <Heart size={14} fill={entry.liked ? "currentColor" : "none"} /> {entry.likeCount || "点赞"}
-                </button>
-                <button type="button" onClick={() => { setReplyingTo(replyingTo === entry.id ? null : entry.id); setReplyContent(""); }}>
-                  <MessageCircle size={14} /> 回复{repliesByParent[entry.id]?.length ? ` ${repliesByParent[entry.id].length}` : ""}
-                </button>
-              </div>
-            </div>
+            </header>
+            <p className="feedback-thread__content">{entry.content}</p>
+            {renderActions(entry, entry)}
 
-            {repliesByParent[entry.id]?.map((reply) => (
-              <div className="feedback-reply" key={reply.id}>
-                <div className="feedback-thread__meta">
-                  <b>{reply.author}</b>
-                  <time dateTime={reply.createdAt}>{formatDate(reply.createdAt)}</time>
-                </div>
-                <p>{reply.content}</p>
-                <button type="button" aria-pressed={reply.liked} onClick={() => void toggleLike(reply)}>
-                  <Heart size={13} fill={reply.liked ? "currentColor" : "none"} /> {reply.likeCount || "点赞"}
-                </button>
+            {repliesByParent[entry.id]?.length ? (
+              <div className="feedback-thread__replies">
+                {repliesByParent[entry.id].map((reply) => (
+                  <div className="feedback-reply" key={reply.id}>
+                    <header className="feedback-thread__meta">
+                      <Avatar name={reply.author} small />
+                      <div>
+                        <b>{reply.author}</b>
+                        <time dateTime={reply.createdAt}>{formatDate(reply.createdAt)}</time>
+                      </div>
+                    </header>
+                    <p className="feedback-thread__content">{reply.content}</p>
+                    {renderActions(reply)}
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : null}
 
             {replyingTo === entry.id && (
               <form className="feedback-reply-form" onSubmit={(event) => { event.preventDefault(); void submitEntry(replyContent, entry.id); }}>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   createFeedback,
+  deleteFeedback,
   listFeedback,
   toggleFeedbackLike,
 } from "@/lib/feedback-store";
@@ -66,6 +67,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ entry });
     }
 
+    if (body.action === "delete") {
+      const id = cleanText(body.id, 80);
+      const visitorId = cleanText(body.visitorId, 80);
+      if (!id || !VISITOR_PATTERN.test(visitorId)) {
+        return NextResponse.json({ error: "无法识别本次操作" }, { status: 400 });
+      }
+      try {
+        await deleteFeedback({ scope, id, visitorId });
+        return NextResponse.json({ ok: true });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "留言删除失败";
+        const status = message === "只能撤回自己的留言" ? 403 : 500;
+        return NextResponse.json({ error: message }, { status });
+      }
+    }
+
     if (cleanText(body.website, 120)) {
       return NextResponse.json({ error: "提交失败" }, { status: 400 });
     }
@@ -75,7 +92,9 @@ export async function POST(request: Request) {
     if (content.length < 2) {
       return NextResponse.json({ error: "请填写至少两个字的留言" }, { status: 400 });
     }
-    const entry = await createFeedback({ scope, parentId, author, content });
+    const rawVisitorId = cleanText(body.visitorId, 80);
+    const visitorId = VISITOR_PATTERN.test(rawVisitorId) ? rawVisitorId : undefined;
+    const entry = await createFeedback({ scope, parentId, author, content, visitorId });
     return NextResponse.json({ entry }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "留言保存失败";
