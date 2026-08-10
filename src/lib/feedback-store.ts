@@ -1,7 +1,6 @@
 import "server-only";
 
-import COS from "cos-nodejs-sdk-v5";
-import { randomUUID } from "node:crypto";
+import { createHash, createHmac, randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -56,12 +55,29 @@ function getCosConfig(): CosConfig | null {
   return { SecretId, SecretKey, Bucket, Region };
 }
 
-let cosClient: COS | null = null;
-function getCosClient(config: CosConfig) {
-  if (!cosClient) {
-    cosClient = new COS({ SecretId: config.SecretId, SecretKey: config.SecretKey });
-  }
-  return cosClient;
+// 不依赖 SDK，直接用 Node 内置 crypto + fetch 调用 COS REST API，避免线上环境安装/加载外部包失败
+function cosAuthorization(config: CosConfig, method: string, pathName: string, host: string) {
+  const now = Math.floor(Date.now() / 1000);
+  const keyTime = `${now - 60};${now + 600}`;
+  const signKey = createHmac("sha1", config.SecretKey).update(keyTime).digest("hex");
+  const httpString = `${method.toLowerCase()}\n${pathName}\n\nhost=${host}\n`;
+  const stringToSign = `sha1\n${keyTime}\n${createHash("sha1").update(httpString).digest("hex")}\n`;
+  const signature = createHmac("sha1", signKey).update(stringToSign).digest("hex");
+  return `q-sign-algorithm=sha1&q-ak=${config.SecretId}&q-sign-time=${keyTime}&q-key-time=${keyTime}&q-header-list=host&q-url-param-list=&q-signature=${signature}`;
+}
+
+async function cosFetch(config: CosConfig, method: "GET" | "PUT", body?: string) {
+  const host = `${config.Bucket}.cos.${config.Region}.myqcloud.com`;
+  const pathName = `/${COS_OBJECT_KEY}`;
+  return fetch(`https://${host}${pathName}`, {
+    method,
+    headers: {
+      Host: host,
+      Authorization: cosAuthorization(config, method, pathName, host),
+      ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+    },
+    body,
+  });
 }
 
 function emptyDatabase(): FeedbackDatabase {
@@ -76,29 +92,20 @@ function normalizeDatabase(parsed: FeedbackDatabase): FeedbackDatabase {
 
 async function readFromCos(config: CosConfig): Promise<FeedbackDatabase> {
   try {
-    const data = await getCosClient(config).getObject({
-      Bucket: config.Bucket,
-      Region: config.Region,
-      Key: COS_OBJECT_KEY,
-    });
-    const body = typeof data.Body === "string" ? data.Body : Buffer.from(data.Body).toString("utf8");
-    return normalizeDatabase(JSON.parse(body) as FeedbackDatabase);
+    const response = await cosFetch(config, "GET");
+    if (response.status === 404) return emptyDatabase();
+    if (!response.ok) throw new Error(`COS 响应 ${response.status}`);
+    return normalizeDatabase(JSON.parse(await response.text()) as FeedbackDatabase);
   } catch (error) {
-    const cosError = error as COS.CosError | null;
-    if (cosError?.statusCode === 404 || cosError?.code === "NoSuchKey") return emptyDatabase();
-    console.error("[feedback-store] 读取 COS 数据失败", cosError);
+    console.error("[feedback-store] 读取 COS 数据失败", error);
     throw new Error("留言数据读取失败，请稍后再试");
   }
 }
 
 async function writeToCos(config: CosConfig, database: FeedbackDatabase) {
   try {
-    await getCosClient(config).putObject({
-      Bucket: config.Bucket,
-      Region: config.Region,
-      Key: COS_OBJECT_KEY,
-      Body: JSON.stringify(database, null, 2),
-    });
+    const response = await cosFetch(config, "PUT", JSON.stringify(database, null, 2));
+    if (!response.ok) throw new Error(`COS 响应 ${response.status}`);
   } catch (error) {
     console.error("[feedback-store] 写入 COS 数据失败", error);
     throw new Error("留言数据保存失败，请稍后再试");

@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["cos-nodejs-sdk-v5"],
   images: {
     remotePatterns: [
       {
