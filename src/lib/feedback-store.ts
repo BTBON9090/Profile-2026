@@ -1,5 +1,6 @@
 import "server-only";
 
+import COS from "cos-nodejs-sdk-v5";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -33,26 +34,97 @@ export type ProductStats = {
   liked: boolean;
 };
 
+// 优先使用腾讯云 COS 对象存储；未配置 COS 环境变量时回退到本地文件（仅适用于本地开发）
+const COS_OBJECT_KEY = "appbox-feedback.json";
 const DATA_DIR = path.join(process.cwd(), ".data");
 const DATA_FILE = path.join(DATA_DIR, "appbox-feedback.json");
 let writeQueue: Promise<void> = Promise.resolve();
 
+type CosConfig = {
+  SecretId: string;
+  SecretKey: string;
+  Bucket: string;
+  Region: string;
+};
+
+function getCosConfig(): CosConfig | null {
+  const SecretId = process.env.COS_SECRET_ID;
+  const SecretKey = process.env.COS_SECRET_KEY;
+  const Bucket = process.env.COS_BUCKET;
+  const Region = process.env.COS_REGION;
+  if (!SecretId || !SecretKey || !Bucket || !Region) return null;
+  return { SecretId, SecretKey, Bucket, Region };
+}
+
+let cosClient: COS | null = null;
+function getCosClient(config: CosConfig) {
+  if (!cosClient) {
+    cosClient = new COS({ SecretId: config.SecretId, SecretKey: config.SecretKey });
+  }
+  return cosClient;
+}
+
+function emptyDatabase(): FeedbackDatabase {
+  return { version: 1, entries: [], productLikes: {} };
+}
+
+function normalizeDatabase(parsed: FeedbackDatabase): FeedbackDatabase {
+  if (!Array.isArray(parsed.entries)) throw new Error("Invalid feedback database");
+  if (!parsed.productLikes || typeof parsed.productLikes !== "object") parsed.productLikes = {};
+  return parsed;
+}
+
+async function readFromCos(config: CosConfig): Promise<FeedbackDatabase> {
+  try {
+    const data = await getCosClient(config).getObject({
+      Bucket: config.Bucket,
+      Region: config.Region,
+      Key: COS_OBJECT_KEY,
+    });
+    const body = typeof data.Body === "string" ? data.Body : Buffer.from(data.Body).toString("utf8");
+    return normalizeDatabase(JSON.parse(body) as FeedbackDatabase);
+  } catch (error) {
+    const cosError = error as COS.CosError | null;
+    if (cosError?.statusCode === 404 || cosError?.code === "NoSuchKey") return emptyDatabase();
+    console.error("[feedback-store] 读取 COS 数据失败", cosError);
+    throw new Error("留言数据读取失败，请稍后再试");
+  }
+}
+
+async function writeToCos(config: CosConfig, database: FeedbackDatabase) {
+  try {
+    await getCosClient(config).putObject({
+      Bucket: config.Bucket,
+      Region: config.Region,
+      Key: COS_OBJECT_KEY,
+      Body: JSON.stringify(database, null, 2),
+    });
+  } catch (error) {
+    console.error("[feedback-store] 写入 COS 数据失败", error);
+    throw new Error("留言数据保存失败，请稍后再试");
+  }
+}
+
 async function readDatabase(): Promise<FeedbackDatabase> {
+  const cosConfig = getCosConfig();
+  if (cosConfig) return readFromCos(cosConfig);
+
   try {
     const raw = await readFile(DATA_FILE, "utf8");
-    const parsed = JSON.parse(raw) as FeedbackDatabase;
-    if (!Array.isArray(parsed.entries)) throw new Error("Invalid feedback database");
-    if (!parsed.productLikes || typeof parsed.productLikes !== "object") parsed.productLikes = {};
-    return parsed;
+    return normalizeDatabase(JSON.parse(raw) as FeedbackDatabase);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return { version: 1, entries: [], productLikes: {} };
-    }
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return emptyDatabase();
     throw error;
   }
 }
 
 async function writeDatabase(database: FeedbackDatabase) {
+  const cosConfig = getCosConfig();
+  if (cosConfig) {
+    await writeToCos(cosConfig, database);
+    return;
+  }
+
   await mkdir(DATA_DIR, { recursive: true });
   const temporaryFile = `${DATA_FILE}.${process.pid}.tmp`;
   await writeFile(temporaryFile, JSON.stringify(database, null, 2), "utf8");
