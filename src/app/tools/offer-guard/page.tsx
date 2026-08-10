@@ -12,7 +12,7 @@ export default function OfferGuardPage() {
       <ProductBackButton light />
       <iframe
         className="offer-guard-frame"
-        src="/tools/offer-guard-standalone.html?embedded=1"
+        src="/tools/offer-guard-standalone.html"
         title="薪算器"
         allow="clipboard-write"
       />
