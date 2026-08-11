@@ -17,6 +17,8 @@ export type AppBoxProduct = {
   actionExternal?: boolean;
   tags: string[];
   featured?: boolean;
+  /** 精选卡片右侧的两条标注文案 */
+  featureNotes?: [string, string];
 };
 
 export const appBoxProducts: AppBoxProduct[] = [
@@ -36,6 +38,7 @@ export const appBoxProducts: AppBoxProduct[] = [
     actionExternal: true,
     tags: ["SwiftUI", "原生应用", "效率"],
     featured: true,
+    featureNotes: ["Native SwiftUI", "Ready to download"],
   },
   {
     id: "aura",
@@ -52,6 +55,7 @@ export const appBoxProducts: AppBoxProduct[] = [
     actionLabel: "下载 Aura",
     actionExternal: true,
     tags: ["Flutter", "隐私", "本地优先"],
+    featureNotes: ["Flutter 本地优先", "隐私物理隔离"],
   },
   {
     id: "allinone",
@@ -68,6 +72,7 @@ export const appBoxProducts: AppBoxProduct[] = [
     actionLabel: "在 Figma 获取",
     actionExternal: true,
     tags: ["Figma", "AI", "设计效率"],
+    featureNotes: ["Figma 社区上架", "30+ 高频动作"],
   },
   {
     id: "ai-translate",
@@ -84,6 +89,22 @@ export const appBoxProducts: AppBoxProduct[] = [
     actionLabel: "下载安装包",
     actionExternal: true,
     tags: ["Chrome", "AI", "翻译"],
+  },
+  {
+    id: "eaglecp",
+    name: "Eagle Image Studio",
+    subtitle: "Eagle 本地图片批量压缩与对比插件",
+    description: "把 Eagle 选区中的图片批量压缩为 WebP、AVIF、JPEG XL 等现代格式，并提供同步缩放、分割与闪烁对比，全部在本地完成。",
+    kind: "plugin",
+    platform: "Eagle",
+    version: "V2.3",
+    mark: "ES",
+    tone: "indigo",
+    detailsHref: "",
+    actionHref: "/api/eaglecp/download",
+    actionLabel: "下载插件",
+    actionExternal: true,
+    tags: ["Eagle 插件", "批量压缩", "本地处理"],
   },
   {
     id: "block-wall",

@@ -126,7 +126,7 @@ export default function AIPlugins() {
 
               {/* 描述 */}
               <p className="text-sm text-zinc-400 leading-relaxed mb-8">
-                设计师的终极效率工具 — 集成 30+ 功能，涵盖 AI 智能填充、组件管理、文本处理与实用工具。<br />目前已有 340+ 设计师使用。
+                设计师的终极效率工具 — 集成 30+ 功能，涵盖 AI 智能填充、组件管理、文本处理与实用工具。<br />目前已有 360+ 设计师使用。
               </p>
 
               {/* 功能宫格 */}

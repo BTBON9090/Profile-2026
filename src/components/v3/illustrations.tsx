@@ -37,17 +37,20 @@ export function WindowScene({ className }: { className?: string }) {
       {/* 丁达尔光束使用弧形轮廓，避免僵硬的矩形雾块。 */}
       <path
         className="v3-ray v3-ray--a"
-        d="M952 148 C1008 178 1054 216 1078 264 C1004 450 864 660 584 842 L376 842 C684 610 844 358 952 148 Z"
+        d="M952 100 C1008 130 1054 168 1078 216 C1004 450 864 660 584 842 L376 842 C684 610 844 358 952 100 Z"
         fill="url(#v3-ray-a)"
         filter="url(#v3-ray-soft)"
       />
       <path
         className="v3-ray v3-ray--b"
-        d="M1086 176 C1160 214 1230 272 1286 346 C1224 514 1110 690 928 848 L690 848 C914 630 1036 400 1086 176 Z"
+        d="M1086 128 C1160 166 1230 224 1286 298 C1224 514 1110 690 928 848 L690 848 C914 630 1036 400 1086 128 Z"
         fill="url(#v3-ray-b)"
         filter="url(#v3-ray-soft)"
       />
 
+      {/* 窗整体上移 48，底边与 iMac 顶部留出间距，不再穿插重叠；
+          clipPath 与鸟/叶动画坐标都在此局部坐标系内，随之整体平移 */}
+      <g transform="translate(0, -48)">
       {/* 窗 */}
       <rect x="930" y="110" width="380" height="400" rx="18" fill="#e9dcc1" />
       <rect x="948" y="128" width="344" height="364" rx="10" fill="#f8ecd4" />
@@ -78,6 +81,7 @@ export function WindowScene({ className }: { className?: string }) {
       {/* 窗棂（四格） */}
       <rect x="1112" y="128" width="12" height="364" fill="#e9dcc1" />
       <rect x="948" y="300" width="344" height="12" fill="#e9dcc1" />
+      </g>
 
       {/* 地面软影 */}
       <ellipse

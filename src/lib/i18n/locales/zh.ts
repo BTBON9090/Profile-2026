@@ -2,7 +2,7 @@ export const zh = {
   nav: {
     home: 'HOME',
     project: 'PROJECT',
-    appbox: 'APPBOX',
+    appbox: 'AppBox',
     biography: '简历',
   },
   hero: {

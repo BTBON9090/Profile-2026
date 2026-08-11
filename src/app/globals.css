@@ -1518,11 +1518,12 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
 }
 
 .appbox-hero h1 {
-  font-family: var(--font-mono), monospace;
-  font-size: clamp(4.2rem, 11vw, 9rem);
-  font-weight: 700;
-  line-height: 0.82;
-  letter-spacing: -0.095em;
+  /* 与 PROJECT 页 Enterprise 主标题同款：sans 黑体、紧字距、强字重 */
+  font-family: var(--font-sans), sans-serif;
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
 }
 
 .appbox-hero h1 span {
@@ -1577,8 +1578,7 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
 }
 
 .appbox-feature {
-  display: grid;
-  grid-template-columns: 0.95fr 1.05fr;
+  position: relative;
   min-height: 34rem;
   margin-top: clamp(4rem, 8vw, 7rem);
   overflow: hidden;
@@ -1587,6 +1587,75 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
   background: #111b38;
   color: #fff;
   box-shadow: 0 30px 80px rgba(24, 42, 94, 0.2);
+}
+
+/* 轮播单页：网格布局从容器移到滑动层，方便整页淡入淡出切换 */
+.appbox-feature__slide {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  min-height: inherit;
+}
+
+/* 精选背景色随产品 tone 变化，左侧文字区与右侧视觉区同步对应 */
+.appbox-feature[data-tone="violet"] { background: #241b3f; box-shadow: 0 30px 80px rgba(74, 42, 122, 0.22); }
+.appbox-feature[data-tone="violet"] .appbox-feature__visual { background: #5b3f9e; }
+.appbox-feature[data-tone="violet"] .appbox-feature__visual::before { background: rgba(168, 128, 255, 0.42); }
+.appbox-feature[data-tone="violet"] .appbox-feature__note { background: rgba(48, 28, 96, 0.58); }
+.appbox-feature[data-tone="violet"] .appbox-feature__copy > div > p { color: #c5a8ff; }
+
+.appbox-feature[data-tone="figma"] { background: #221e28; box-shadow: 0 30px 80px rgba(58, 44, 74, 0.24); }
+.appbox-feature[data-tone="figma"] .appbox-feature__visual { background: #463a5c; }
+.appbox-feature[data-tone="figma"] .appbox-feature__visual::before { background: rgba(255, 114, 156, 0.34); }
+.appbox-feature[data-tone="figma"] .appbox-feature__note { background: rgba(38, 30, 52, 0.58); }
+.appbox-feature[data-tone="figma"] .appbox-feature__copy > div > p { color: #ff9cbe; }
+
+/* 精选轮播切换控件：左右箭头 + 产品圆点 */
+.appbox-feature__switch {
+  position: absolute;
+  right: clamp(1.5rem, 3vw, 2.6rem);
+  bottom: 1.35rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.appbox-feature__switch button {
+  width: 0.55rem;
+  height: 0.55rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.appbox-feature__switch button:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.appbox-feature__switch button[data-active] {
+  background: #fff;
+  transform: scale(1.25);
+}
+
+.appbox-feature__switch button:has(svg) {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(9, 14, 30, 0.45);
+  color: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.appbox-feature__switch button:has(svg):hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(9, 14, 30, 0.65);
+  color: #fff;
+  transform: none;
 }
 
 .appbox-feature__copy {
@@ -1768,6 +1837,11 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
 
 .appbox-product-icon img {
   object-fit: cover;
+}
+
+/* 精选大图标按比例加大圆角，避免方形图标图片显得像直角截图 */
+.appbox-product-icon--large {
+  border-radius: 17%;
 }
 
 .appbox-product-icon[data-tone="blue"],
@@ -1959,7 +2033,8 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
 .appbox-card__meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 0.8rem;
   color: var(--appbox-muted);
   font-family: var(--font-mono), monospace;
   font-size: 0.54rem;
@@ -2017,16 +2092,6 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
   font-size: 0.5rem;
 }
 
-.appbox-card__meta {
-  justify-content: flex-start;
-  gap: 0.8rem;
-}
-
-.appbox-card__footer-info {
-  display: grid;
-  gap: 0.48rem;
-}
-
 .appbox-card__signals {
   display: flex;
   align-items: center;
@@ -2045,16 +2110,6 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
 .appbox-card__signals svg {
   color: var(--appbox-blue);
   stroke-width: 1.8;
-}
-
-.appbox-card__open {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.4rem;
-  color: var(--appbox-blue);
-  font-size: 0.65rem;
-  font-weight: 650;
 }
 
 .appbox-card__footer {
@@ -2095,12 +2150,9 @@ html[data-ui-version="2"] .site-navbar.appbox-navbar .site-navbar__lyrics,
   cursor: pointer;
 }
 
+/* 社区留言区：去掉卡片化的描边、内边距与背景，标题/分割线/留言板左右通栏 */
 .appbox-community {
   margin-top: clamp(5rem, 9vw, 8rem);
-  padding: clamp(2rem, 5vw, 4rem);
-  border: 1px solid var(--appbox-line);
-  border-radius: 1.15rem;
-  background: rgba(255, 255, 255, 0.58);
 }
 
 .appbox-community__header {
@@ -2911,7 +2963,7 @@ html:has(.app-article-page) body {
 }
 
 @media (max-width: 960px) {
-  .appbox-feature {
+  .appbox-feature__slide {
     grid-template-columns: 1fr;
   }
 
@@ -2959,7 +3011,7 @@ html:has(.app-article-page) body {
   }
 
   .appbox-hero h1 {
-    font-size: clamp(3.5rem, 21vw, 5.7rem);
+    font-size: clamp(2.5rem, 11vw, 3rem);
   }
 
   .appbox-hero__lead {
@@ -3023,10 +3075,6 @@ html:has(.app-article-page) body {
   .appbox-card:last-child:nth-child(odd) {
     min-height: 17.5rem;
     grid-column: span 1;
-  }
-
-  .appbox-community {
-    padding: 1.5rem;
   }
 
   .app-article {
@@ -4266,12 +4314,27 @@ html:has(.lyrics-workbench) body {
   right: 4%;
   left: 4%;
   z-index: 10;
+  /* 固定单行行盒高，保证槽位唯一，避免快速切歌时向下堆叠 */
+  height: calc(var(--sky-font-size) * 1.65);
   transform: translateY(-50%);
   pointer-events: none;
 }
 
+/* 入场蒙版：底边精确对齐分割线上缘（行盒底 + lineGap），分割线之下永远看不到主歌词 */
+.lyrics-workbench__line-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: calc(var(--sky-font-size) * 1.65 + var(--sky-gap, 14px));
+  overflow: hidden;
+}
+
 .lyrics-workbench__line {
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
   height: calc(var(--sky-font-size) * 1.65);
   align-content: center;
   font-size: var(--sky-font-size);
@@ -4305,8 +4368,9 @@ html:has(.lyrics-workbench) body {
 .lyrics-workbench__next-line {
   position: absolute;
   top: calc(50% + var(--sky-font-size) * 0.825 + var(--sky-gap, 14px) * 1.55 + 1px);
-  right: 0;
-  left: 0;
+  /* 与主歌词行盒同宽的 4% 内边距，左右对齐时才能和主歌词对齐而不是贴屏幕边缘 */
+  right: 4%;
+  left: 4%;
   z-index: 10;
   color: color-mix(in srgb, currentColor 40%, transparent);
   font-family: var(--sky-next-font, var(--font-mono), monospace);
@@ -5048,7 +5112,8 @@ html:has(.lyrics-workbench) body {
     min-width: 12rem;
   }
 
-  .lyrics-workbench__line-wrap {
+  .lyrics-workbench__line-wrap,
+  .lyrics-workbench__next-line {
     right: 0;
     left: 0;
   }

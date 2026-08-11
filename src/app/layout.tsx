@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Noto_Serif_SC, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -17,6 +17,14 @@ import { CopilotProjectProvider } from "@/lib/copilot-context";
 import { UIVersionProvider } from "@/lib/ui-version-context";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+});
+const notoSerifSc = Noto_Serif_SC({
+  subsets: ["latin"],
+  variable: "--font-noto-serif-sc",
+});
 const jetbrainsMono = localFont({
   src: [
     {
@@ -54,7 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans bg-[#000] text-white antialiased overflow-x-clip selection:bg-blue-500/30 selection:text-blue-200`}>
+      <body className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable} ${notoSerifSc.variable} font-sans bg-[#000] text-white antialiased overflow-x-clip selection:bg-blue-500/30 selection:text-blue-200`}>
         <UIVersionProvider>
           <I18nProvider>
             <AudioProvider>

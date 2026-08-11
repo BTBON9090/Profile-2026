@@ -227,11 +227,12 @@ function WorkProjectV1() {
               <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.2em] mt-1.5">Selected Cases</div>
             </div>
             <div className="group">
-              <div className="text-3xl font-bold text-zinc-50 tabular-nums">2018-26</div>
+              {/* 时间线自动跟随当前年份：2016 至今 */}
+              <div className="text-3xl font-bold text-zinc-50 tabular-nums">2016-{new Date().getFullYear()}</div>
               <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.2em] mt-1.5">Timeline</div>
             </div>
             <div className="group">
-              <div className="text-3xl font-bold text-zinc-50 tabular-nums">B2B / B2C</div>
+              <div className="text-3xl font-bold text-zinc-50 tabular-nums">B2B / B2C / B2G</div>
               <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.2em] mt-1.5">Product Context</div>
             </div>
           </motion.div>
@@ -241,7 +242,7 @@ function WorkProjectV1() {
       {/* ========================================== */}
       {/* 作品列表区 — 严谨的卡片设计                  */}
       {/* ========================================== */}
-      <div className="w-full mx-auto pb-40 px-6 md:px-12 pt-16">
+      <div className="w-full mx-auto pb-40 px-6 md:px-12 pt-8">
         <div className="max-w-[1400px] mx-auto">
           <motion.div
             id="company"

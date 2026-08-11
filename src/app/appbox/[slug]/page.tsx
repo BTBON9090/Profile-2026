@@ -38,6 +38,25 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
   const isOnlineTool = product.kind === "web";
   const hasPrimaryAction = Boolean(product.actionHref);
   const hasDetailAction = Boolean(detailHref);
+  // 站内 API 下载链接（如 /api/eaglecp/download）：用普通 a 标签直接跳转，
+  // 避免 Next 客户端路由拦截，也不新开标签页
+  const isApiAction = product.actionHref.startsWith("/api/");
+
+  const primaryAction = !isOnlineTool && hasPrimaryAction ? (
+    isApiAction ? (
+      <a href={product.actionHref} className="app-article__primary">
+        <Download size={16} /> {product.actionLabel}
+      </a>
+    ) : product.actionExternal ? (
+      <a href={product.actionHref} target="_blank" rel="noopener noreferrer" className="app-article__primary">
+        <Download size={16} /> {product.actionLabel}
+      </a>
+    ) : (
+      <Link href={product.actionHref} className="app-article__primary">
+        <Download size={16} /> {product.actionLabel}
+      </Link>
+    )
+  ) : null;
 
   return (
     <div className="app-article-page">
@@ -57,17 +76,7 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
           <p className="app-article__subtitle">{product.subtitle}</p>
           <p className="app-article__lead">{article.lead}</p>
           <div className="app-article__actions">
-            {!isOnlineTool && hasPrimaryAction && (
-              product.actionExternal ? (
-                <a href={product.actionHref} target="_blank" rel="noopener noreferrer" className="app-article__primary">
-                  <Download size={16} /> {product.actionLabel}
-                </a>
-              ) : (
-                <Link href={product.actionHref} className="app-article__primary">
-                  <Download size={16} /> {product.actionLabel}
-                </Link>
-              )
-            )}
+            {primaryAction}
             {hasDetailAction && (
               <Link href={detailHref} className={isOnlineTool ? "app-article__primary" : "app-article__secondary"}>
                 {isOnlineTool ? "在线打开" : "打开完整专题"}
@@ -118,9 +127,15 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
             </div>
             <div>
               {!isOnlineTool && product.actionExternal && hasPrimaryAction && (
-                <a href={product.actionHref} target="_blank" rel="noopener noreferrer" className="app-article__primary">
-                  {product.actionLabel} <ArrowUpRight size={15} />
-                </a>
+                isApiAction ? (
+                  <a href={product.actionHref} className="app-article__primary">
+                    {product.actionLabel} <ArrowUpRight size={15} />
+                  </a>
+                ) : (
+                  <a href={product.actionHref} target="_blank" rel="noopener noreferrer" className="app-article__primary">
+                    {product.actionLabel} <ArrowUpRight size={15} />
+                  </a>
+                )
               )}
               {hasDetailAction && (
                 <Link href={detailHref} className="app-article__secondary">

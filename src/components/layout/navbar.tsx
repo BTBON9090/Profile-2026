@@ -17,6 +17,13 @@ const APPBOX_TOPIC_ROUTES = new Set([
   "/work/block-wall",
 ]);
 
+// 深色背景专题页：仍属于 AppBox 体验（导航高亮不变），但导航栏用深色以贴合页面氛围
+const DARK_TOPIC_ROUTES = new Set([
+  "/work/launchpad",
+  "/work/block-wall",
+  "/tools/lyrics-skyline",
+]);
+
 export default function Navbar() {
   const pathname = usePathname();
   const { t } = useI18n();
@@ -28,11 +35,14 @@ export default function Navbar() {
   const isAppBox = pathname.startsWith("/appbox");
   const isAppBoxTool = pathname.startsWith("/tools/");
   const isAppBoxExperience = isAppBox || isAppBoxTool || APPBOX_TOPIC_ROUTES.has(pathname);
-  const isLightTheme = isAppBoxExperience || pathname === "/project/light-branding" || pathname === "/work/light-branding";
+  // Launchpad / Block Wall / Lyric Skyline 专题页是深色背景，导航栏不能用白色
+  const isDarkTopicPage = DARK_TOPIC_ROUTES.has(pathname);
+  const isLightTheme = (isAppBoxExperience && !isDarkTopicPage) || pathname === "/project/light-branding" || pathname === "/work/light-branding";
 
   // 提取动态 CSS 变量
-  const navBgClass =
-    isAppBoxExperience
+  const navBgClass = isDarkTopicPage
+    ? "bg-black/90 border-b border-white/5"
+    : isAppBoxExperience
       ? "appbox-navbar"
       : version === "2"
       ? "v3-navbar"

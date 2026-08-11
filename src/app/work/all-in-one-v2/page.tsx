@@ -338,7 +338,7 @@ export default function AllInOneV2Page() {
             <motion.p variants={fadeUp} className="text-lg md:text-xl font-light text-neutral-500 mb-4">AI 驱动的 Figma 设计师提效工具集</motion.p>
             <motion.p variants={fadeUp} className="text-sm text-neutral-500 leading-relaxed mb-8 max-w-xl">四大新功能 + 30 余项经典工具。从 2D 到 2.5D，从单语到多语。</motion.p>
             <motion.div variants={fadeUp} className="flex gap-3 mb-8 max-w-md">
-              {[{v:"30+",l:"FEATURES"},{v:"340+",l:"USERS"},{v:"V2",l:"VERSION"}].map(s=>(
+              {[{v:"30+",l:"FEATURES"},{v:"360+",l:"USERS"},{v:"V2",l:"VERSION"}].map(s=>(
                 <div key={s.l} className="flex-1 py-3 border border-neutral-200 text-center"><div className="text-2xl font-black" style={serif}>{s.v}</div><div className="text-[10px] tracking-[0.1em] text-neutral-400 mt-1" style={mono}>{s.l}</div></div>
               ))}
             </motion.div>
@@ -434,7 +434,7 @@ export default function AllInOneV2Page() {
         <div className="max-w-[1200px] mx-auto w-full relative z-10 text-center mb-8">
           <Tag n="04 · Testimonials" />
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08] tracking-[-0.03em] mt-2" style={serif}>设计师们怎么说</h2>
-          <p className="mt-2 text-sm text-neutral-500">来自 Figma 社区的真实反馈 · 340+ 设计师的日常提效选择</p>
+          <p className="mt-2 text-sm text-neutral-500">来自 Figma 社区的真实反馈 · 360+ 设计师的日常提效选择</p>
         </div>
 
         {/* Row 1 — slow */}

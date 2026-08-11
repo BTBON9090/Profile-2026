@@ -17,6 +17,7 @@ import {
   Pause,
   Play,
   Repeat,
+  Repeat1,
   Rewind,
   RotateCcw,
   Shuffle,
@@ -41,7 +42,7 @@ import { useAudio, type LyricLine } from "@/lib/audio-context";
 
 type LyricAlign = "left" | "center" | "right";
 type FillMode = "gradient" | "solid";
-type FontFamily = "sans" | "mono" | "songti";
+type FontFamily = "sans" | "mono" | "songti" | "playfair" | "notoSerif";
 type NextFontFamily = "inherit" | FontFamily;
 type MotionAxis = "both" | "horizontal" | "vertical" | "still";
 type BokehMotion = "float" | "horizontal" | "vertical" | "still";
@@ -53,6 +54,7 @@ type SkylineConfig = {
   randomSeed: number;
   layerCount: number;
   fontSize: number;
+  fragmentFontSize: number;
   fontFamily: FontFamily;
   fontWeight: number;
   foregroundBlur: number;
@@ -91,6 +93,8 @@ type SkylineConfig = {
   bokehMotion: BokehMotion;
   bokehX: number;
   bokehY: number;
+  bokehSizeRandom: number;
+  bokehBlurRandom: number;
   bokehCenterY: number;
   bokehFrequency: number;
   bokehDuration: number;
@@ -120,70 +124,73 @@ type SkylineConfig = {
 };
 
 const DEFAULT_CONFIG: SkylineConfig = {
-  width: 76,
+  width: 100,
   randomSeed: 43,
-  layerCount: 26,
-  fontSize: 27,
-  fontFamily: "sans",
-  fontWeight: 620,
+  layerCount: 57,
+  fontSize: 61,
+  fragmentFontSize: 24,
+  fontFamily: "songti",
+  fontWeight: 640,
   foregroundBlur: 0.5,
   backgroundBlur: 5.4,
-  horizontalScatter: 72,
-  verticalScatter: 112,
-  centerGap: 16,
+  horizontalScatter: 51,
+  verticalScatter: 40,
+  centerGap: 15,
   motionAxis: "both",
-  motionX: 18,
-  motionY: 7,
-  motionSpeed: 12,
+  motionX: 140,
+  motionY: 41,
+  motionSpeed: 9,
   alignment: "center",
   fillMode: "gradient",
   color: "#78a4ff",
   colorCycle: false,
-  gradientStart: "#78a4ff",
-  gradientEnd: "#3d5a99",
+  gradientStart: "#f7ddab",
+  gradientEnd: "#c07a4e",
   gradientStartAlpha: 100,
-  gradientEndAlpha: 45,
+  gradientEndAlpha: 100,
   bgMode: "solid",
   bgColor: "#05070c",
   bgColorEnd: "#0d1526",
   horizonVisible: true,
-  horizonWidth: 34,
-  lineGap: 14,
-  nextFontSize: 9,
+  horizonWidth: 65,
+  lineGap: 20,
+  nextFontSize: 13,
   nextFontFamily: "inherit",
-  entranceDuration: 0.9,
+  entranceDuration: 1,
   exitDuration: 0.6,
-  flickerEnabled: false,
-  flickerFrequency: 5,
+  flickerEnabled: true,
+  flickerFrequency: 6,
   flickerDuration: 90,
   flickerIntensity: 54,
   bokehEnabled: true,
-  bokehCount: 7,
+  bokehCount: 56,
   bokehMotion: "float",
-  bokehX: 24,
-  bokehY: 14,
-  bokehCenterY: 72,
-  bokehFrequency: 4,
+  bokehX: 90,
+  bokehY: 120,
+  bokehSizeRandom: 100,
+  bokehBlurRandom: 100,
+  bokehCenterY: 52,
+  bokehFrequency: 7,
   bokehDuration: 360,
-  bokehVariance: 36,
-  bokehBlur: 28,
-  bokehSize: 49,
-  gatherEnabled: false,
-  gatherSpeed: 1,
-  gatherSpread: 210,
-  gatherWave: 18,
-  gatherTurbulence: 20,
+  bokehVariance: 79,
+  bokehBlur: 43,
+  bokehSize: 74,
+  gatherEnabled: true,
+  gatherSpeed: 2.3,
+  gatherSpread: 108,
+  gatherWave: 13,
+  gatherTurbulence: 100,
   gatherOrigin: "random",
   gatherFade: 100,
-  particleSize: 2,
-  particleGap: 1.4,
-  particleDensity: 100,
-  particleFlicker: 0,
+  particleSize: 1.3,
+  particleGap: 0,
+  particleDensity: 57,
+  particleFlicker: 79,
   particleSolid: false,
   particlesForAll: false,
   dissolveEnabled: false,
-  dissolveSpeed: 1,
-  dissolveSpread: 260,
+  dissolveSpeed: 2.5,
+  dissolveSpread: 95,
   dissolveWave: 22,
   dissolveTurbulence: 28,
   dissolveFade: 100,
@@ -201,33 +208,45 @@ const FONT_STACKS: Record<FontFamily, string> = {
   sans: 'var(--font-sans), "PingFang SC", sans-serif',
   mono: 'var(--font-mono), "SFMono-Regular", monospace',
   songti: '"Songti SC", "STSong", serif',
+  playfair: 'var(--font-playfair), "Playfair Display", var(--font-noto-serif-sc), "Noto Serif SC", "Songti SC", serif',
+  notoSerif: 'var(--font-noto-serif-sc), "Noto Serif SC", "Songti SC", serif',
 };
 
 const CANVAS_FONT_STACKS: Record<FontFamily, string> = {
   sans: 'system-ui, "PingFang SC", sans-serif',
   mono: '"SFMono-Regular", Menlo, monospace',
   songti: '"Songti SC", "STSong", serif',
+  playfair: '"Playfair Display", "Noto Serif SC", "Songti SC", serif',
+  notoSerif: '"Noto Serif SC", "Songti SC", serif',
 };
 
 const FONT_FAMILY_LABELS: Record<FontFamily, string> = {
   sans: "现代无衬线",
   mono: "等宽字体",
   songti: "宋体",
+  playfair: "Playfair 英文衬线",
+  notoSerif: "思源宋体",
 };
 
 const GRADIENT_PRESETS = [
-  { name: "天际蓝", start: "#78a4ff", end: "#3d5a99" },
-  { name: "极客青", start: "#00f5d4", end: "#0096c7" },
-  { name: "赛博霓虹", start: "#f72585", end: "#4cc9f0" },
-  { name: "紫金王朝", start: "#f6d365", end: "#8e2de2" },
-  { name: "科技之光", start: "#4facfe", end: "#00f2fe" },
-  { name: "翡翠流光", start: "#43e97b", end: "#38f9d7" },
+  { name: "冷月银霜", start: "#eef4ff", end: "#8ba7cc" },
+  { name: "暮金远山", start: "#f7ddab", end: "#c07a4e" },
+  { name: "青瓷薄雾", start: "#ddf3ec", end: "#57a79e" },
+  { name: "绯樱夜", start: "#ffdbe3", end: "#c05c7a" },
+  { name: "烛火暖橙", start: "#ffdc9e", end: "#d8763e" },
+  { name: "紫藤月下", start: "#e6dcff", end: "#8f77cf" },
   { name: "落日熔金", start: "#fa709a", end: "#fee140" },
   { name: "星河入梦", start: "#a18cd1", end: "#fbc2eb" },
   { name: "熔岩核心", start: "#f83600", end: "#f9d423" },
   { name: "冰川纪", start: "#8ec5fc", end: "#e0c3fc" },
   { name: "祖母绿", start: "#11998e", end: "#38ef7d" },
   { name: "电光紫", start: "#da22ff", end: "#9733ee" },
+  { name: "深海萤火", start: "#6fe3c4", end: "#155e63" },
+  { name: "空山新雨", start: "#b4dcbf", end: "#2f6353" },
+  { name: "夜航星海", start: "#a6c0ff", end: "#2b3f6e" },
+  { name: "残阳如血", start: "#ff9d76", end: "#66243a" },
+  { name: "雾港孤灯", start: "#f4e3b2", end: "#5a4a58" },
+  { name: "松间明月", start: "#f2f7de", end: "#5c7a52" },
 ];
 
 /** 浅色背景下可见度更高的深色系渐变 */
@@ -516,7 +535,8 @@ function SkylineParticlesCanvas({
     let disposed = false;
 
     const solid = particleConfig.particleSolid;
-    const particleCap = solid ? 50000 : 12000;
+    // 实心模式靠逐像素填充，非实心模式提高上限让高密度粒子能真正填满文字
+    const particleCap = solid ? 50000 : 24000;
     let currentStep = 1;
 
     const rebuild = () => {
@@ -533,13 +553,11 @@ function SkylineParticlesCanvas({
       const maskContext = mask.getContext("2d", { willReadFrequently: true });
       if (!maskContext) return;
 
-      // 采样步长 = 粒径 + 间隙（绝对间隙语义），密度进一步细化/稀疏化步长
-      const densityScale = clamp(particleConfig.particleDensity, 25, 200) / 100;
-      let sampleStep = solid
+      // 采样步长只由间隙与密度决定（与粒子绘制尺寸解耦）：间隙拉开粒子间距，密度越高采样越细
+      const densityScale = clamp(particleConfig.particleDensity, 25, 400) / 100;
+      const sampleStep = solid
         ? 1
-        : Math.max(1, Math.round((particleConfig.particleSize + particleConfig.particleGap) / densityScale));
-      const estimate = (step: number) => Math.floor((cssWidth * cssHeight) / (step * step));
-      while (estimate(sampleStep) > particleCap * 5 && sampleStep < 8) sampleStep += 1;
+        : Math.max(1, Math.round((1 + particleConfig.particleGap) / densityScale));
       currentStep = sampleStep;
 
       const nextParticles: Particle[] = [];
@@ -752,11 +770,11 @@ function SkylineParticlesCanvas({
         if (alpha <= 0.01) continue;
         context.globalAlpha = alpha;
         context.fillStyle = fill;
-        // 间隙绝对化：绘制尺寸始终不小于 步长-间隙，间隙为 0 时必然无缝
-        const jitteredSize = particleConfig.particleSize * (0.72 + particle.opacity * 0.34);
+        // 绘制尺寸只受“粒子大小”控制：实心时铺满采样网格，普通模式按设定大小绘制
+        const jitteredSize = particleConfig.particleSize * (0.8 + particle.opacity * 0.32);
         const size = solidFill
           ? currentStep + 0.6
-          : Math.max(0.5, jitteredSize, currentStep - particleConfig.particleGap);
+          : Math.max(0.4, jitteredSize);
         context.fillRect(x, y, size, size);
       }
       context.globalAlpha = 1;
@@ -815,6 +833,9 @@ function SkylineStage({
   const next = lyrics[(safeIndex + 1) % lyrics.length] ?? DEMO_LYRICS[1];
   const nextTime = safeIndex + 1 < lyrics.length ? lyrics[safeIndex + 1]?.time ?? null : null;
   const allParticles = config.gatherEnabled && config.particlesForAll;
+  // 减弱动效环境下 CSS 动画被禁用，入场位移会让歌词永远藏在蒙版外，退化为纯淡入
+  const [reducedMotion] = useState(() => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const entranceOffset = reducedMotion ? 0 : config.fontSize * 1.65 + config.lineGap;
 
   const fragments = useMemo<Fragment[]>(() => Array.from({ length: config.layerCount }, (_, index) => {
     const source = [...current.text];
@@ -839,7 +860,8 @@ function SkylineStage({
     const flicker = config.flickerEnabled && hash(seed + 9) > 1 - Math.min(0.8, config.flickerFrequency / 15);
     const motionDuration = Math.max(3.5, config.motionSpeed + hash(seed + 11) * 7);
     const motionDelay = -hash(seed + 10) * 8;
-    const fontSizePx = Math.max(9, config.fontSize * (0.36 + hash(seed + 14) * 0.2));
+    // 离散字号独立于主歌词，围绕设定值做 0.7~1.3 倍的随机起伏
+    const fontSizePx = Math.max(7, config.fragmentFontSize * (0.7 + hash(seed + 14) * 0.6));
     // 入场时序错落，让离散文字有烟雾般的渐显层次
     const enterDelay = index * 0.02 + hash(seed + 15) * 0.18;
     return {
@@ -879,13 +901,18 @@ function SkylineStage({
     const directionY = config.bokehMotion === "float" || config.bokehMotion === "vertical" ? config.bokehY : 0;
     const glowColor = config.fillMode === "gradient" ? config.gradientStart : config.color;
     const variance = (hash(seed + 3) - 0.5) * config.bokehVariance * 2.2;
+    // 大小/模糊的随机幅度：0 时所有光斑一致，拉高后尺寸与模糊在设定值周围大幅起伏
+    const sizeRand = config.bokehSizeRandom / 100;
+    const blurRand = config.bokehBlurRandom / 100;
+    const sizeScale = clamp(1 + (hash(seed + 4) - 0.5) * 2 * sizeRand * 1.6, 0.14, 2.6);
+    const blurScale = clamp(1 + (hash(seed + 5) - 0.5) * 2 * blurRand * 1.4, 0.25, 2.4);
     return {
       id: `bokeh-${index}`,
       style: {
         "--bokeh-x": `${x.toFixed(1)}%`,
         "--bokeh-y": `${y.toFixed(1)}%`,
-        "--bokeh-size": `${(config.bokehSize * (0.4 + hash(seed + 4) * 1.1)).toFixed(1)}px`,
-        "--bokeh-blur": `${(config.bokehBlur + hash(seed + 5) * config.bokehBlur * 0.65).toFixed(1)}px`,
+        "--bokeh-size": `${(config.bokehSize * sizeScale).toFixed(1)}px`,
+        "--bokeh-blur": `${Math.max(1, config.bokehBlur * blurScale).toFixed(1)}px`,
         "--bokeh-color": variedColor(glowColor, variance),
         "--bokeh-alpha": `${(0.08 + hash(seed + 6) * 0.18).toFixed(2)}`,
         "--bokeh-delay": `${(-hash(seed + 7) * 7).toFixed(2)}s`,
@@ -898,7 +925,8 @@ function SkylineStage({
   }), [config]);
 
   const particleLayers = useMemo<ParticleLayer[]>(() => {
-    const mainXPct = config.alignment === "left" ? 4 + 0.08 * 92 : config.alignment === "right" ? 4 + 0.92 * 92 : 50;
+    // 与 DOM 主歌词行盒的 4% 内边距保持一致，左右对齐时粒子文字不偏位
+    const mainXPct = config.alignment === "left" ? 4 : config.alignment === "right" ? 96 : 50;
     const resolvedNextFamily: FontFamily = config.nextFontFamily === "inherit" ? config.fontFamily : config.nextFontFamily;
     const layers: ParticleLayer[] = [{
       key: "main",
@@ -1052,23 +1080,26 @@ function SkylineStage({
           />
         ) : (
           <div className="lyrics-workbench__line-wrap">
-            <AnimatePresence mode="sync">
-              <motion.div
-                key={safeIndex}
-                className="lyrics-workbench__line"
-                initial={{ opacity: 0, y: 12, clipPath: "inset(100% 0% 0% 0%)" }}
-                animate={{ opacity: 1, y: 0, clipPath: "inset(0% 0% 0% 0%)" }}
-                exit={{
-                  opacity: 0,
-                  y: -12,
-                  filter: "blur(6px)",
-                  transition: { duration: config.exitDuration, ease: [0.4, 0, 1, 1] },
-                }}
-                transition={{ duration: config.entranceDuration, ease: [0.22, 0.61, 0.36, 1] }}
-              >
-                {current.text}
-              </motion.div>
-            </AnimatePresence>
+            <div className="lyrics-workbench__line-mask">
+              <AnimatePresence mode="sync">
+                <motion.div
+                  key={safeIndex}
+                  className="lyrics-workbench__line"
+                  // 从分割线上缘之下完全藏起，整体升起；位移随行盒高与行距自适应
+                  initial={{ opacity: 0, y: entranceOffset }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{
+                    opacity: 0,
+                    y: -12,
+                    filter: "blur(6px)",
+                    transition: { duration: config.exitDuration, ease: [0.4, 0, 1, 1] },
+                  }}
+                  transition={{ duration: config.entranceDuration, ease: [0.22, 0.61, 0.36, 1] }}
+                >
+                  {current.text}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         )}
 
@@ -1241,7 +1272,16 @@ function CompactPlayer({ alignment, onAlignmentChange }: { alignment: LyricAlign
           "left", AlignLeft,
         ], ["center", AlignCenter], ["right", AlignRight]] as const).map(([value, Icon]) => <button type="button" key={value} data-active={alignment === value} onClick={() => onAlignmentChange(value)} title={`${value} 对齐`}><Icon /></button>)}
         <button type="button" onClick={togglePlaybackRate} title="播放速度"><Gauge /><span>{playbackRate}x</span></button>
-        <button type="button" onClick={toggleRepeatMode} data-active={repeatMode !== "none"} title="循环模式"><Repeat /></button>
+        {/* 图标与文字都随循环模式变化：单曲用 Repeat1，列表/单曲循环高亮，避免看不出当前状态 */}
+        <button
+          type="button"
+          onClick={toggleRepeatMode}
+          data-active={repeatMode !== "none"}
+          title={repeatMode === "one" ? "单曲循环" : repeatMode === "all" ? "列表循环" : "不循环"}
+        >
+          {repeatMode === "one" ? <Repeat1 /> : <Repeat />}
+          <span>{repeatMode === "one" ? "单曲" : repeatMode === "all" ? "列表" : "不循环"}</span>
+        </button>
       </div>
     </section>
   );
@@ -1372,11 +1412,12 @@ export default function LyricsSkylineStudio() {
             <PanelGroup title="画面与文字" icon={<Waves size={14} />} open>
               <div className="lyrics-workbench-control__grid">
                 <RangeControl label="展示宽度" value={config.width} min={36} max={100} suffix="%" onChange={(value) => update("width", value)} />
-                <RangeControl label="离散图层" value={config.layerCount} min={6} max={48} onChange={(value) => update("layerCount", value)} />
+                <RangeControl label="离散图层" value={config.layerCount} min={6} max={72} onChange={(value) => update("layerCount", value)} />
                 <RangeControl label="主歌词字号" value={config.fontSize} min={14} max={64} suffix="px" onChange={(value) => update("fontSize", value)} />
                 <RangeControl label="字重" value={config.fontWeight} min={300} max={800} step={20} onChange={(value) => update("fontWeight", value)} />
+                <RangeControl label="离散字号" value={config.fragmentFontSize} min={7} max={40} suffix="px" onChange={(value) => update("fragmentFontSize", value)} />
               </div>
-              <label className="lyrics-workbench-control__select"><span>字体</span><select value={config.fontFamily} onChange={(event) => update("fontFamily", event.target.value as FontFamily)}><option value="sans">现代无衬线</option><option value="mono">等宽字体</option><option value="songti">宋体</option></select><ChevronDown size={12} /></label>
+              <label className="lyrics-workbench-control__select"><span>字体</span><select value={config.fontFamily} onChange={(event) => update("fontFamily", event.target.value as FontFamily)}>{(Object.keys(FONT_FAMILY_LABELS) as FontFamily[]).map((family) => <option value={family} key={family}>{FONT_FAMILY_LABELS[family]}</option>)}</select><ChevronDown size={12} /></label>
               <div className="lyrics-workbench-control__grid">
                 <RangeControl label="行间距" value={config.lineGap} min={0} max={72} suffix="px" onChange={(value) => update("lineGap", value)} />
                 <RangeControl label="下一句字号" value={config.nextFontSize} min={8} max={24} suffix="px" onChange={(value) => update("nextFontSize", value)} />
@@ -1420,9 +1461,9 @@ export default function LyricsSkylineStudio() {
                     <RangeControl label="弥散幅度" value={config.gatherSpread} min={40} max={520} suffix="px" onChange={(value) => update("gatherSpread", value)} />
                     <RangeControl label="波纹" value={config.gatherWave} min={0} max={80} suffix="px" onChange={(value) => update("gatherWave", value)} />
                     <RangeControl label="湍流" value={config.gatherTurbulence} min={0} max={100} onChange={(value) => update("gatherTurbulence", value)} />
-                    <RangeControl label="粒径" value={config.particleSize} min={0.5} max={4} step={0.01} suffix="px" onChange={(value) => update("particleSize", value)} />
-                    <RangeControl label="粒子间隙" value={config.particleGap} min={0} max={6} step={0.25} suffix="px" onChange={(value) => update("particleGap", value)} />
-                    <RangeControl label="粒子密度" value={config.particleDensity} min={25} max={200} suffix="%" onChange={(value) => update("particleDensity", value)} />
+                    <RangeControl label="粒子大小" value={config.particleSize} min={0.3} max={6} step={0.1} suffix="px" onChange={(value) => update("particleSize", value)} />
+                    <RangeControl label="粒子间隙" value={config.particleGap} min={0} max={8} step={0.5} suffix="px" onChange={(value) => update("particleGap", value)} />
+                    <RangeControl label="粒子密度" value={config.particleDensity} min={25} max={400} suffix="%" onChange={(value) => update("particleDensity", value)} />
                     <RangeControl label="粒子闪烁" value={config.particleFlicker} min={0} max={100} suffix="%" onChange={(value) => update("particleFlicker", value)} />
                     <RangeControl label="渐显" value={config.gatherFade} min={0} max={100} suffix="%" onChange={(value) => update("gatherFade", value)} />
                   </div>
@@ -1437,7 +1478,7 @@ export default function LyricsSkylineStudio() {
 
             <PanelGroup title="动态光斑" icon={<Sparkles size={14} />}>
               <SwitchControl label="显示光斑" hint="画面中漂浮的模糊微光" checked={config.bokehEnabled} onChange={(value) => update("bokehEnabled", value)} />
-              {config.bokehEnabled && <><label className="lyrics-workbench-control__select"><span>运动方式</span><select value={config.bokehMotion} onChange={(event) => update("bokehMotion", event.target.value as BokehMotion)}><option value="float">自由漂浮</option><option value="horizontal">仅横向</option><option value="vertical">仅垂直</option><option value="still">保持静止</option></select><ChevronDown size={12} /></label><div className="lyrics-workbench-control__grid"><RangeControl label="随机数量" value={config.bokehCount} min={0} max={18} onChange={(value) => update("bokehCount", value)} /><RangeControl label="光斑大小" value={config.bokehSize} min={10} max={120} suffix="px" onChange={(value) => update("bokehSize", value)} /><RangeControl label="垂直位置" value={config.bokehCenterY} min={10} max={90} suffix="%" onChange={(value) => update("bokehCenterY", value)} /><RangeControl label="模糊" value={config.bokehBlur} min={8} max={70} suffix="px" onChange={(value) => update("bokehBlur", value)} /><RangeControl label="水平幅度" value={config.bokehX} min={0} max={90} suffix="px" onChange={(value) => update("bokehX", value)} /><RangeControl label="垂直幅度" value={config.bokehY} min={0} max={70} suffix="px" onChange={(value) => update("bokehY", value)} /><RangeControl label="闪动频率" value={config.bokehFrequency} min={1} max={12} suffix="/min" onChange={(value) => update("bokehFrequency", value)} /><RangeControl label="闪动时长" value={config.bokehDuration} min={80} max={900} step={20} suffix="ms" onChange={(value) => update("bokehDuration", value)} /><RangeControl label="明暗随机" value={config.bokehVariance} min={0} max={80} suffix="%" onChange={(value) => update("bokehVariance", value)} /></div></>}
+              {config.bokehEnabled && <><label className="lyrics-workbench-control__select"><span>运动方式</span><select value={config.bokehMotion} onChange={(event) => update("bokehMotion", event.target.value as BokehMotion)}><option value="float">自由漂浮</option><option value="horizontal">仅横向</option><option value="vertical">仅垂直</option><option value="still">保持静止</option></select><ChevronDown size={12} /></label><div className="lyrics-workbench-control__grid"><RangeControl label="随机数量" value={config.bokehCount} min={0} max={56} onChange={(value) => update("bokehCount", value)} /><RangeControl label="光斑大小" value={config.bokehSize} min={10} max={120} suffix="px" onChange={(value) => update("bokehSize", value)} /><RangeControl label="大小随机" value={config.bokehSizeRandom} min={0} max={100} suffix="%" onChange={(value) => update("bokehSizeRandom", value)} /><RangeControl label="模糊" value={config.bokehBlur} min={8} max={70} suffix="px" onChange={(value) => update("bokehBlur", value)} /><RangeControl label="模糊随机" value={config.bokehBlurRandom} min={0} max={100} suffix="%" onChange={(value) => update("bokehBlurRandom", value)} /><RangeControl label="垂直位置" value={config.bokehCenterY} min={10} max={90} suffix="%" onChange={(value) => update("bokehCenterY", value)} /><RangeControl label="水平幅度" value={config.bokehX} min={0} max={90} suffix="px" onChange={(value) => update("bokehX", value)} /><RangeControl label="垂直幅度" value={config.bokehY} min={0} max={120} suffix="px" onChange={(value) => update("bokehY", value)} /><RangeControl label="闪动频率" value={config.bokehFrequency} min={1} max={12} suffix="/min" onChange={(value) => update("bokehFrequency", value)} /><RangeControl label="闪动时长" value={config.bokehDuration} min={80} max={900} step={20} suffix="ms" onChange={(value) => update("bokehDuration", value)} /><RangeControl label="明暗随机" value={config.bokehVariance} min={0} max={80} suffix="%" onChange={(value) => update("bokehVariance", value)} /></div></>}
             </PanelGroup>
 
             <PanelGroup title="导出" icon={<Download size={14} />}>

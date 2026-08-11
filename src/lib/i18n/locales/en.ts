@@ -2,7 +2,7 @@ export const en = {
   nav: {
     home: 'HOME',
     project: 'PROJECT',
-    appbox: 'APPBOX',
+    appbox: 'AppBox',
     biography: 'BIO.',
   },
   hero: {
