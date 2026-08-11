@@ -145,29 +145,42 @@ export const appBoxArticles: Record<string, AppBoxArticle> = {
   },
   eaglecp: {
     productId: "eaglecp",
-    lead: "Eagle Image Studio 是一个面向 Eagle 桌面端的本地图片工具插件。它把当前选区中的静态图片批量压缩为现代格式，并提供多种细节对比方式，所有编码都在你自己的电脑上完成。",
+    lead: "EagleCP 是一个面向 Eagle 桌面端的本地图片工具插件，聚焦两大核心能力：批量现代格式压缩与多模式细节对比。所有编码、预览与对比均在电脑本地完成，图片与元数据不出域。",
     readingTime: "约 4 分钟",
+    cover: "/product-assets/eaglecp-icon.png",
+    coverAlt: "EagleCP 插件图标",
+    coverFit: "contain",
     downloadNote: "下载按钮始终指向最新发布的安装包，无需手动选择版本。",
     sections: [
       {
+        title: "为 Eagle 而生的伴随工具",
+        paragraphs: [
+          "EagleCP 以插件形态运行在 Eagle 桌面端内部：插件创建、显示、再次运行和切换资源库时，都会自动同步 Eagle 的当前选区到「待处理图片」列表，也可以从 Eagle 顶部菜单或右键菜单直接打开。",
+        ],
+        image: "/product-assets/eagle-logo.png",
+        imageAlt: "Eagle 官方图标",
+        imageFit: "contain",
+        caption: "EagleCP 与 Eagle 桌面端配套使用，图为 Eagle 官方图标。",
+      },
+      {
         title: "批量压缩，且尽量不白压缩",
         paragraphs: [
-          "插件会从 Eagle 当前选区读取静态图片，在创建、显示、再次运行和切换资源库时自动同步，可输出 WebP、AVIF、JPEG XL 的单格式或多格式组合。",
-          "有损质量可在 40–95% 之间调节，无损模式锁定原始像素尺寸；也可选择最长边 1280–7680px，小图不会被放大。当新文件的空间收益不足 5% 时会自动跳过，避免无意义的二次编码。",
+          "勾选待处理图片后可选择 WebP、AVIF、JPEG XL 的单格式或多格式组合输出。有损质量可在 40–95% 之间调节，无损模式锁定原始像素尺寸；也可开启最长边 1280–7680px 缩放，小图不会被放大。",
+          "当新文件的空间收益不足 5% 时会自动跳过，避免无意义的二次编码。压缩完成的副本会完整继承 Eagle 文件夹、标签、评分、导入时间和备注，并自动带上「已压缩」标签。",
         ],
-        points: ["WebP / AVIF / JPEG XL 单格式或多格式输出", "创建副本或安全替换原图，多格式输出自动强制创建副本", "副本继承 Eagle 文件夹、标签、评分、导入时间和备注", "收益不足 5% 自动跳过"],
+        points: ["WebP / AVIF / JPEG XL 单格式或多格式输出", "内置 JPEG XL 编码器（cjxl），三种格式均无需额外安装", "创建副本或安全替换原图，多格式输出自动强制创建副本", "待处理图片支持独立勾选、批量定位和选择性压缩"],
       },
       {
-        title: "三种对比方式确认细节",
+        title: "三种对比模式确认细节",
         paragraphs: [
-          "压缩后是否损失了关键细节，需要放在同一视野里比较。插件提供 2–16 张图片的同步缩放宫格、两张图的滑动分割对比，以及两张图的闪烁切换。",
-          "对比视图支持最高 12 倍缩放、同步平移与视图重置，也可以直接把不满意的文件送入 Eagle 回收站。",
+          "压缩后是否损失了关键细节，需要放在同一视野里比较。平行宫格支持 2–16 张图片同步缩放；滑动分割用分割线左右对照；闪烁切换按时间交替显示，快速发现差异。",
+          "对比视图最高 12 倍缩放、同步平移与视图重置，放大后还提供滚动条与右下角缩略导航图，大图定位更直观；不满意的文件可以直接送入 Eagle 回收站。",
         ],
       },
       {
-        title: "本地处理，元数据不丢",
+        title: "本地处理，元数据不出域",
         paragraphs: [
-          "图片编码、预览和画质对比均在本地完成。插件只在用户主动检查版本更新时读取公开的 COS 版本清单，不会上传你的图片。",
+          "图片编码、预览和画质对比均在电脑本地完成。插件只在用户主动检查版本更新时读取公开的 COS 版本清单，不上传任何图片或元数据。内置格式指南会根据内容、兼容性与后续用途帮助你选择格式。",
         ],
       },
       {
@@ -175,14 +188,14 @@ export const appBoxArticles: Record<string, AppBoxArticle> = {
         paragraphs: [
           "安装前请确认环境满足以下条件：",
         ],
-        points: ["macOS（Apple Silicon）", "Eagle 4.0 或更高版本", "Node.js", "JPEG XL 编码器已内置在插件中，WebP 与 AVIF 同样无需额外安装"],
+        points: ["macOS（Apple Silicon）", "Eagle 4.0 或更高版本", "Node.js", "WebP、AVIF、JPEG XL 编码器均已内置，无需额外安装"],
       },
       {
         title: "下载与安装流程",
         paragraphs: [
           "第一步：点击页面顶部的“下载插件”，获取最新的 .eagleplugin 安装包。下载链接会自动解析到最近一次发布的版本，每次下载都是最新版。",
-          "第二步：双击下载得到的 EagleImageStudio-x.x.x.eagleplugin 文件，Eagle 会自动唤起并弹出安装提示，按提示完成安装即可。",
-          "第三步：安装完成后，在 Eagle 顶部的“插件”菜单中打开 Eagle Image Studio，选中需要处理的图片并运行，即可开始批量输出。",
+          "第二步：双击下载得到的 EagleCP-x.x.x.eagleplugin 文件，Eagle 会自动唤起并弹出安装提示，按提示完成安装即可。",
+          "第三步：在 Eagle 中选中图片，通过顶部菜单或右键菜单打开 EagleCP，选区会自动同步，勾选后即可开始压缩或对比。",
           "注意：.eaglepack 是 Eagle 的素材导入包格式，不是插件安装格式。如果界面一直提示导入，请取消任务，改用 .eagleplugin 文件安装。",
         ],
       },
