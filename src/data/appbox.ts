@@ -29,7 +29,7 @@ export const appBoxProducts: AppBoxProduct[] = [
     description: "从城市开往青岚山，挑战三层地库与综合驾驶试验场。独立客户端支持画质选择、键鼠和横屏触控。",
     kind: "app",
     platform: "Mac · Windows · Android",
-    version: "0.22.3",
+    version: "0.22.4",
     icon: "/parking-master/assets/icon.png",
     tone: "graphite",
     detailsHref: "/appbox/parking-master",
