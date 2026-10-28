@@ -24,19 +24,19 @@ export type AppBoxProduct = {
 export const appBoxProducts: AppBoxProduct[] = [
   {
     id: "parking-master",
-    name: "停车大师 Pro",
+    name: "老司机是怎样炼成的",
     subtitle: "低多边形开放驾驶游戏",
-    description: "从城市开往青岚山，挑战三层地库与综合驾驶试验场。独立客户端支持画质选择、键鼠和横屏触控。",
+    description: "22 种座驾，从城市与山路开到矿场和环线高速。挑战三层地库与综合驾驶试验场，支持画质选择、键鼠与横屏触控。",
     kind: "app",
     platform: "Mac · Windows · Android",
-    version: "0.23.1",
+    version: "0.26.0",
     icon: "/parking-master/assets/icon.png",
     tone: "graphite",
     detailsHref: "/appbox/parking-master",
     actionHref: "/parking-master/index.html#download",
     actionLabel: "选择设备下载",
     tags: ["驾驶游戏", "低多边形", "独立客户端"],
-    featureNotes: ["八张自由驾驶地图", "横屏触控与画质调节"],
+    featureNotes: ["九张自由驾驶地图", "横屏触控与画质调节"],
   },
   {
     id: "launchpad",
