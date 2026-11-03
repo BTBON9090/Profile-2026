@@ -1,4 +1,4 @@
-export type AppBoxKind = "app" | "web" | "plugin";
+export type AppBoxKind = "app" | "web" | "plugin" | "skill";
 
 export type AppBoxProduct = {
   id: string;
@@ -45,7 +45,7 @@ export const appBoxProducts: AppBoxProduct[] = [
     description: "为 macOS 找回熟悉的应用启动体验，支持快捷键、F4、触控板手势与触发角。",
     kind: "app",
     platform: "macOS",
-    version: "2026",
+    version: "1.1.15",
     icon: "/product-assets/launchpad-icon.png",
     tone: "blue",
     detailsHref: "/work/launchpad",
@@ -63,7 +63,7 @@ export const appBoxProducts: AppBoxProduct[] = [
     description: "用物理隔离、入口伪装与秘密解锁，保护只想留给自己的影像。",
     kind: "app",
     platform: "Android",
-    version: "2026",
+    version: "3.0.2",
     icon: "/product-assets/aura-logo.png",
     tone: "violet",
     detailsHref: "/work/aura",
@@ -80,7 +80,7 @@ export const appBoxProducts: AppBoxProduct[] = [
     description: "把 AI 说明书、多语言翻译、图层管理与 30+ 高频动作收进一个插件。",
     kind: "plugin",
     platform: "Figma",
-    version: "V2",
+    version: "4.4.6 开发版",
     icon: "/allinone-site/Frame 21.png",
     tone: "figma",
     detailsHref: "/work/all-in-one-v2",
@@ -97,11 +97,11 @@ export const appBoxProducts: AppBoxProduct[] = [
     description: "支持自定义 AI 模型、双语对照与划词翻译，让阅读过程尽量不被打断。",
     kind: "plugin",
     platform: "Chrome",
-    version: "V2.0",
+    version: "2.1.2",
     icon: "/translate-site/icon128.png",
     tone: "indigo",
     detailsHref: "/work/ai-translate",
-    actionHref: "https://lightapp-1317980685.cos.ap-shanghai.myqcloud.com/AI-Translate/AI-Translate-v2.0.0.zip",
+    actionHref: "https://ai-translate-release-1317980685.cos.ap-shanghai.myqcloud.com/releases/AI-Translate-v2.1.2.zip",
     actionLabel: "下载安装包",
     actionExternal: true,
     tags: ["Chrome", "AI", "翻译"],
@@ -113,11 +113,11 @@ export const appBoxProducts: AppBoxProduct[] = [
     description: "把 Eagle 选区中的图片批量压缩为 WebP、AVIF、JPEG XL 等现代格式，并提供宫格、分割与闪烁三种细节对比，全部在本地完成。",
     kind: "plugin",
     platform: "Eagle",
-    version: "V2.4",
+    version: "2.4.0",
     icon: "/product-assets/eaglecp-icon.png",
     tone: "indigo",
     detailsHref: "",
-    actionHref: "/api/eaglecp/download",
+    actionHref: "https://lightapp-1317980685.cos.ap-shanghai.myqcloud.com/EagleCP/EagleCP-2.4.0.eagleplugin",
     actionLabel: "下载插件",
     actionExternal: true,
     tags: ["Eagle 插件", "批量压缩", "本地处理"],
@@ -167,10 +167,36 @@ export const appBoxProducts: AppBoxProduct[] = [
     actionLabel: "在线打开",
     tags: ["求职", "Offer", "薪资测算"],
   },
+  {
+    id: "merge-slime",
+    name: "合成史莱姆",
+    subtitle: "把小小的快乐，合成大大的",
+    description: "投下一只软乎乎的史莱姆，让同级伙伴相遇、合成，收集巨型大福。还有异能伙伴与十关循环，随时玩一局。",
+    kind: "web", platform: "Web", version: "1.8.2",
+    icon: "/merge-slime/assets/brand/icon.png",
+    tone: "violet", detailsHref: "/merge-slime/index.html", actionHref: "/merge-slime/index.html",
+    actionLabel: "在线玩", tags: ["休闲游戏", "软体物理", "在线玩"],
+  },
+  {
+    id: "zhesi", name: "哲思", subtitle: "把现实困惑，变成有依据的判断",
+    description: "从哲学与社会科学出发，澄清事实、解释与价值取舍，梳理职场、人际关系和人生选择中的行动方向。",
+    kind: "skill", platform: "AI Skill", version: "1.0.1", mark: "思", tone: "graphite",
+    detailsHref: "", actionHref: "/skills/zhesi.zip", actionLabel: "下载 Skill",
+    tags: ["哲学", "决策", "思维训练"],
+  },
+  {
+    id: "btdesign", name: "btdesign", subtitle: "从设计判断，到可用的作品",
+    description: "覆盖界面、交互、动效、品牌与版式的设计 skill。从真实内容与约束出发，把设计方向落到具体实现和验证。",
+    kind: "skill", platform: "AI Skill", version: "2026.10", mark: "bt", tone: "blue",
+    detailsHref: "", actionHref: "/skills/btdesign.zip", actionLabel: "下载 Skill",
+    tags: ["UI / UX", "视觉设计", "vibe coding"],
+  },
+
 ];
 
 export const appBoxKindLabels: Record<AppBoxKind, string> = {
   app: "应用",
   web: "在线工具",
   plugin: "插件",
+  skill: "Skill",
 };

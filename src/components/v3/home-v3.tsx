@@ -49,9 +49,10 @@ const featuredProjects = [
   },
 ];
 
-// 真实职业经历（与 UI 1.0 一致，按用户确认的四段归纳）
+// 与 UI 1.0 保持一致的职业经历
 const experience = [
-  ["2024-NOW", "雪诺科技", "产品设计师"],
+  ["2026.08–至今", "万联易达", "UX 设计师"],
+  ["2024.08–2026.04", "北京雪诺科技", "产品设计师"],
   ["2021-2023", "快手 · 商业化（磁力聚星）", "产品设计师"],
   ["2018-2021", "中航金网（航空工业）", "体验设计师"],
   ["2016-2018", "云适配（云生互联）", "UI 设计师"],
@@ -62,13 +63,13 @@ const capabilities = [
     index: "01",
     title: "设计系统 × 业务解构",
     description:
-      "把复杂业务拆成原子组件，用 Variables 统一 Token，一个人也能维护 Web 与桌面双端组件库。",
+      "拆解复杂业务，构建跨端一致的组件与设计系统。",
   },
   {
     index: "02",
     title: "Vibe Coding × AI 原生",
     description:
-      "用 AI 把原型做到可交互，独立上架 Figma / Chrome 两款插件，设计阶段就验证技术可行性。",
+      "用 AI 开发可交互原型与插件，提前验证技术可行性。",
   },
 ];
 
@@ -150,7 +151,7 @@ export default function HomeV3() {
           >
             设计不止于交付，
             <br />
-            是逻辑的可视化，与落地的<em>预演</em>。
+            让想法成为<em>产品</em>。
           </motion.h1>
 
           <motion.p
@@ -159,10 +160,8 @@ export default function HomeV3() {
             transition={{ duration: 0.7, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className="v3-hero__intro"
           >
-            我是倪城，B 端产品设计师，在这行第十年。
-            我相信视觉只是结果。先把业务逻辑想清楚，
-            再用可交互的原型验证一遍，设计才算完成。
-            这里收录的，就是那些想清楚、也做成了的东西。
+            我是倪城，拥有十年 B 端设计经验。
+            理清业务，用原型验证，让设计落地。
           </motion.p>
         </div>
 
@@ -271,6 +270,7 @@ export default function HomeV3() {
                         <span>{year}</span>
                         <strong>{company}</strong>
                         <em>{role}</em>
+                        {company === "万联易达" && <small style={{gridColumn: "1 / -1", color: "var(--v3-muted, #888)", lineHeight: 1.8}}>AI 招聘 Agent · 灵活用工 · 人力资源 · vibe coding</small>}
                       </div>
                     ))}
                   </div>

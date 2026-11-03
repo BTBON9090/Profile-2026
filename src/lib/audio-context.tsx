@@ -125,7 +125,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const rafRef = useRef(0);
   const lrcRawRef = useRef("");
   const lrcUrlRef = useRef("");
-  const adjustingLyricIndexRef = useRef<number | null>(null);
+  const [adjustingLyricIndex, setAdjustingLyricIndex] = useState<number | null>(null);
   const repeatModeRef = useRef<'none' | 'one' | 'all'>('none');
 
   // Keep ref in sync with state for use in event handlers
@@ -135,8 +135,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
   const currentLyricIndex = useMemo(() => {
     if (lyrics.length === 0) return -1;
-    if (adjustingLyricIndexRef.current !== null) {
-      return adjustingLyricIndexRef.current;
+    if (adjustingLyricIndex !== null) {
+      return adjustingLyricIndex;
     }
     let idx = -1;
     for (let i = 0; i < lyrics.length; i++) {
@@ -144,7 +144,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       else break;
     }
     return idx;
-  }, [lyrics, currentTime]);
+  }, [lyrics, currentTime, adjustingLyricIndex]);
 
   const lyricColor = useMemo(() => getTrackLyricColor(currentTrack), [currentTrack]);
 
@@ -180,7 +180,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const playNextTrack = useCallback(() => {
     const audio = audioRef.current;
     if (!audio || PLAYLIST.length === 0) return;
-    adjustingLyricIndexRef.current = null;
+    setAdjustingLyricIndex(null);
     const nextIndex = (trackIndexRef.current + 1) % PLAYLIST.length;
     trackIndexRef.current = nextIndex;
     const track = PLAYLIST[nextIndex];
@@ -194,7 +194,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const playPrevTrack = useCallback(() => {
     const audio = audioRef.current;
     if (!audio || PLAYLIST.length === 0) return;
-    adjustingLyricIndexRef.current = null;
+    setAdjustingLyricIndex(null);
     // If more than 3 seconds in, restart current track
     if (audio.currentTime > 3) {
       audio.currentTime = 0;
@@ -213,7 +213,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const seek = useCallback((time: number) => {
     const audio = audioRef.current;
     if (!audio) return;
-    adjustingLyricIndexRef.current = null;
+    setAdjustingLyricIndex(null);
+    if (!Number.isFinite(time) || !Number.isFinite(audio.duration)) return;
     audio.currentTime = Math.max(0, Math.min(time, audio.duration || 0));
     setCurrentTime(audio.currentTime);
   }, []);
@@ -229,7 +230,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const replayTrack = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    adjustingLyricIndexRef.current = null;
+    setAdjustingLyricIndex(null);
     audio.currentTime = 0;
     audio.play().catch(() => {});
   }, []);
@@ -237,14 +238,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const seekBackward = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    adjustingLyricIndexRef.current = null;
+    setAdjustingLyricIndex(null);
     audio.currentTime = Math.max(0, audio.currentTime - 5);
   }, []);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    adjustingLyricIndexRef.current = null;
+    setAdjustingLyricIndex(null);
     if (audio.paused) {
       audio.play().catch(() => {});
     } else {
@@ -269,7 +270,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     (index: number) => {
       const audio = audioRef.current;
       if (!audio || index < 0 || index >= PLAYLIST.length) return;
-      adjustingLyricIndexRef.current = null;
+      setAdjustingLyricIndex(null);
       trackIndexRef.current = index;
       const track = PLAYLIST[index];
       setCurrentTrack(track);
@@ -287,16 +288,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       if (!audio || !currentTrack) return;
       if (currentLyricIndex < 0 || currentLyricIndex >= lyrics.length) return;
       audio.pause();
-      if (adjustingLyricIndexRef.current === null) {
-        adjustingLyricIndexRef.current = currentLyricIndex;
-      }
-      const targetIndex = adjustingLyricIndexRef.current;
+      const targetIndex = adjustingLyricIndex ?? currentLyricIndex;
+      setAdjustingLyricIndex(targetIndex);
       const updated = lyrics.map((l, i) =>
         i >= targetIndex ? { ...l, time: Math.max(0, +(l.time + delta).toFixed(2)) } : l
       );
       setLyrics(updated);
     },
-    [currentTrack, currentLyricIndex, lyrics]
+    [currentTrack, currentLyricIndex, lyrics, adjustingLyricIndex]
   );
 
   const adjustLyricLeft = useCallback(() => adjustLyric(-ADJUST_STEP), [adjustLyric]);
@@ -315,9 +314,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     const initialIndex = Math.floor(Math.random() * PLAYLIST.length);
     trackIndexRef.current = initialIndex;
     const track = PLAYLIST[initialIndex];
+    // The random starting track is chosen after hydration when the Audio object is created.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentTrack(track);
-    // 歌词仅在桌面端拉取（移动端隐藏歌词组件，无需请求）
-    if (isDesktop) fetchLyrics(track);
+    if (window.innerWidth >= 768) fetchLyrics(track);
 
     const audio = new Audio(track.url);
     audio.volume = 0.4;
@@ -338,13 +338,15 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       }
     };
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const onLoadedMetadata = () => setDuration(audio.duration || 0);
+    const onLoadedMetadata = () => setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
+    const onEmptied = () => { setCurrentTime(0); setDuration(0); setIsPlaying(false); };
 
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("loadedmetadata", onLoadedMetadata);
+    audio.addEventListener("emptied", onEmptied);
 
     return () => {
       audio.removeEventListener("play", onPlay);
@@ -352,12 +354,19 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("loadedmetadata", onLoadedMetadata);
+      audio.removeEventListener("emptied", onEmptied);
       audio.pause();
       audio.src = "";
       audioRef.current = null;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [isDesktop, playNextTrack, fetchLyrics]);
+  }, [playNextTrack, fetchLyrics]);
+
+  useEffect(() => {
+    // Synchronize the external lyric request when desktop rendering becomes available.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (isDesktop && currentTrack) fetchLyrics(currentTrack);
+  }, [isDesktop, currentTrack, fetchLyrics]);
 
   return (
     <AudioCtx.Provider
@@ -366,7 +375,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         currentTime,
         duration,
         currentTrack,
-        currentTrackIndex: trackIndexRef.current,
+        currentTrackIndex: currentTrack ? PLAYLIST.indexOf(currentTrack) : 0,
         isDesktop,
         playbackRate,
         repeatMode,

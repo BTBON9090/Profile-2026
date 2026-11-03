@@ -20,6 +20,31 @@ export type AppBoxArticle = {
 };
 
 export const appBoxArticles: Record<string, AppBoxArticle> = {
+
+  "merge-slime": {
+    productId: "merge-slime", lead: "一只、两只，再大一点。投放软乎乎的伙伴，让同级史莱姆相遇，合成第九级的巨型大福。打开浏览器就能玩。",
+    readingTime: "约 1 分钟", downloadNote: "仅提供在线游玩，不提供安装包下载。进度保存在当前浏览器。",
+    sections: [
+      { title: "轻轻一点，慢慢长大", paragraphs: ["点击场地投放，也可以拖动瞄准、松开投放。电脑支持左右方向键移动、空格投放，P 键暂停。"], points: ["每关合成 3 只巨型大福", "九种异能伙伴，十关循环", "清晰与省电画质可切换", "离开时自动保存当前进度"] },
+      { title: "给自己留一小段放松时间", paragraphs: ["从普通伙伴开始，逐步认识破泡、变身、缩小等异能角色。暂停或切到后台时，对局会冻结，回来再继续。"] },
+    ],
+  },
+  zhesi: {
+    productId: "zhesi", lead: "遇到难以判断的现实问题时，先把发生了什么、我们如何理解，以及真正看重什么分开。哲思帮助你形成有依据、可以行动、也可以修正的判断。",
+    readingTime: "约 2 分钟", downloadNote: "适用于支持 SKILL.md 的 AI 工具；下载包包含指令与参考材料。",
+    sections: [
+      { title: "适合哪些时刻", paragraphs: ["职场冲突、人际边界、职业与人生选择，或关于公平和责任的争议。它帮助分析处境，不替你决定应该过怎样的人生。"], points: ["区分事实、感受、解释与价值", "比较不同立场与行动的代价", "把判断转成可执行的小步骤", "通过复盘逐步训练独立思考"] },
+      { title: "如何使用", paragraphs: ["解压后，将 zhesi 文件夹放入你的 AI 工具支持的 skill 目录，确认工具能读取其中的 SKILL.md。随后直接描述困惑，或明确要求使用哲思分析。", "例如：我在考虑换工作，收入、成长和生活节奏发生了冲突，请帮我梳理取舍。无需一次提供全部背景，可以在对话中逐步补充。"] },
+    ],
+  },
+  btdesign: {
+    productId: "btdesign", lead: "设计不只是选择一种风格。btdesign 从对象、任务、真实内容和约束出发，将设计判断推进到具体的界面、交互、视觉表达与验证。",
+    readingTime: "约 2 分钟", downloadNote: "2026 年 10 月文件快照；适用于支持 SKILL.md 的 AI 工具。",
+    sections: [
+      { title: "从方向到细节", paragraphs: ["覆盖 UI / UX、交互动效、品牌识别、编辑版式、演示与印刷设计。按任务加载相关参考，保留项目已有品牌、技术栈和交付格式。"], points: ["梳理内容层级与信息结构", "探索适合任务的视觉方向", "明确尺寸、色彩、材质与动效规则", "检查响应式、交互状态与实际呈现"] },
+      { title: "如何使用", paragraphs: ["解压后，将 btdesign 文件夹放入你的 AI 工具支持的 skill 目录，保留 SKILL.md、references 与 scripts 的目录结构。", "提供页面、代码或需求，说明使用对象和目标，再要求使用 btdesign 改进。它不绑定某一种审美，会优先沿用真实项目的约束。"] },
+    ],
+  },
   launchpad: {
     productId: "launchpad",
     lead: "LaunchPad 不是一个新的应用商店，而是把 macOS 用户熟悉的启动方式重新做回来。它保持原生、快速，也允许每个人按自己的习惯整理应用。",
@@ -82,6 +107,7 @@ export const appBoxArticles: Record<string, AppBoxArticle> = {
     downloadNote: "下载后请将 .bin 后缀改为 .apk。",
   },
   allinone: {
+    downloadNote: "本地开发版本为 4.4.6；Figma 社区实际可用版本以社区页面为准。",
     productId: "allinone",
     lead: "AllinOne 把设计师频繁重复的小动作集中到一个 Figma 插件里。它不试图替代设计过程，而是减少找图层、改文案和整理组件的机械时间。",
     readingTime: "约 6 分钟",

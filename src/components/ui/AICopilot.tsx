@@ -1,11 +1,13 @@
 // src/components/ui/AICopilot.tsx
 "use client";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useFloatingPanel } from "./use-floating-panel";
+import "./floating-tools.css";
 import { useDraggableSnap } from "@/lib/use-draggable-snap";
 import {
-  Sparkles, Send, X, Trash2, ChevronDown, Zap, MessageSquare, Lightbulb,
-  Copy, Check, Clock, Cpu, Activity, RefreshCw, AlertCircle, SlidersHorizontal, RotateCcw
+  Send, X, Trash2, ChevronDown, Zap, MessageSquare, Lightbulb,
+  Copy, Check, Clock, Activity, RefreshCw, AlertCircle, SlidersHorizontal, RotateCcw
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -115,6 +117,10 @@ interface Message {
 }
 
 export default function AICopilot() {
+  const reduceMotion = useReducedMotion();
+  const requestRef = useRef<AbortController | null>(null);
+  const busyRef = useRef(false);
+  useEffect(() => () => requestRef.current?.abort(), []);
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -129,7 +135,9 @@ export default function AICopilot() {
   // 拟人化眼睛系统
   // ==========================================
   const [expression, setExpression] = useState<Expression>("idle");
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const mousePos = useRef({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverCount = useRef(0);
   const [isFocused, setIsFocused] = useState(true);
   const triggerRef = useRef<HTMLDivElement>(null);
   const lastInteractionRef = useRef(Date.now());
@@ -168,7 +176,7 @@ export default function AICopilot() {
     return "global"; // 首页 / 作品集列表 / 简历 / 关于
   }, [projectId, pathname]);
 
-  const currentProjectId = projectId ?? null;
+  const currentProjectId = projectId ?? (pathname.startsWith("/work/") || pathname.startsWith("/appbox/") ? pathname.split("/")[2] : null);
 
   // 标题/副标题随上下文变化
   const headerTitle = contextType === "project-detail" ? "项目助理 · 小八" : "全站助理 · 小八";
@@ -179,8 +187,8 @@ export default function AICopilot() {
   // 空状态文案随上下文变化
   const emptyHint =
     contextType === "project-detail"
-      ? "关于这个项目的业务逻辑、设计难点或思考过程，请随时提问。"
-      : "可以问我网站信息、倪城的简历、作品统计与总结，也可以聊聊设计。";
+      ? "聊聊项目价值、设计取舍与实现。"
+      : "了解倪城、浏览作品，或聊聊设计。";
 
   // ==========================================
   // 浏览器失焦检测
@@ -197,37 +205,20 @@ export default function AICopilot() {
     };
   }, []);
 
-  // 鼠标追踪 + 互动时间
-  // 从长静止突然恢复操作 → 打寒颤（脑袋左右晃、眼珠左右颠）
-  const shiverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Keep pointer sampling out of React renders; the gaze interpolates separately.
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      // 记录恢复操作前的静默时长，用于判断是否触发 shiver
-      const idleBefore = Date.now() - lastInteractionRef.current;
+    if (isOpen || reduceMotion) return;
+    const handleMouseMove = (event: MouseEvent) => {
       lastInteractionRef.current = Date.now();
-      setMousePos({ x: e.clientX, y: e.clientY });
-      // 静默超过 30s 后突然动 → 60% 概率打寒颤（仅在非对话、非调参接管时）
-      if (idleBefore > 30000 && !isOpen && !(showTuning && tuningEnabled)) {
-        setExpression((prev) => {
-          // 已在 shiver/shock 等短暂表情中则不打断
-          if (prev === "shiver" || prev === "shock" || prev === "blink") return prev;
-          return "shiver";
-        });
-        if (shiverTimerRef.current) clearTimeout(shiverTimerRef.current);
-        shiverTimerRef.current = setTimeout(() => {
-          setExpression((prev) => (prev === "shiver" ? "idle" : prev));
-        }, 1400);
-      }
+      mousePos.current = { x: event.clientX, y: event.clientY };
     };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      if (shiverTimerRef.current) clearTimeout(shiverTimerRef.current);
-    };
-  }, [isOpen, showTuning, tuningEnabled]);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [isOpen, reduceMotion]);
 
   // 眼珠自主游荡
   useEffect(() => {
+    if (isOpen || reduceMotion) return;
     const scheduleWander = () => {
       const delay = 1200 + Math.random() * 2800;
       wanderTimerRef.current = setTimeout(() => {
@@ -257,167 +248,43 @@ export default function AICopilot() {
       if (wanderTimerRef.current) clearTimeout(wanderTimerRef.current);
       if (centerTimerRef.current) clearTimeout(centerTimerRef.current);
     };
-  }, []);
+  }, [isOpen, reduceMotion]);
 
-  // 眨眼 + 表情状态机
+  // One interruptible sequence owns each reaction. Hover acknowledges, holds,
+  // then relaxes; blinking cannot unexpectedly overwrite an expression.
   useEffect(() => {
-    if (isOpen) return; // 打开对话时不眨眼（避免遮挡交互注意力）
-    // 调参面板开启并应用时，表情由面板接管，停止自动状态机
     if (showTuning && tuningEnabled) return;
-
-    let blinkTimer: ReturnType<typeof setTimeout>;
-    const pendingTimers: ReturnType<typeof setTimeout>[] = [];
-
-    const doSingleBlink = (onDone: () => void) => {
-      setExpression("blink");
-      const t = setTimeout(() => {
-        setExpression("idle");
-        onDone();
-      }, 130);
-      pendingTimers.push(t);
-    };
-
-    const scheduleBlink = () => {
-      const delay = 2500 + Math.random() * 3500;
-      blinkTimer = setTimeout(() => {
-        const idleTime = Date.now() - lastInteractionRef.current;
-        if (idleTime > 45000 && Math.random() < 0.5) {
-          setExpression("bored");
-          const t1 = setTimeout(() => {
-            setExpression("blink");
-            const t2 = setTimeout(() => {
-              setExpression("bored");
-              const t3 = setTimeout(() => {
-                setExpression("idle");
-                scheduleBlink();
-              }, 600);
-              pendingTimers.push(t3);
-            }, 200);
-            pendingTimers.push(t2);
-          }, 500);
-          pendingTimers.push(t1);
-          return;
-        }
-        doSingleBlink(() => {
-          if (Math.random() < 0.18) {
-            const t = setTimeout(() => doSingleBlink(() => scheduleBlink()), 180);
-            pendingTimers.push(t);
-          } else {
-            scheduleBlink();
-          }
-        });
-      }, delay);
-    };
-
-    let expressionTimer: ReturnType<typeof setTimeout>;
-    const scheduleIdleExpression = () => {
-      const delay = 8000 + Math.random() * 7000;
-      expressionTimer = setTimeout(() => {
-        const idleTime = Date.now() - lastInteractionRef.current;
-        if (idleTime > 30000) {
-          // 长时间无操作 → 困倦系列：哈欠 / 无聊 / 困倦
-          const sleepyExprs: Expression[] = ["yawn", "bored", "sleepy"];
-          const pick = sleepyExprs[Math.floor(Math.random() * sleepyExprs.length)];
-          setExpression(pick);
-          const t = setTimeout(() => {
-            setExpression("idle");
-            scheduleIdleExpression();
-          }, 6000);
-          pendingTimers.push(t);
-        } else {
-          // 活跃期：按"场景组"随机播放，让闲时表现更丰富
-          // thinking→happy：思考后恍然大悟
-          // nod→happy：认同点头
-          // wink：俏皮眨眼
-          // dizzy→blink：眩晕后回神
-          // silly：偶尔装傻
-          const scenarios: { seq: Expression[]; dur: number[] }[] = [
-            { seq: ["thinking", "happy"], dur: [1800, 1200] },
-            { seq: ["nod", "happy"], dur: [1200, 1000] },
-            { seq: ["wink"], dur: [900] },
-            { seq: ["dizzy", "blink"], dur: [1600, 300] },
-            { seq: ["silly"], dur: [1800] },
-          ];
-          const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
-          let i = 0;
-          const playNext = () => {
-            if (i >= sc.seq.length) {
-              const t = setTimeout(() => {
-                setExpression("idle");
-                scheduleIdleExpression();
-              }, 600);
-              pendingTimers.push(t);
-              return;
-            }
-            setExpression(sc.seq[i]);
-            const t = setTimeout(playNext, sc.dur[i] ?? 1000);
-            pendingTimers.push(t);
-            i += 1;
-          };
-          playNext();
-        }
-      }, delay);
-    };
-
-    const scheduleShock = () => {
-      const delay = 20000 + Math.random() * 30000;
-      const t = setTimeout(() => {
-        setExpression("shock");
-        const t2 = setTimeout(() => {
-          setExpression("idle");
-          scheduleShock();
-        }, 1200 + Math.random() * 800);
-        pendingTimers.push(t2);
-      }, delay);
-      pendingTimers.push(t);
-    };
-
-    const MOODS: Expression[] = ["wink", "love", "money", "disdain", "arrogant", "pitiful", "angry", "happy", "nod"];
-    const MOOD_DURATION: Record<string, number> = {
-      // love / money 属于高情绪表达，至少停留 4 秒，保证情绪被感知到
-      // angry：怒目而视，停留 2.2s 让眉毛旋转下压感被看清
-      wink: 900, love: 4000, money: 4000, disdain: 1500, arrogant: 1800, pitiful: 1700, angry: 2200, happy: 1200, nod: 1400,
-    };
-    const scheduleMood = () => {
-      const delay = 15000 + Math.random() * 25000;
-      const t = setTimeout(() => {
-        const mood = MOODS[Math.floor(Math.random() * MOODS.length)];
-        setExpression(mood);
-        const dur = (MOOD_DURATION[mood] ?? 1500) + Math.random() * 400;
-        const t2 = setTimeout(() => {
-          setExpression("idle");
-          scheduleMood();
-        }, dur);
-        pendingTimers.push(t2);
-      }, delay);
-      pendingTimers.push(t);
-    };
-
-    scheduleBlink();
-    scheduleIdleExpression();
-    scheduleShock();
-    scheduleMood();
-
-    return () => {
-      clearTimeout(blinkTimer);
-      clearTimeout(expressionTimer);
-      pendingTimers.forEach(clearTimeout);
-    };
-  }, [isOpen, showTuning, tuningEnabled]);
-
-  // 加载状态 → thinking
-  // 用 ref 读取 expression，避免把它写进依赖（否则表情每次变化都会重启定时器）
-  const expressionRef = useRef(expression);
-  expressionRef.current = expression;
-  useEffect(() => {
-    if (isLoading) {
-      setExpression("thinking");
-    } else if (expressionRef.current === "thinking") {
-      setExpression("happy");
-      const t = setTimeout(() => setExpression("idle"), 1500);
-      return () => clearTimeout(t);
+    if (isOpen || reduceMotion || !isFocused) {
+      setExpression("idle");
+      return;
     }
-  }, [isLoading]);
+    let timer: ReturnType<typeof setTimeout>;
+    let stopped = false;
+    const after = (delay: number, callback: () => void) => {
+      timer = setTimeout(() => { if (!stopped) callback(); }, delay);
+    };
+    const rest = () => {
+      setExpression("idle");
+      after(3200 + Math.random() * 2400, () => {
+        const sleepy = Date.now() - lastInteractionRef.current > 45000 && !isHovered;
+        setExpression(sleepy ? "sleepy" : "blink");
+        after(sleepy ? 2200 : 130, rest);
+      });
+    };
+    if (isLoading) setExpression("thinking");
+    else if (isHovered) {
+      const gestures: Expression[] = ["happy", "wink", "nod", "blush"];
+      setExpression("idle");
+      after(180, () => {
+        setExpression(gestures[hoverCount.current++ % gestures.length]);
+        after(900, () => {
+          setExpression("idle");
+          after(2100, () => { setExpression("wink"); after(420, rest); });
+        });
+      });
+    } else rest();
+    return () => { stopped = true; clearTimeout(timer); };
+  }, [isOpen, reduceMotion, isFocused, isHovered, isLoading, showTuning, tuningEnabled]);
 
   // 触发器位置
   const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
@@ -437,9 +304,9 @@ export default function AICopilot() {
   const [connectionStatus, setConnectionStatus] = useState<"idle" | "connecting" | "connected" | "error">("idle");
 
   // 调参面板打开时：强制 expression 跟随 tuningExpr，并用 overrides 覆盖参数
-  const currentParams: EyeParams = showTuning && tuningEnabled
+  const currentParams: EyeParams = useMemo(() => showTuning && tuningEnabled
     ? { ...EXPRESSION_PARAMS[tuningExpr], ...tuningOverrides }
-    : baseParams;
+    : baseParams, [showTuning, tuningEnabled, tuningExpr, tuningOverrides, baseParams]);
 
   // 切换 tuningExpr 时清空 overrides，避免上一个表情的残留参数污染新表情
   const selectTuningExpr = useCallback((expr: Expression) => {
@@ -479,6 +346,7 @@ export default function AICopilot() {
   }, [expression]);
 
   useEffect(() => {
+    if (isOpen || reduceMotion) return;
     const compute = () => {
       if (expression === "shock") {
         const lx = Math.round((Math.random() * 2 - 1) * 2.2);
@@ -515,8 +383,8 @@ export default function AICopilot() {
       if (liveRect && isFocused && !mouseIdle) {
         const centerX = liveRect.left + liveRect.width / 2;
         const centerY = liveRect.top + liveRect.height / 2;
-        const dx = mousePos.x - centerX;
-        const dy = mousePos.y - centerY;
+        const dx = mousePos.current.x - centerX;
+        const dy = mousePos.current.y - centerY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const rawMax = 2;
         if (dist > 0) {
@@ -532,8 +400,8 @@ export default function AICopilot() {
       const baseX = target.x !== 0 || target.y !== 0 ? target.x : rawX;
       const baseY = target.x !== 0 || target.y !== 0 ? target.y : rawY;
 
-      const snapX = Math.round(baseX);
-      const snapY = Math.round(baseY);
+      const snapX = Math.round(baseX * 4) / 4;
+      const snapY = Math.round(baseY * 4) / 4;
       const finalX = snapX + currentParams.pupilOffsetX;
       const finalY = snapY + currentParams.pupilOffsetY;
 
@@ -543,10 +411,10 @@ export default function AICopilot() {
         setPupilOffset({ x: finalX, y: finalY });
       }
     };
-    const timer = setInterval(compute, 140);
+    const timer = setInterval(compute, 50);
     compute();
     return () => clearInterval(timer);
-  }, [triggerRect, isFocused, mousePos, expression, currentParams]);
+  }, [triggerRect, isFocused, expression, currentParams, isOpen, reduceMotion]);
 
   // ==========================================
   // 动态引导气泡 — 节制地出现，绝不打扰心流
@@ -573,11 +441,13 @@ export default function AICopilot() {
       return;
     }
 
+    let firstGreetingTimer: ReturnType<typeof setTimeout> | undefined;
     // 首次问候
     if (!greetedRef.current) {
       greetedRef.current = true;
-      greetingTimerRef.current = setTimeout(() => {
+      firstGreetingTimer = setTimeout(() => {
         setGreeting(GREETINGS[Math.floor(Math.random() * GREETINGS.length)]);
+        scheduleGreetingAutoHide();
       }, 6000);
     }
 
@@ -598,13 +468,14 @@ export default function AICopilot() {
     cycle();
 
     return () => {
+      clearTimeout(firstGreetingTimer);
       if (greetingTimerRef.current) clearTimeout(greetingTimerRef.current);
       if (greetingAutoTimerRef.current) clearTimeout(greetingAutoTimerRef.current);
     };
   }, [isOpen, messages.length, scheduleGreetingAutoHide]);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -613,7 +484,12 @@ export default function AICopilot() {
   useEffect(() => {
     if (isOpen) {
       hideGreeting();
-      setTimeout(() => inputRef.current?.focus(), 300);
+      window.dispatchEvent(new Event("copilot-open"));
+      // Do not summon the mobile keyboard until the visitor chooses to type.
+      const timer = window.setTimeout(() => {
+        if (window.innerWidth >= 640) inputRef.current?.focus({ preventScroll: true });
+      }, 220);
+      return () => window.clearTimeout(timer);
     } else {
       setShowCategoryPanel(false);
       setActiveCategory(null);
@@ -622,10 +498,24 @@ export default function AICopilot() {
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) setIsOpen(false);
+      if (e.key === "Escape" && isOpen) { setIsOpen(false); triggerRef.current?.focus({ preventScroll: true }); }
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const outside = (event: PointerEvent) => {
+      if (!panelRef.current?.contains(event.target as Node) && !copilotRef.current?.contains(event.target as Node)) setIsOpen(false);
+    };
+    const otherPanel = () => setIsOpen(false);
+    window.addEventListener("pointerdown", outside);
+    window.addEventListener("music-player-open", otherPanel);
+    return () => {
+      window.removeEventListener("pointerdown", outside);
+      window.removeEventListener("music-player-open", otherPanel);
+    };
   }, [isOpen]);
 
   const handleCopy = useCallback(async (content: string, idx: number) => {
@@ -639,15 +529,23 @@ export default function AICopilot() {
   }, []);
 
   const handleClear = useCallback(() => {
+    requestRef.current?.abort();
+    requestRef.current = null;
+    busyRef.current = false;
+    setIsLoading(false);
+    setIsThinking(false);
     setMessages([]);
     setConnectionStatus("idle");
   }, []);
 
-  const handleSend = useCallback(async (text: string) => {
-    if (!text.trim() || isLoading) return;
+  const handleSend = useCallback(async (text: string, history = messages) => {
+    if (!text.trim() || busyRef.current) return;
+    busyRef.current = true;
+    const controller = new AbortController();
+    requestRef.current = controller;
 
     const userMsg: Message = { role: "user", content: text.trim(), timestamp: Date.now() };
-    const newMessages = [...messages, userMsg];
+    const newMessages = [...history.filter(m => !m.error), userMsg];
     setMessages(newMessages);
     setInput("");
     setShowCategoryPanel(false);
@@ -662,6 +560,7 @@ export default function AICopilot() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
+        signal: controller.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages, projectId: currentProjectId, contextType }),
       });
@@ -680,28 +579,25 @@ export default function AICopilot() {
       const decoder = new TextDecoder();
       let aiText = "";
 
+      let pending = "";
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
+        if (controller.signal.aborted) return;
+        pending += decoder.decode(value, { stream: !done });
+        const lines = pending.split("\n");
+        pending = done ? "" : (lines.pop() ?? "");
         for (const line of lines) {
-          if (line.startsWith("data: ") && line !== "data:[DONE]") {
-            try {
-              const data = JSON.parse(line.slice(6));
-              const content = data.choices[0]?.delta?.content || "";
-              aiText += content;
-              setMessages((prev) => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { ...updated[updated.length - 1], content: aiText, isStreaming: true };
-                return updated;
-              });
-            } catch {
-              /* ignore parse errors */
-            }
-          }
+          if (!line.startsWith("data:")) continue;
+          const payload = line.slice(5).trim();
+          if (!payload || payload === "[DONE]") continue;
+          const data = JSON.parse(payload);
+          if (data.error) throw new Error("生成中断，请重试。");
+          aiText += data.choices?.[0]?.delta?.content ?? "";
         }
+        setMessages(prev => prev.map((m, i) => i === prev.length - 1 ? { ...m, content: aiText, isStreaming: !done } : m));
+        if (done) break;
       }
+      if (!aiText.trim()) throw new Error("暂未收到回答，请重试。");
 
       setMessages((prev) => {
         const updated = [...prev];
@@ -709,6 +605,7 @@ export default function AICopilot() {
         return updated;
       });
     } catch (error) {
+      if (controller.signal.aborted) return;
       console.error("Chat error:", error);
       setIsThinking(false);
       setConnectionStatus("error");
@@ -724,16 +621,17 @@ export default function AICopilot() {
         return updated;
       });
     } finally {
-      setIsLoading(false);
+      if (requestRef.current === controller) {
+        busyRef.current = false;
+        setIsLoading(false);
+        setIsThinking(false);
+      }
     }
-  }, [messages, isLoading, currentProjectId, contextType]);
+  }, [messages, currentProjectId, contextType]);
 
   const handleRetry = useCallback(() => {
-    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
-    if (lastUserMsg) {
-      setMessages((prev) => prev.slice(0, -1));
-      handleSend(lastUserMsg.content);
-    }
+    const lastUserIndex = messages.findLastIndex(m => m.role === "user");
+    if (lastUserIndex >= 0) handleSend(messages[lastUserIndex].content, messages.slice(0, lastUserIndex));
   }, [messages, handleSend]);
 
   const formatTime = (timestamp: number) => {
@@ -748,65 +646,13 @@ export default function AICopilot() {
   const hasWindow = typeof window !== "undefined";
   const copilotRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [panelPos, setPanelPos] = useState<{ left: number; top: number; height: number } | null>(null);
   const drag = useDraggableSnap(
     copilotRef,
     hasWindow ? window.innerWidth - 56 : 0, // 左上角语义：留出 56px 触发器宽度
     hasWindow ? window.innerHeight - 240 : 0, // 默认靠下，距离底部 240px
   );
 
-  // 触发器视觉中心（仅用于语义参考，当前未直接消费）
-  // const triggerCenterX = drag.position.x + 32;
-
-  // 聊天面板定位：脱离 transform 容器，独立 fixed，智能选择左右翻向
-  // 触发器贴右侧 → 面板展开到触发器左边；贴左侧 → 展开到右边
-  useEffect(() => {
-    if (!isOpen) {
-      setPanelPos(null);
-      return;
-    }
-    const compute = () => {
-      const PANEL_W = 480;
-      const GAP = 14;
-      const isMobile = window.innerWidth < 768;
-      const MOBILE_W = window.innerWidth - 32;
-      const panelW = isMobile ? MOBILE_W : PANEL_W;
-      const triggerW = copilotRef.current?.offsetWidth ?? 56;
-
-      let left: number;
-      if (isMobile) {
-        left = 16; // 移动端居左，留 16px
-      } else if (drag.snapSide === "right") {
-        // 贴右：面板展开到触发器左侧
-        left = drag.position.x - panelW - GAP;
-        if (left < 16) left = Math.max(16, drag.position.x + triggerW + GAP); // 不够空间则换右侧
-      } else {
-        // 贴左：面板展开到触发器右侧
-        left = drag.position.x + triggerW + GAP;
-        if (left + panelW > window.innerWidth - 16) {
-          left = Math.max(16, drag.position.x - panelW - GAP);
-        }
-      }
-
-      // 垂直：面板与触发器顶部对齐，高度 + top 统一由 JS 计算并写入 style，
-      // 避免 Tailwind h-[Xvh] 与 JS maxTop 计算脱节导致底部输入框被遮挡。
-      const vh = window.innerHeight;
-      // 理想高度：移动端 70vh 最高 600，桌面 75vh 最高 700
-      const idealH = isMobile ? Math.min(vh * 0.7, 600) : Math.min(vh * 0.75, 700);
-      // 触发器顶部对齐为初始 top，再向上 clamp 确保面板底部不超出视口
-      let top = drag.position.y;
-      const SAFE_PAD = 16; // 距视口上下边缘的最小间距
-      const maxTop = vh - idealH - SAFE_PAD;
-      if (top > maxTop) top = maxTop;
-      if (top < SAFE_PAD) top = SAFE_PAD;
-      // 若视口真的太矮（极端横屏），压缩面板高度而不是让它溢出
-      const panelH = Math.min(idealH, vh - top - SAFE_PAD);
-      setPanelPos({ left, top, height: panelH });
-    };
-    compute();
-    window.addEventListener("resize", compute);
-    return () => window.removeEventListener("resize", compute);
-  }, [isOpen, drag.position.x, drag.position.y, drag.snapSide]);
+  const panelPos = useFloatingPanel(isOpen, drag.position.x, drag.position.y, drag.snapSide, bubbleSize, 440, 620);
 
   // 点击触发器：消隐气泡 + 打开/关闭
   // 注意：移动端拖拽松手后浏览器会补发一个 click 事件，若不抑制会导致"拖一下就误打开/关闭面板"。
@@ -854,7 +700,12 @@ export default function AICopilot() {
         className="relative group cursor-pointer flex items-center justify-center"
         style={{ width: bubbleSize, height: bubbleSize }}
         onClick={handleToggle}
-        onMouseEnter={hideGreeting}
+        onMouseEnter={() => { hideGreeting(); setIsHovered(true); }}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsHovered(true)}
+        onBlur={() => setIsHovered(false)}
+        aria-expanded={isOpen}
+        aria-controls="copilot-dialog"
         role="button"
         tabIndex={0}
         aria-label={isOpen ? "关闭 AI 助手" : "打开 AI 助手"}
@@ -867,18 +718,19 @@ export default function AICopilot() {
       >
         {/* 外层光晕 */}
         <motion.div
-          animate={{ opacity: [0.4, 0.7, 0.4] }}
+          animate={{ opacity: isOpen || reduceMotion ? 0.4 : [0.4, 0.7, 0.4] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           className="absolute inset-[-20%] bg-gradient-to-tr from-blue-500/30 via-indigo-500/20 to-purple-500/30 rounded-full blur-[18px]"
         />
 
         {/* 玻璃外壳 — 呼吸浮动，随气泡尺寸缩放 */}
         <motion.div
-          animate={{ y: [0, -currentParams.breatheAmplitude, 0] }}
+          animate={{ y: isOpen || reduceMotion ? 0 : [0, -currentParams.breatheAmplitude, 0] }}
           transition={{ duration: currentParams.breatheDuration, repeat: Infinity, ease: "easeInOut" }}
           className="relative z-10 bg-zinc-950/95 backdrop-blur-2xl border border-white/15 rounded-full flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-300 group-hover:border-white/30 group-hover:shadow-[0_8px_40px_rgba(59,130,246,0.3)] group-focus:ring-2 group-focus:ring-blue-500/50"
           style={{ width: Math.round(bubbleSize * 0.875), height: Math.round(bubbleSize * 0.875) }}
         >
+          {!isOpen && ["flirty", "blush", "tease"].includes(expression) && <div aria-hidden="true" className="copilot-blush"><i /><i /></div>}
           <AnimatePresence mode="wait">
             {isOpen ? (
               <motion.div
@@ -927,7 +779,7 @@ export default function AICopilot() {
             <motion.button
               key={greeting}
               type="button"
-              onClick={handleToggle}
+              onClick={(event) => { event.stopPropagation(); handleToggle(); }}
               initial={{ opacity: 0, x: drag.snapSide === "right" ? -10 : 10, scale: 0.85 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: drag.snapSide === "right" ? -10 : 10, scale: 0.85 }}
@@ -1008,38 +860,20 @@ export default function AICopilot() {
       {isOpen && panelPos && (
           <motion.div
             ref={panelRef}
-            onPointerMove={(e) => {
-              // 窗口内鼠标移动也更新眼珠跟踪位置（window mousemove 在 z-index 更高的面板上仍会触发，
-              // 但 pointer 事件更稳，双保险确保窗口内鼠标位置被捕获）
-              setMousePos({ x: e.clientX, y: e.clientY });
-              lastInteractionRef.current = Date.now();
-            }}
-            onMouseMove={(e) => {
-              // 兜底：某些浏览器对 pointermove 合并/节流，mousemove 更可靠
-              setMousePos({ x: e.clientX, y: e.clientY });
-              lastInteractionRef.current = Date.now();
-            }}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed z-[2147483600] w-[calc(100vw-32px)] md:w-[480px] bg-zinc-950/95 backdrop-blur-3xl border border-zinc-800/80 shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden flex flex-col"
-            style={{ top: `${panelPos.top}px`, left: `${panelPos.left}px`, height: `${panelPos.height}px` }}
+            id="copilot-dialog"
+            className="copilot-panel copilot-panel--refined fixed z-[2147483600] w-[calc(100vw-32px)] md:w-[480px] bg-zinc-950/95 backdrop-blur-3xl border border-zinc-800/80 shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden flex flex-col"
+            style={{ top: panelPos.top, left: panelPos.left, width: panelPos.width, height: panelPos.height, transformOrigin: drag.snapSide === "right" ? "bottom right" : "bottom left" }}
             role="dialog"
             aria-label="AI 助手对话"
           >
             {/* Header */}
-            <div className="px-5 py-3.5 border-b border-zinc-800/80 bg-gradient-to-r from-zinc-900/60 via-zinc-900/30 to-transparent flex items-center justify-between">
+            <div className="copilot-header px-5 py-3.5 border-b border-zinc-800/80 bg-gradient-to-r from-zinc-900/60 via-zinc-900/30 to-transparent flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <MiniAvatar
-                  expression={expression}
-                  pupilOffset={pupilOffset}
-                  shockOffsetL={shockOffsetL}
-                  shockOffsetR={shockOffsetR}
-                  params={currentParams}
-                  dizzyPhase={dizzyPhase}
-                  connectionStatus={connectionStatus}
-                />
+                <MiniAvatar />
                 <div>
                   <div className="text-sm font-bold text-zinc-100 tracking-wide flex items-center gap-2">
                     {headerTitle}
@@ -1048,9 +882,9 @@ export default function AICopilot() {
                   <div className="text-[10px] text-zinc-500 font-mono flex items-center gap-1.5 mt-0.5">
                     <Activity className="w-2.5 h-2.5" />
                     {connectionStatus === "error" ? "连接异常" :
-                     connectionStatus === "connected" ? "DeepSeek · 在线" :
+                     connectionStatus === "connected" ? "可以继续提问" :
                      connectionStatus === "connecting" ? "连接中..." :
-                     "DeepSeek Powered · 就绪"}
+                     "聊作品，也聊设计"}
                   </div>
                 </div>
               </div>
@@ -1066,7 +900,7 @@ export default function AICopilot() {
                   </button>
                 )}
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => { setIsOpen(false); triggerRef.current?.focus({ preventScroll: true }); }}
                   className="p-2 rounded-lg hover:bg-zinc-800/60 text-zinc-500 hover:text-zinc-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                   aria-label="关闭"
                   title="关闭"
@@ -1082,22 +916,12 @@ export default function AICopilot() {
               <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-zinc-950/95 to-transparent z-10 pointer-events-none" />
               <div className="h-full p-4 md:p-5 overflow-y-auto custom-scrollbar space-y-4">
               {messages.length === 0 ? (
-                <div className="text-center mt-8 flex flex-col items-center">
-                  <div className="relative w-20 h-20 mb-5 flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-purple-500/20 blur-xl animate-pulse"></div>
-                    <Sparkles className="relative w-8 h-8 text-blue-400" />
-                  </div>
-                  <p className="text-zinc-200 text-sm font-semibold mb-1.5">您好，我是倪城的 AI 设计助理</p>
-                  <p className="text-zinc-500 text-xs leading-relaxed max-w-[85%]">{emptyHint}</p>
-                  <div className="flex flex-wrap gap-1.5 mt-4 justify-center">
-                    {(contextType === "project-detail"
-                      ? ["业务价值", "设计思考", "团队协作"]
-                      : ["网站介绍", "简历经历", "作品总结"]
-                    ).map((tag) => (
-                      <span key={tag} className="px-2 py-0.5 text-[10px] font-mono text-zinc-500 bg-zinc-900/60 border border-zinc-800 rounded-md">
-                        {tag}
-                      </span>
-                    ))}
+                <div className="copilot-welcome">
+                  <span className="copilot-welcome__label">小八 · 作品集助手</span>
+                  <h2>想从哪里开始？</h2>
+                  <p>{emptyHint}</p>
+                  <div className="copilot-suggestions">
+                    {promptCategories.map(cat => <button key={cat.label} onClick={() => handleSend(cat.prompts[0])}>{cat.prompts[0]}<Send size={14} /></button>)}
                   </div>
                 </div>
               ) : (
@@ -1111,25 +935,16 @@ export default function AICopilot() {
                   >
                     {msg.role === "assistant" && (
                       <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
-                        <MiniAvatar
-                          expression={expression}
-                          pupilOffset={pupilOffset}
-                          shockOffsetL={shockOffsetL}
-                          shockOffsetR={shockOffsetR}
-                          params={currentParams}
-                          dizzyPhase={dizzyPhase}
-                          connectionStatus={connectionStatus}
-                          size="sm"
-                        />
+                        <MiniAvatar size="sm" />
                       </div>
                     )}
-                    <div className={`max-w-[85%] ${msg.role === "user" ? "items-end" : "items-start"} flex flex-col gap-1`}>
-                      <div className={`relative px-4 py-3 text-sm rounded-2xl leading-relaxed ${
+                    <div className={`min-w-0 max-w-[88%] ${msg.role === "user" ? "items-end" : "items-start"} flex flex-col gap-1`}>
+                      <div className={`relative min-w-0 break-words px-4 py-3 text-sm rounded-2xl leading-relaxed ${
                         msg.role === "user"
-                          ? "bg-blue-600 text-white rounded-tr-md shadow-md shadow-blue-600/20"
+                          ? "copilot-user-message bg-blue-600 text-white rounded-tr-md shadow-md shadow-blue-600/20"
                           : msg.error
                           ? "bg-red-950/40 border border-red-800/40 text-red-200 rounded-tl-md"
-                          : "bg-zinc-900/80 border border-zinc-800 text-zinc-200 rounded-tl-md"
+                          : "copilot-assistant-message bg-zinc-900/80 border border-zinc-800 text-zinc-200 rounded-tl-md"
                       }`}>
                         {msg.role === "assistant" ? (
                           msg.content ? (
@@ -1197,7 +1012,7 @@ export default function AICopilot() {
                           <>
                             <button
                               onClick={() => handleCopy(msg.content, i)}
-                              className="opacity-0 group-hover/msg:opacity-100 transition-opacity p-1 rounded hover:bg-zinc-800 text-zinc-600 hover:text-zinc-400"
+                              className="opacity-70 hover:opacity-100 focus:opacity-100 transition-opacity p-1 rounded hover:bg-zinc-800 text-zinc-600 hover:text-zinc-400"
                               aria-label="复制消息"
                               title="复制"
                             >
@@ -1210,7 +1025,7 @@ export default function AICopilot() {
                             {msg.error && (
                               <button
                                 onClick={handleRetry}
-                                className="opacity-0 group-hover/msg:opacity-100 transition-opacity p-1 rounded hover:bg-zinc-800 text-zinc-600 hover:text-zinc-400 flex items-center gap-1"
+                                className="opacity-70 hover:opacity-100 focus:opacity-100 transition-opacity p-1 rounded hover:bg-zinc-800 text-zinc-600 hover:text-zinc-400 flex items-center gap-1"
                                 aria-label="重试"
                                 title="重试"
                               >
@@ -1229,7 +1044,7 @@ export default function AICopilot() {
             </div>
 
             {/* Footer */}
-            <div className="p-3 bg-gradient-to-t from-zinc-950 via-zinc-950/95 to-zinc-950/80 border-t border-zinc-800/80 space-y-3">
+            <div className="copilot-footer p-3 bg-gradient-to-t from-zinc-950 via-zinc-950/95 to-zinc-950/80 border-t border-zinc-800/80 space-y-3">
               <AnimatePresence>
                 {showCategoryPanel && (
                   <motion.div
@@ -1238,7 +1053,7 @@ export default function AICopilot() {
                     exit={{ opacity: 0, height: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="grid grid-cols-3 gap-2 p-1">
+                    <div className="copilot-category-panel grid grid-cols-3 gap-2 p-1">
                       {promptCategories.map((cat, idx) => {
                         const Icon = cat.icon;
                         const colors = COLOR_MAP[cat.color as keyof typeof COLOR_MAP];
@@ -1282,18 +1097,19 @@ export default function AICopilot() {
                   aria-pressed={showCategoryPanel}
                 >
                   <ChevronDown className={`w-3 h-3 transition-transform ${showCategoryPanel ? "rotate-180" : ""}`} />
-                  {showCategoryPanel ? "收起分类" : "查看所有分类指令"}
+                  {showCategoryPanel ? "收起分类" : "更多提问"}
                 </button>
               )}
 
               <div className="relative flex items-center gap-2">
                 <div className="relative flex-1">
-                  <input
+                  <textarea
                     ref={inputRef}
-                    type="text"
+                    rows={2}
+                    maxLength={8000}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229 && !e.repeat) { e.preventDefault(); void handleSend(input); } }}
                     placeholder={placeholder}
                     aria-label="输入问题"
                     className="w-full bg-zinc-900/80 border border-zinc-800 rounded-full pl-5 pr-14 py-3 text-sm text-zinc-100 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600"
@@ -1315,16 +1131,21 @@ export default function AICopilot() {
 
               <div className="flex items-center justify-between px-2">
                 <div className="flex items-center gap-3">
-                  <span className="text-[9px] font-mono text-zinc-700 tracking-wider flex items-center gap-1">
+                  <span className="copilot-keyboard-hint text-[9px] font-mono text-zinc-500 tracking-wider flex items-center gap-1">
                     <kbd className="px-1 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-500">ENTER</kbd>
-                    发送
+                    发送 · Shift + Enter 换行
                   </span>
                 </div>
                 {isLoading ? (
-                  <span className="text-[9px] font-mono text-blue-400 tracking-wider flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-                    生成中
-                  </span>
+                  <button className="text-[11px] text-blue-300 px-2 py-1 rounded" onClick={() => {
+                    requestRef.current?.abort();
+                    requestRef.current = null;
+                    busyRef.current = false;
+                    setIsLoading(false);
+                    setIsThinking(false);
+                    setConnectionStatus("idle");
+                    setMessages(previous => previous.map(message => message.isStreaming ? { ...message, isStreaming: false, content: message.content || "已停止生成。" } : message));
+                  }}>停止生成</button>
                 ) : connectionStatus === "error" ? (
                   <span className="text-[9px] font-mono text-red-400 tracking-wider flex items-center gap-1.5">
                     <AlertCircle className="w-2.5 h-2.5" />
@@ -1332,7 +1153,7 @@ export default function AICopilot() {
                   </span>
                 ) : (
                   <span className="text-[9px] font-mono text-zinc-700 tracking-wider flex items-center gap-1">
-                    由 DeepSeek 驱动
+                    AI 回答仅供参考
                   </span>
                 )}
               </div>
@@ -1354,82 +1175,11 @@ const MINI_PRESETS = {
   lg: { wrap: 64, eye: 18, gap: 3, glow: 0.45 },
 } as const;
 
-function MiniAvatar({
-  expression,
-  pupilOffset,
-  shockOffsetL,
-  shockOffsetR,
-  params,
-  dizzyPhase,
-  connectionStatus,
-  size = "md",
-}: {
-  expression: Expression;
-  pupilOffset: { x: number; y: number };
-  shockOffsetL: { x: number; y: number };
-  shockOffsetR: { x: number; y: number };
-  params: EyeParams;
-  dizzyPhase: number;
-  connectionStatus: "idle" | "connecting" | "connected" | "error";
-  size?: keyof typeof MINI_PRESETS;
-}) {
+function MiniAvatar({ size = "md" }: { size?: keyof typeof MINI_PRESETS }) {
   const preset = MINI_PRESETS[size];
-  // 按比例缩放眼白尺寸，保持与外部触发器一致的视觉语言
-  const scale = preset.eye / params.eyeWhiteW;
-  const miniParams: EyeParams = {
-    ...params,
-    eyeWhiteW: Math.round(params.eyeWhiteW * scale),
-    eyeWhiteH: Math.round(params.eyeWhiteH * scale),
-    pupilW: Math.round(params.pupilW * scale),
-    pupilH: Math.round(params.pupilH * scale),
-    eyeGap: preset.gap,
-    // 呼吸幅度按比例缩小，避免在小尺寸下抖动过大
-    breatheAmplitude: Math.max(2, params.breatheAmplitude * scale * 0.6),
-  };
-  return (
-    <div className={`relative flex items-center justify-center rounded-full bg-zinc-950/95 border border-white/15 shadow-[0_4px_18px_rgba(0,0,0,0.45)]`}
-      style={{ width: preset.wrap, height: preset.wrap }}
-    >
-      {/* 外层光晕 */}
-      <motion.div
-        animate={{ opacity: [preset.glow * 0.7, preset.glow, preset.glow * 0.7] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute inset-[-25%] bg-gradient-to-tr from-blue-500/30 via-indigo-500/20 to-purple-500/30 rounded-full blur-[10px] pointer-events-none"
-      />
-      {/* 玻璃外壳 — 呼吸浮动 */}
-      <motion.div
-        animate={{ y: [0, -miniParams.breatheAmplitude, 0] }}
-        transition={{ duration: miniParams.breatheDuration, repeat: Infinity, ease: "easeInOut" }}
-        className="relative z-10 flex items-center"
-        style={{ gap: `${miniParams.eyeGap}px` }}
-      >
-        <Eye
-          expression={expression}
-          pupilOffset={pupilOffset}
-          shockOffset={shockOffsetL}
-          side="left"
-          params={miniParams}
-          dizzyPhase={dizzyPhase}
-        />
-        <Eye
-          expression={expression}
-          pupilOffset={pupilOffset}
-          shockOffset={shockOffsetR}
-          side="right"
-          params={miniParams}
-          dizzyPhase={dizzyPhase}
-        />
-      </motion.div>
-      {/* 连接状态指示器 */}
-      {size !== "sm" && (
-        <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-zinc-950 ${
-          connectionStatus === "error" ? "bg-red-500" :
-          connectionStatus === "connected" ? "bg-emerald-500" :
-          "bg-amber-500 animate-pulse"
-        }`}></div>
-      )}
-    </div>
-  );
+  return <div className="copilot-avatar" aria-hidden="true" style={{ width: preset.wrap, height: preset.wrap }}>
+    <span><i /></span><span><i /></span>
+  </div>;
 }
 
 // ==========================================
@@ -1438,7 +1188,7 @@ function MiniAvatar({
 type Expression =
   | "idle" | "blink" | "happy" | "yawn" | "bored" | "sleepy" | "dizzy" | "thinking" | "shock"
   | "wink" | "angry" | "money" | "disdain" | "arrogant" | "pitiful" | "love" | "nod"
-  | "silly" | "shiver";
+  | "silly" | "shiver" | "flirty" | "blush" | "tease";
 
 interface EyeParams {
   eyeWhiteW: number;
@@ -1472,14 +1222,17 @@ const BASE_PARAMS: EyeParams = {
   blinkScaleY: 0.2, // 基础眨眼高度缩放，建议 0.2 左右，根据实际需求调整
   blinkDuration: 80, // 基础眨眼持续时间，建议 80ms 左右，根据实际需求调整
   halfClosedScaleY: 0.4, // 基础半闭眼高度缩放，建议 0.4 左右，根据实际需求调整
-  breatheAmplitude: 8, // 基础呼吸幅度，建议 8px 左右，根据实际需求调整
+  breatheAmplitude: 2, // 基础呼吸幅度，建议 8px 左右，根据实际需求调整
   breatheDuration: 2, // 基础呼吸持续时间，建议 2s 左右，根据实际需求调整
   pupilScale: 1, // 基础瞳孔缩放，建议 1 左右，根据实际需求调整
-  eyeWhiteFollowRatio: 1, // 基础眼白跟随眼珠偏移的比例，建议 0.3~0.4
+  eyeWhiteFollowRatio: 0.3, // 基础眼白跟随眼珠偏移的比例，建议 0.3~0.4
   eyelidRotate: 0, // 基础眼皮旋转角度，建议 0 度，根据实际需求调整
 };
 
 const EXPRESSION_PARAMS: Record<Expression, EyeParams> = {// 情绪化参数参数
+  flirty:   { ...BASE_PARAMS, halfClosedScaleY: 0.48, pupilOffsetX: 2, pupilScale: 1.12 },
+  blush:    { ...BASE_PARAMS, halfClosedScaleY: 0.18, pupilOffsetY: 2, pupilScale: 1.05 },
+  tease:    { ...BASE_PARAMS, pupilOffsetX: -2, pupilScale: 1.08 },
   idle:     { ...BASE_PARAMS, blinkScaleY: 0.65 },// 空闲状态：眨眼高度缩放 0.65，半闭眼高度缩放 0.4
   blink:    { ...BASE_PARAMS, blinkScaleY: 1 },// 眨眼状态：眨眼高度缩放 1，半闭眼高度缩放 0.4
   happy:    { ...BASE_PARAMS, eyeWhiteW: 13.5, eyeWhiteH: 14, eyeGap: 4 },// 快乐状态：眼白宽 13.5，眼白高 14，眼间距 4
@@ -1492,7 +1245,7 @@ const EXPRESSION_PARAMS: Record<Expression, EyeParams> = {// 情绪化参数参�
   wink:     { ...BASE_PARAMS },// 亲吻状态：眨眼高度缩放 0.2，半闭眼高度缩放 0.4
   angry:    { ...BASE_PARAMS, halfClosedScaleY: 0.56, eyelidRotate: 11 },// 怒目而视状态：半闭眼高度缩放 0.56，眉毛旋转角度 11 度
   money:    { ...BASE_PARAMS, eyeWhiteW: 24, eyeWhiteH: 31, pupilScale: 0.9 },// 金钱状态：瞳孔缩放 0.9
-  disdain:  { ...BASE_PARAMS, pupilOffsetY: -3, halfClosedScaleY: 0.4, },// 轻蔑状态：瞳孔垂直偏移 -3px，半闭眼高度缩放 0.4，眉毛旋转角度 8 度
+  disdain:  { ...BASE_PARAMS, pupilOffsetX: -2, pupilOffsetY: -3, halfClosedScaleY: 0.56, eyelidRotate: 9, },// 轻蔑状态：瞳孔垂直偏移 -3px，半闭眼高度缩放 0.4，眉毛旋转角度 8 度
   arrogant: { ...BASE_PARAMS, pupilOffsetY: 2, halfClosedScaleY: 0.55, },// 傲慢状态：瞳孔垂直偏移 2px，半闭眼高度缩放 0.55，眉毛旋转角度 6 度
   pitiful:  { ...BASE_PARAMS, pupilScale: 1.1, halfClosedScaleY: 0.35, eyelidRotate: 12 },// 可怜状态：瞳孔缩放 1.1，半闭眼高度缩放 0.35，眉毛旋转角度 12 度
   love:     { ...BASE_PARAMS, eyeWhiteW: 24, eyeWhiteH: 31, pupilScale: 0.7 },// 爱状态：瞳孔缩放 0.7
@@ -1523,11 +1276,11 @@ function Eye({
   const isBored = expression === "bored";
   const isSleepy = expression === "sleepy";
   const isHalfClosed = isYawn || isBored || isSleepy || expression === "angry"
-    || expression === "disdain" || expression === "arrogant" || expression === "pitiful" || expression === "silly";
+    || expression === "disdain" || expression === "arrogant" || expression === "pitiful" || expression === "silly" || expression === "flirty" || expression === "blush";
   const isHappy = expression === "happy";
   const isDizzy = expression === "dizzy";
   const isShock = expression === "shock";
-  const isWink = expression === "wink";
+  const isWink = expression === "wink" || expression === "tease";
   const isAngry = expression === "angry";
   const isPitifulExpr = expression === "pitiful";
   const isNod = expression === "nod";
@@ -1721,7 +1474,7 @@ function Eye({
           style={{ width: `${pupilW}px`, height: `${pupilH}px` }}
           initial={{ x: crossX, y: crossY, opacity: 0.7 }}
           animate={{ x: crossX, y: crossY, opacity: 0.7 }}
-          transition={{ type: "tween", duration: 0.12, ease: "linear" }}
+          transition={{ type: "spring", stiffness: 210, damping: 25, mass: 0.65 }}
         >
           <span className="absolute rounded-full bg-white/45" style={{ width: "25%", height: "25%", top: "18%", left: "22%" }} />
         </motion.div>
@@ -1749,7 +1502,7 @@ function Eye({
           className="bg-zinc-950 rounded-full relative"
           style={{ width: `${pupilW}px`, height: `${pupilH}px` }}
           animate={{ x: offset.x, y: offset.y }}
-          transition={{ type: "tween", duration: 0.12, ease: "linear" }}
+          transition={{ type: "spring", stiffness: 210, damping: 25, mass: 0.65 }}
         >
           <span className="absolute rounded-full bg-white/45" style={{ width: "25%", height: "25%", top: "18%", left: "22%" }} />
         </motion.div>
@@ -1803,15 +1556,14 @@ function Eye({
       animate={nodMotion}
       transition={isNod
         ? { duration: 1.4, repeat: Infinity, ease: "easeInOut" }
-        : { type: "tween", duration: 0.12, ease: "linear" }}
+        : { type: "spring", stiffness: 210, damping: 25, mass: 0.65 }}
     >
       <motion.div
-        key={`p-${offset.x}-${offset.y}`}
         className="bg-zinc-950 rounded-full relative"
         style={{ width: `${pupilW}px`, height: `${pupilH}px` }}
-        initial={{ x: offset.x, y: offset.y, opacity: isHalfClosed ? 0.7 : 1, scale: pupilScale }}
+        initial={false}
         animate={{ x: offset.x, y: offset.y, opacity: isHalfClosed ? 0.7 : 1, scale: pupilScale }}
-        transition={{ type: "tween", duration: 0.12, ease: "linear" }}
+        transition={{ type: "spring", stiffness: 210, damping: 25, mass: 0.65 }}
       >
         <span className="absolute rounded-full bg-white/45" style={{ width: "25%", height: "25%", top: "18%", left: "22%" }} />
       </motion.div>
@@ -1885,6 +1637,9 @@ const TUNING_SLIDERS: SliderDef[] = [
 // 差异化调参：不同表情适用的滑块子集。未列入的字段该表情下隐藏，
 // 让面板更聚焦、不被无关项干扰（如困倦不旋转、纯弧线表情无瞳孔等）。
 const SLIDERS_BY_EXPR: Record<Expression, (keyof EyeParams)[]> = {
+  flirty: ["halfClosedScaleY", "pupilScale", "pupilOffsetX"],
+  blush: ["halfClosedScaleY", "pupilScale", "pupilOffsetY"],
+  tease: ["pupilScale", "pupilOffsetX"],
   // 基础：眼白/瞳孔尺寸、间距、偏移、呼吸、跟随
   idle:     ["eyeWhiteW","eyeWhiteH","pupilW","pupilH","eyeGap","pupilOffsetX","pupilOffsetY","blinkScaleY","blinkDuration","breatheAmplitude","breatheDuration","pupilScale","eyeWhiteFollowRatio"],
   blink:    ["eyeWhiteW","eyeWhiteH","pupilW","pupilH","eyeGap","blinkScaleY","blinkDuration","pupilScale"],
@@ -1909,7 +1664,7 @@ const SLIDERS_BY_EXPR: Record<Expression, (keyof EyeParams)[]> = {
   shiver:   ["eyeWhiteW","eyeWhiteH","pupilW","pupilH","eyeGap","pupilOffsetX","pupilOffsetY","breatheAmplitude","breatheDuration","pupilScale"],
 };
 
-const EXPRESSION_LIST: Expression[] = [
+const EXPRESSION_LIST: Expression[] = ["flirty", "blush", "tease",
   "idle", "blink", "happy", "yawn", "bored", "sleepy", "dizzy", "thinking", "shock",
   "wink", "angry", "money", "disdain", "arrogant", "pitiful", "love", "nod",
   "silly", "shiver",

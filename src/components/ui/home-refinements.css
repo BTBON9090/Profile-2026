@@ -1,0 +1,40 @@
+/* Homepage controls: a quiet technical rail and a compact material studio. */
+.home-anchor-nav { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 50; width: 126px; display: none; color: #9ca3b0; }
+.home-anchor-nav__progress { width: 32px; margin: 0 0 20px auto; font: 10px var(--font-mono), monospace; font-variant-numeric: tabular-nums; }
+.home-anchor-nav__progress span { display: block; text-align: right; }
+.home-anchor-nav__progress small { font-size: 8px; margin-left: 3px; opacity: .5; }
+.home-anchor-nav__progress i { display: block; height: 1px; margin-top: 9px; background: #ffffff18; }
+.home-anchor-nav__progress b { display: block; height: 100%; background: #68a9ff; transform-origin: left; transition: transform 120ms linear; }
+.home-anchor-nav__sections { display: flex; flex-direction: column; gap: 3px; }
+.home-anchor-nav button { display: flex; position: relative; align-items: center; justify-content: flex-end; min-height: 40px; width: 100%; gap: 12px; cursor: pointer; border-radius: 6px; }
+.home-anchor-nav button i { width: 13px; height: 1px; background: #7c84915c; transition: width 240ms, background 240ms; }
+.home-anchor-nav__label { font-size: 11px; letter-spacing: .05em; opacity: 0; transform: translateX(5px); transition: opacity 200ms, transform 200ms; text-shadow: 0 1px 12px #000; }
+.home-anchor-nav__number { font: 9px var(--font-mono), monospace; color: #717885; }
+.home-anchor-nav button:hover .home-anchor-nav__label, .home-anchor-nav button:focus-visible .home-anchor-nav__label, .home-anchor-nav button[aria-current] .home-anchor-nav__label { opacity: 1; transform: none; }
+.home-anchor-nav button[aria-current] { color: #b7d9ff; }
+.home-anchor-nav button[aria-current] i { width: 22px; height: 2px; background: #68a9ff; box-shadow: 0 0 14px #559aff60; }
+.home-anchor-nav button[aria-current] .home-anchor-nav__number { color: #68a9ff; }
+.home-anchor-nav button:focus-visible { outline: 1px solid #68a9ff; outline-offset: 4px; }
+@media (min-width: 1280px) { .home-anchor-nav { display: block; } }
+.block-studio { font-family: inherit; max-width: calc(100vw - 24px); left: 12px; }
+.block-studio > div { max-width: 100%; }
+.block-studio__trigger { width: 38px; height: 38px; border-radius: 11px; color: #a4adbb; border: 1px solid #ffffff14; background: #171b22c9; backdrop-filter: blur(18px); box-shadow: 0 4px 18px #0002, inset 0 1px #ffffff08; transition: color 180ms, border-color 180ms; cursor: pointer; }
+.block-studio__trigger:hover { color: #d2e5ff; border-color: #8abdff66; }
+.block-studio__panel { border: 1px solid #ffffff19; border-radius: 18px; background: #13171ff2; backdrop-filter: blur(24px); box-shadow: 0 24px 80px #0007, inset 0 1px #ffffff0a; overflow: hidden; color: #d9e0eb; outline: none; }
+.block-studio__header { padding: 14px 16px; border-bottom: 1px solid #ffffff0a; }
+.block-studio__header button { min-width: 28px; min-height: 28px; display: grid; place-items: center; }
+.block-studio__body { max-height: min(70vh, calc(100dvh - 160px)); padding: 6px 18px 18px; overscroll-behavior: contain; }
+.block-studio__body label { margin-block: 13px; }
+.block-studio__body label span, .block-studio__body label > div:first-child { font-size: 11px; }
+.block-studio__body label span:first-child { color: #adb7c6; }
+.block-studio__body select { min-height: 34px; padding: 5px 26px 5px 10px; border-color: #ffffff1a; background-color: #ffffff05; border-radius: 7px; font-size: 11px; }
+.block-studio__body input[type=range] { min-height: 5px; accent-color: #8abaff; }
+.block-studio__body button[aria-expanded] { min-height: 44px; }
+.block-studio__body button[aria-expanded] span { color: #e2e7ef; font-size: 12px; font-family: inherit; letter-spacing: .02em; }
+.block-studio__looks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+.block-studio__looks button { padding: 8px; border: 1px solid #ffffff12; border-radius: 10px; font-size: 11px; color: #b6c0cd; cursor: pointer; }
+.block-studio__looks button:hover { background: #ffffff07; border-color: #ffffff38; }
+.block-studio__looks i { display: block; width: 30px; height: 30px; border-radius: 6px; margin: 0 auto 7px; box-shadow: inset 0 1px 1px #ffffff55, 0 5px 10px #0005; transform: rotate(-7deg); }
+.block-studio button:focus-visible, .block-studio input:focus-visible, .block-studio select:focus-visible { outline: 2px solid #8abaff; outline-offset: 3px; }
+@media (max-width: 767px) { .block-studio { top: 76px; left: 10px; } .block-studio__trigger { width: 34px; height: 34px; } }
+@media (prefers-reduced-motion: reduce) { .home-anchor-nav *, .block-studio * { transition-duration: 0s !important; } }

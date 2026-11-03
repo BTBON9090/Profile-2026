@@ -391,7 +391,7 @@ export default function ProfileSection() {
                   {/* hover 提示图标 */}
                   <ChevronRight className={`w-3 h-3 text-zinc-600 transition-all duration-300 ${hoveredExp === index ? 'translate-x-0 opacity-100' : '-translate-x-1 opacity-0 group-hover:opacity-60 group-hover:translate-x-0'}`} />
                 </div>
-                <span className="text-xs text-zinc-400 flex items-center hidden md:flex">{exp.role}</span>
+                <span className="text-xs text-zinc-400 flex items-center">{exp.role}</span>
                 <div className="flex flex-wrap gap-1.5">
                   {exp.tech.slice(0, 4).map((tag: string, i: number) => (
                     <span key={i} className="h-auto flex px-2 py-0.5 bg-zinc-900/80 border border-zinc-800 rounded-md text-[10px] font-mono text-zinc-500 leading-normal">

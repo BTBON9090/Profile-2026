@@ -268,7 +268,7 @@ export const en = {
         category: 'Toolchain',
         icon: 'Wrench',
         // Icons shown, name revealed on hover
-        items: ['Figma', 'Sketch', 'Photoshop', 'Illustrator', 'After Effects', 'Git', 'Trae IDE', 'zcode'],
+        items: ['Figma', 'Sketch', 'Photoshop', 'Illustrator', 'Git', 'ChatGPT Codex'],
       },
     },
     experience: {
@@ -277,11 +277,20 @@ export const en = {
       initialCommit: 'Initial commit',
       items: [
         {
+          id: 7,
+          role: 'UX Designer',
+          company: 'Wanlian Yida',
+          logo: '',
+          time: '2026.08 - Present',
+          description: [],
+          tech: ['AI Recruiting Agent', 'Flexible Staffing', 'Human Resources', 'vibe coding'],
+        },
+        {
           id: 1,
           role: 'Product Designer',
           company: 'SNOWTECH',
           logo: 'https://cdn.btbon.cn/images/snowtech.webp',
-          time: '2024.08 - Present',
+          time: '2024.08 - 2026.04',
           description: [
             'Led end-to-end design of enterprise security browser and workspace console from 0 to 1',
             'Built and maintained dual-side component libraries, leveraging AI for design efficiency',

@@ -1,618 +1,142 @@
-// src/components/ui/bgm-player.tsx
 "use client";
-import { useState, useEffect, useRef, useCallback, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Play, Pause, SkipBack, SkipForward, Repeat, Repeat1,
-  ListMusic, X, Music,
-} from "lucide-react";
-import { usePathname } from "next/navigation";
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, ListMusic, X, Music } from "lucide-react";
 import { useAudio } from "@/lib/audio-context";
 import { PLAYLIST } from "@/data/playlist";
 import { useDraggableSnap } from "@/lib/use-draggable-snap";
+import { useFloatingPanel } from "./use-floating-panel";
+import "./floating-tools.css";
 
-type PlayerMode = "minimized" | "expanded";
-
-// 展开面板宽度（吸附宽度基准，确保左右贴边展开均完整可见）
-const EXPANDED_W = 320;
-const MINIMIZED_W = 48;
-
-/**
- * PlayerProgress — 高频更新隔离组件
- * 单独订阅 currentTime / duration，避免整个播放器每帧重渲染（拖拽时不卡）。
- */
-const PlayerProgress = memo(function PlayerProgress({
-  currentTime,
-  duration,
-  seek,
-  isLightTheme,
-  mutedTextClass,
-}: {
-  currentTime: number;
-  duration: number;
-  seek: (t: number) => void;
-  isLightTheme: boolean;
-  mutedTextClass: string;
-}) {
-  const formatTime = (s: number) => {
-    if (!s || isNaN(s)) return "0:00";
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${sec.toString().padStart(2, "0")}`;
-  };
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-
-  return (
-    <div className="px-4 pb-2">
-      <div
-        className="relative h-1 rounded-full bg-white/8 cursor-pointer group/progress"
-        onClick={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const percent = (e.clientX - rect.left) / rect.width;
-          seek(percent * duration);
-        }}
-      >
-        <div
-          className="absolute top-0 left-0 h-full rounded-full bg-zinc-200/90"
-          style={{ width: `${progressPercent}%` }}
-        />
-        <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-white shadow-sm opacity-0 group-hover/progress:opacity-100 transition-opacity"
-          style={{ left: `${progressPercent}%` }}
-        />
-      </div>
-      <div className="flex justify-between mt-1.5">
-        <span className={`text-[9px] font-mono tabular-nums ${mutedTextClass}`}>
-          {formatTime(currentTime)}
-        </span>
-        <span className={`text-[9px] font-mono tabular-nums ${isLightTheme ? "text-zinc-400" : "text-zinc-600"}`}>
-          {formatTime(duration)}
-        </span>
-      </div>
-    </div>
-  );
-});
+function formatTime(value: number) {
+  const seconds = Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+}
 
 export default function BgmPlayer() {
-  const {
-    isPlaying,
-    currentTrack,
-    currentTime,
-    duration,
-    currentTrackIndex,
-    repeatMode,
-    togglePlay,
-    playNextTrack,
-    playPrevTrack,
-    seek,
-    toggleRepeatMode,
-    selectTrack,
-    lyricColorCycle,
-    lyricFillMode,
-    lyricColor,
-    toggleLyricColorCycle,
-    setLyricFillMode,
-  } = useAudio();
-  const pathname = usePathname();
-
-  const [mode, setMode] = useState<PlayerMode>("minimized");
+  const audio = useAudio();
+  const { currentTrack, isPlaying, duration, currentTime, currentTrackIndex, repeatMode } = audio;
+  const reduceMotion = useReducedMotion();
+  const [open, setOpen] = useState(false);
   const [playlistOpen, setPlaylistOpen] = useState(false);
-  const [hoveredTrack, setHoveredTrack] = useState<number | null>(null);
-
-  const autoMinimizeTimer = useRef<NodeJS.Timeout | null>(null);
-  const listRef = useRef<HTMLDivElement>(null);
-  const hoverRef = useRef(false);
-
-  // ==========================================
-  // 拖拽贴边 — 吸附宽度由 hook 动态读取元素实际 offsetWidth
-  // ==========================================
-  const playerRef = useRef<HTMLDivElement>(null);
-  const hasWindow = typeof window !== "undefined";
-  // 视口宽度（响应横竖屏切换 / 尺寸变化），用于自适应展开宽度
-  const [vw, setVw] = useState<number>(hasWindow ? window.innerWidth : 0);
-  useEffect(() => {
-    if (!hasWindow) return;
-    const onResize = () => setVw(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [hasWindow]);
-  // 移动端：展开面板按视口宽度自适应（留 24px 边距），默认靠下居中；
-  // 桌面端：固定 320px 宽，靠下距底部 240px。
-  const isMobile = vw > 0 && vw < 768;
-  const expandedWidth = isMobile ? Math.min(vw - 24, 320) : EXPANDED_W;
-  const drag = useDraggableSnap(
-    playerRef,
-    hasWindow ? 1 : 0,
-    hasWindow
-      ? isMobile
-        ? window.innerHeight - 140 // 移动端默认距底部 140px
-        : window.innerHeight - 240
-      : 0,
-  );
-
-  // 面板切换尺寸时，首帧和过渡结束后各校正一次位置，确保新增设置项
-  // 不会沿用收起态坐标而落到视口外。
-  useEffect(() => {
-    if (!drag.mounted) return;
-    const frame = requestAnimationFrame(drag.reclampToViewport);
-    const timer = window.setTimeout(drag.reclampToViewport, 340);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(timer);
-    };
-  }, [drag.mounted, drag.reclampToViewport, expandedWidth, mode]);
-
-  const onLeftSide = drag.snapSide === "left";
-  // 拖拽中→圆形；贴边态→半圆半方（贴边侧方角、外侧圆角）
-  const bubbleShapeClass = drag.isDragging
-    ? "rounded-full"
-    : onLeftSide
-      ? "rounded-r-full"
-      : "rounded-l-full";
-
-  // ==========================================
-  // Auto-minimize：hover 时不自动收起，离开后 3s 收起
-  // ==========================================
-  const clearAutoMinimize = useCallback(() => {
-    if (autoMinimizeTimer.current) {
-      clearTimeout(autoMinimizeTimer.current);
-      autoMinimizeTimer.current = null;
-    }
+  const bubbleRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const drag = useDraggableSnap(bubbleRef, 2, typeof window === "undefined" ? 0 : window.innerHeight - 180);
+  const placement = useFloatingPanel(open, drag.position.x, drag.position.y, drag.snapSide, 48, 352, playlistOpen ? 590 : 380);
+  const close = useCallback(() => {
+    setOpen(false);
+    triggerRef.current?.focus({ preventScroll: true });
   }, []);
 
-  const scheduleAutoMinimize = useCallback(() => {
-    clearAutoMinimize();
-    autoMinimizeTimer.current = setTimeout(() => {
-      setMode("minimized");
-    }, 3000);
-  }, [clearAutoMinimize]);
-
   useEffect(() => {
-    return () => clearAutoMinimize();
-  }, [clearAutoMinimize]);
-
-  // Close playlist on outside click
-  useEffect(() => {
-    if (!playlistOpen) return;
-    const onClick = (e: MouseEvent) => {
-      if (listRef.current && !listRef.current.contains(e.target as Node)) {
-        setPlaylistOpen(false);
-      }
+    if (!open) return;
+    const timer = window.setTimeout(() => closeRef.current?.focus({ preventScroll: true }), 100);
+    const onPointer = (event: PointerEvent) => {
+      if (!panelRef.current?.contains(event.target as Node) && !bubbleRef.current?.contains(event.target as Node)) setOpen(false);
     };
-    window.addEventListener("mousedown", onClick);
-    return () => window.removeEventListener("mousedown", onClick);
-  }, [playlistOpen]);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.stopPropagation(); close(); }
+    };
+    const onOtherPanel = () => setOpen(false);
+    window.addEventListener("pointerdown", onPointer);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("copilot-open", onOtherPanel);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("copilot-open", onOtherPanel);
+    };
+  }, [open, close]);
 
   if (!currentTrack) return null;
+  const validDuration = Number.isFinite(duration) && duration > 0 ? duration : 0;
+  const safeTime = Math.min(validDuration, Math.max(0, Number.isFinite(currentTime) ? currentTime : 0));
+  const repeatLabel = repeatMode === "none" ? "顺序播放" : repeatMode === "one" ? "单曲循环" : "列表循环";
 
-  const isLightTheme = pathname === "/work/light-branding" || pathname === "/work/ciliju-xing";
-  const accentClass = isLightTheme ? "text-zinc-800" : "text-zinc-100";
-  const mutedTextClass = isLightTheme ? "text-zinc-500" : "text-zinc-400";
-  const panelBgClass = isLightTheme
-    ? "bg-white/90 border-zinc-200"
-    : "bg-zinc-950/95 border-white/10";
-  const hoverBtnClass = isLightTheme
-    ? "hover:bg-zinc-100 text-zinc-600"
-    : "hover:bg-white/8 text-zinc-400";
-
-  // 播放列表位置（触边自适应）：
-  // - 水平：放在播放器外侧（贴左→列表在右；贴右→列表在左）
-  // - 垂直：与播放器顶部对齐，根据剩余空间 clamp
-  const PLAYLIST_W = expandedWidth;
-  const PLAYLIST_GAP = 12;
-  const playerW = mode === "minimized" ? MINIMIZED_W : expandedWidth;
-  let playlistLeft: number;
-  if (onLeftSide) {
-    playlistLeft = drag.position.x + playerW + PLAYLIST_GAP;
-  } else {
-    playlistLeft = drag.position.x - PLAYLIST_W - PLAYLIST_GAP;
-  }
-  if (hasWindow) {
-    const vw = window.innerWidth;
-    if (playlistLeft + PLAYLIST_W > vw - 16) playlistLeft = vw - PLAYLIST_W - 16;
-    if (playlistLeft < 16) playlistLeft = 16;
-  }
-
-  const PLAYLIST_H = 420;
-  const playerTop = drag.position.y;
-  let playlistTop: number;
-  if (hasWindow) {
-    const vh = window.innerHeight;
-    let top = playerTop;
-    if (top + PLAYLIST_H > vh - 16) top = vh - PLAYLIST_H - 16;
-    if (top < 16) top = 16;
-    playlistTop = top;
-  } else {
-    playlistTop = playerTop;
-  }
-
-  return (
-    <>
-      {/* 全局 CSS 动画 */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes vinyl-spin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        .animate-vinyl { animation: vinyl-spin 4s linear infinite; }
-        .animate-vinyl.paused { animation-play-state: paused; }
-        @keyframes scroll-marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-25%); }
-        }
-        .animate-marquee { animation: scroll-marquee 12s linear infinite; }
-      ` }} />
-
-      {/* Playlist overlay */}
-      {playlistOpen && (
-        <div
-          className="fixed inset-0 z-[99997] bg-black/20 backdrop-blur-[2px]"
-          onClick={() => setPlaylistOpen(false)}
-        />
-      )}
-
-      {/* Playlist */}
-      <AnimatePresence>
-        {playlistOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            ref={listRef}
-            className="fixed z-[99998] max-h-[420px] flex flex-col rounded-2xl border bg-zinc-950/95 border-white/10 backdrop-blur-2xl shadow-2xl overflow-hidden"
-            style={{
-              top: `${playlistTop}px`,
-              left: `${playlistLeft}px`,
-              width: `${Math.min(expandedWidth, PLAYLIST_W)}px`,
-            }}
-          >
-            {/* Playlist header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
-              <div className="flex items-center gap-2">
-                <ListMusic className={`w-4 h-4 ${accentClass}`} />
-                <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">
-                  Playlist
-                </span>
-                <span className="text-[10px] font-mono text-zinc-600">
-                  {PLAYLIST.length} tracks
-                </span>
-              </div>
-              <button
-                onClick={() => setPlaylistOpen(false)}
-                className="p-1 rounded hover:bg-white/10 text-zinc-400 transition-colors"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Playlist items */}
-            <div className="flex-1 overflow-y-auto p-2">
-              {PLAYLIST.map((track, i) => {
-                const isActive = i === currentTrackIndex;
-                return (
-                  <button
-                    key={i}
-                    onClick={() => { selectTrack(i); setPlaylistOpen(false); }}
-                    onMouseEnter={() => setHoveredTrack(i)}
-                    onMouseLeave={() => setHoveredTrack(null)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? "bg-white/10 text-white"
-                        : hoveredTrack === i
-                          ? "bg-white/5 text-zinc-200"
-                          : mutedTextClass
-                    }`}
-                  >
-                    <div className="w-6 flex-shrink-0 flex items-center justify-center">
-                      {isActive && isPlaying ? (
-                        <div className="flex items-end gap-0.5 h-3">
-                          <div className="w-0.5 h-2 bg-zinc-300 animate-pulse" />
-                          <div className="w-0.5 h-3 bg-zinc-300 animate-pulse" style={{ animationDelay: "0.2s" }} />
-                          <div className="w-0.5 h-1.5 bg-zinc-300 animate-pulse" style={{ animationDelay: "0.4s" }} />
-                        </div>
-                      ) : (
-                        <span className={`text-[10px] font-mono ${isActive ? accentClass : "text-zinc-600"}`}>
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="relative w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 border border-white/5">
-                      <img
-                        src={track.cover}
-                        alt={track.title}
-                        draggable={false}
-                        className="w-full h-full object-cover pointer-events-none select-none"
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                      />
-                    </div>
-
-                    <div className="flex-1 min-w-0 text-left">
-                      <div className={`text-xs font-medium truncate ${isActive ? "" : "text-zinc-300"}`}>
-                        {track.title}
-                      </div>
-                      <div className="text-[10px] truncate text-zinc-500">
-                        {track.artist}
-                      </div>
-                    </div>
-
-                    {isActive && (
-                      <div className="w-1 h-1 rounded-full bg-zinc-300 flex-shrink-0" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Playlist footer */}
-            <div className="px-4 py-2 border-t border-white/5 flex items-center justify-between">
-              <span className="text-[9px] font-mono text-zinc-600">
-                Repeat: {repeatMode === "none" ? "Off" : repeatMode === "one" ? "One" : "All"}
-              </span>
-              <span className="text-[9px] font-mono text-zinc-600">
-                {currentTrackIndex + 1} / {PLAYLIST.length}
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ==================== 主播放器（可拖拽） ==================== */}
-      <motion.div
-        ref={playerRef}
-        onPointerDown={drag.onPointerDown}
-        // 位置完全由 MotionValue 驱动（见 use-draggable-snap），拖拽期间 set 不触发重渲染，
-        // 彻底避免 Framer 用旧 state 复位 transform 导致"拖拽时不动"。
-        // hydration 安全：mounted=false 时与 SSR 一致（不可见），避免 hydration mismatch。
-        style={{
-          x: drag.mounted ? drag.x : 0,
-          y: drag.mounted ? drag.y : 0,
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 99999,
-          touchAction: "none",
-          cursor: drag.isDragging ? "grabbing" : "grab",
-          userSelect: "none",
-          willChange: "transform",
-          visibility: drag.mounted ? "visible" : "hidden",
-          pointerEvents: drag.mounted ? "auto" : "none",
-        }}
-        onMouseEnter={() => {
-          hoverRef.current = true;
-          clearAutoMinimize();
-        }}
-        onMouseLeave={() => {
-          hoverRef.current = false;
-          if (mode === "expanded" && !playlistOpen) {
-            scheduleAutoMinimize();
-          }
+  return <>
+    {/* Only the stable, 48px bubble is draggable. Controls never inherit drag gestures. */}
+    <motion.div
+      ref={bubbleRef}
+      onPointerDown={drag.onPointerDown}
+      className="music-dock"
+      data-side={drag.snapSide}
+      data-dragging={drag.isDragging}
+      style={{ x: drag.mounted ? drag.x : 0, y: drag.mounted ? drag.y : 0, visibility: drag.mounted ? "visible" : "hidden" }}
+    >
+      <button
+        ref={triggerRef}
+        className="music-dock__button"
+        aria-label={open ? "收起音乐播放器" : `打开音乐播放器：${currentTrack.title}`}
+        aria-expanded={open}
+        aria-controls="music-player-panel"
+        onClick={() => {
+          if (drag.justDraggedRef.current) return;
+          if (!open) window.dispatchEvent(new Event("music-player-open"));
+          setOpen(value => !value);
         }}
       >
-        <AnimatePresence mode="wait">
-          {mode === "minimized" ? (
-            /* ========== MINIMIZED ========== */
-            <motion.button
-              key="min"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.25 }}
-              onClick={() => {
-                // 移动端拖拽松手会补发 click，需抑制以免拖一下就误展开
-                if (drag.justDraggedRef.current) return;
-                setMode("expanded");
-              }}
-              className={`relative flex items-center justify-center w-12 h-12 ${bubbleShapeClass} bg-zinc-950/95 border border-white/10 shadow-2xl backdrop-blur-xl transition-transform duration-300 active:scale-95`}
-              title="点击展开播放器"
-            >
-              {/* 唱盘封面 */}
-              <div className={`relative w-9 h-9 rounded-full overflow-hidden ${isPlaying ? "animate-vinyl" : "animate-vinyl paused"}`}>
-                <img
-                  src={currentTrack.cover}
-                  alt={currentTrack.title}
-                  draggable={false}
-                  className="w-full h-full object-cover pointer-events-none select-none"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                />
-              </div>
-            </motion.button>
-          ) : (
-            /* ========== EXPANDED ========== */
-            <motion.div
-              key="exp"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className={`flex flex-col rounded-2xl border ${panelBgClass} backdrop-blur-2xl shadow-2xl overflow-hidden`}
-              style={{ width: `${expandedWidth}px` }}
-            >
-              {/* Top bar — Now Playing + 收起 */}
-              <div className={`flex items-center justify-between px-4 py-2 border-b ${isLightTheme ? "border-zinc-200" : "border-white/5"}`}>
-                <div className="flex items-center gap-2">
-                  <Music className={`w-3 h-3 ${accentClass}`} />
-                  <span className={`text-[9px] font-mono uppercase tracking-widest ${mutedTextClass}`}>
-                    {isPlaying ? "Now Playing" : "Paused"}
-                  </span>
-                </div>
-                <button
-                  onClick={() => setMode("minimized")}
-                  className={`p-1 rounded ${hoverBtnClass} transition-colors`}
-                  title="收起"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Album art + track info */}
-              <div className="flex items-center gap-3 p-4">
-                <button
-                  onClick={togglePlay}
-                  className="relative flex-shrink-0 w-14 h-14 rounded-full overflow-hidden group/cover"
-                  title={isPlaying ? "暂停" : "播放"}
-                >
-                  <div className={`w-full h-full ${isPlaying ? "animate-vinyl" : "animate-vinyl paused"}`}>
-                    <img
-                      src={currentTrack.cover}
-                      alt={currentTrack.title}
-                      draggable={false}
-                      className="w-full h-full object-cover pointer-events-none select-none"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                    />
-                  </div>
-                  <div className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${isPlaying ? "opacity-0 group-hover/cover:opacity-100" : "opacity-100"}`}>
-                    {isPlaying ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white ml-0.5" />}
-                  </div>
-                </button>
-
-                <div className="flex-1 min-w-0">
-                  <div className="relative overflow-hidden">
-                    <div className="flex w-max animate-marquee">
-                      {[...Array(4)].map((_, i) => (
-                        <div key={i} className="flex items-center">
-                          <span className={`text-sm font-bold whitespace-nowrap ${isLightTheme ? "text-zinc-900" : "text-zinc-100"}`}>
-                            {currentTrack.title}
-                          </span>
-                          <span className={`mx-2 ${isLightTheme ? "text-zinc-300" : "text-zinc-700"}`}>·</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className={`text-[11px] font-mono ${mutedTextClass} truncate`}>
-                    {currentTrack.artist}
-                  </div>
-                </div>
-              </div>
-
-              {/* Progress bar — 高频更新隔离 */}
-              <PlayerProgress
-                currentTime={currentTime}
-                duration={duration}
-                seek={seek}
-                isLightTheme={isLightTheme}
-                mutedTextClass={mutedTextClass}
-              />
-
-              {/* Main controls */}
-              <div className="flex items-center justify-center gap-2 px-4 py-3">
-                {/* Repeat */}
-                <button
-                  onClick={toggleRepeatMode}
-                  className={`p-2 rounded-full transition-all duration-300 ${hoverBtnClass} ${repeatMode !== "none" ? accentClass : ""}`}
-                  title={`Repeat: ${repeatMode}`}
-                >
-                  {repeatMode === "one" ? <Repeat1 className="w-3.5 h-3.5" /> : <Repeat className="w-3.5 h-3.5" />}
-                </button>
-
-                {/* Previous */}
-                <button
-                  onClick={playPrevTrack}
-                  className={`p-2 rounded-full transition-all duration-300 ${hoverBtnClass}`}
-                  title="Previous"
-                >
-                  <SkipBack className="w-4 h-4" />
-                </button>
-
-                {/* Play / Pause — main */}
-                <button
-                  onClick={togglePlay}
-                  className={`flex items-center justify-center w-10 h-10 rounded-full mx-1 transition-all duration-300 hover:scale-110 ${
-                    isLightTheme
-                      ? "bg-zinc-900 text-white hover:bg-zinc-800"
-                      : "bg-white text-zinc-900 hover:bg-zinc-200"
-                  }`}
-                  title={isPlaying ? "Pause" : "Play"}
-                >
-                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
-                </button>
-
-                {/* Next */}
-                <button
-                  onClick={playNextTrack}
-                  className={`p-2 rounded-full transition-all duration-300 ${hoverBtnClass}`}
-                  title="Next"
-                >
-                  <SkipForward className="w-4 h-4" />
-                </button>
-
-                {/* Playlist toggle */}
-                <button
-                  onClick={() => setPlaylistOpen(!playlistOpen)}
-                  className={`p-2 rounded-full transition-all duration-300 ${hoverBtnClass} ${playlistOpen ? accentClass : ""}`}
-                  title="Playlist"
-                >
-                  <ListMusic className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <div className={`grid gap-3 border-t px-4 py-3 ${isLightTheme ? "border-zinc-200" : "border-white/5"}`}>
-                <div className="flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className={`text-[11px] font-medium ${accentClass}`}>颜色轮换</div>
-                    <div className={`mt-0.5 text-[9px] leading-relaxed ${mutedTextClass}`}>
-                      {lyricColorCycle ? "缓慢循环全部颜色" : "每首歌使用一种随机颜色"}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-label="歌词颜色轮换"
-                    aria-checked={lyricColorCycle}
-                    onClick={toggleLyricColorCycle}
-                    className={`relative h-5 w-9 flex-shrink-0 rounded-full border transition-colors ${
-                      lyricColorCycle
-                        ? "border-zinc-200 bg-zinc-100"
-                        : isLightTheme
-                          ? "border-zinc-300 bg-zinc-200"
-                          : "border-white/10 bg-white/10"
-                    }`}
-                  >
-                    <span
-                      className={`absolute left-0 top-0.5 h-3.5 w-3.5 rounded-full transition-transform ${
-                        lyricColorCycle
-                          ? "translate-x-[19px] bg-zinc-900"
-                          : "translate-x-0.5 bg-zinc-500"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span
-                      className="h-3 w-3 flex-shrink-0 rounded-full border border-white/20"
-                      style={{ background: lyricColor }}
-                      aria-hidden="true"
-                    />
-                    <span className={`text-[11px] font-medium ${accentClass}`}>歌词样式</span>
-                  </div>
-                  <div className={`flex rounded-lg p-0.5 ${isLightTheme ? "bg-zinc-100" : "bg-white/5"}`} role="group" aria-label="歌词显示样式">
-                    {(["gradient", "solid"] as const).map((fillMode) => (
-                      <button
-                        type="button"
-                        key={fillMode}
-                        aria-pressed={lyricFillMode === fillMode}
-                        onClick={() => setLyricFillMode(fillMode)}
-                        className={`rounded-md px-2.5 py-1 text-[9px] transition-colors ${
-                          lyricFillMode === fillMode
-                            ? isLightTheme
-                              ? "bg-white text-zinc-900 shadow-sm"
-                              : "bg-white/12 text-white"
-                            : mutedTextClass
-                        }`}
-                      >
-                        {fillMode === "gradient" ? "渐变" : "纯色"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </>
-  );
+        <span className="music-record" data-playing={isPlaying && !reduceMotion}>
+          <img key={currentTrack.cover} src={currentTrack.cover} alt="" draggable={false} />
+          <i />
+        </span>
+        <span className="music-dock__status" data-playing={isPlaying} aria-hidden="true" />
+      </button>
+    </motion.div>
+    <AnimatePresence>
+      {open && placement && <motion.div
+        ref={panelRef}
+        id="music-player-panel"
+        role="dialog"
+        aria-label="音乐播放器"
+        className="music-panel"
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 8, scale: reduceMotion ? 1 : 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        style={{ left: placement.left, top: placement.top, width: placement.width, maxHeight: placement.height, transformOrigin: drag.snapSide === "left" ? "bottom left" : "bottom right" }}
+      >
+        <header className="music-panel__header">
+          <span><Music size={14} /> {isPlaying ? "正在播放" : "听一首歌"}</span>
+          <button ref={closeRef} onClick={close} aria-label="收起音乐播放器"><X size={17} /></button>
+        </header>
+        <div className="music-panel__body">
+          <div className="music-panel__track">
+            <button className="music-panel__cover" onClick={audio.togglePlay} aria-label={isPlaying ? "暂停音乐" : "播放音乐"}>
+              <img key={currentTrack.cover} src={currentTrack.cover} alt="" />
+              <span>{isPlaying ? <Pause size={20} /> : <Play size={20} />}</span>
+            </button>
+            <div><h2>{currentTrack.title}</h2><p>{currentTrack.artist}</p></div>
+          </div>
+          <div className="music-progress">
+            <input type="range" aria-label="播放进度" min={0} max={validDuration || 1} step={0.1} value={safeTime} disabled={!validDuration}
+              onChange={event => audio.seek(Number(event.target.value))}
+              style={{ background: `linear-gradient(to right, #c5d1ee ${validDuration ? safeTime / validDuration * 100 : 0}%, #ffffff18 0)` }} />
+            <div><span>{formatTime(safeTime)}</span><span>{formatTime(validDuration)}</span></div>
+          </div>
+          <div className="music-panel__controls">
+            <button onClick={audio.toggleRepeatMode} aria-label={`播放模式：${repeatLabel}`} title={repeatLabel} aria-pressed={repeatMode !== "none"}>{repeatMode === "one" ? <Repeat1 size={18} /> : <Repeat size={18} />}</button>
+            <button onClick={audio.playPrevTrack} aria-label="上一首"><SkipBack size={20} /></button>
+            <button className="music-panel__play" onClick={audio.togglePlay} aria-label={isPlaying ? "暂停音乐" : "播放音乐"}>{isPlaying ? <Pause size={22} /> : <Play size={22} />}</button>
+            <button onClick={audio.playNextTrack} aria-label="下一首"><SkipForward size={20} /></button>
+            <button onClick={() => setPlaylistOpen(value => !value)} aria-label="播放列表" aria-expanded={playlistOpen} aria-controls="music-track-list"><ListMusic size={18} /></button>
+          </div>
+          <div className="music-panel__settings">
+            <label>歌词颜色轮换 <button type="button" role="switch" aria-label="歌词颜色轮换" aria-checked={audio.lyricColorCycle} onClick={audio.toggleLyricColorCycle}><i /></button></label>
+            <div><span>歌词样式</span><div className="music-panel__segments" role="group" aria-label="歌词显示样式">{(["gradient", "solid"] as const).map(mode => <button key={mode} aria-pressed={audio.lyricFillMode === mode} onClick={() => audio.setLyricFillMode(mode)}>{mode === "gradient" ? "渐变" : "纯色"}</button>)}</div></div>
+          </div>
+          {playlistOpen && <div id="music-track-list" className="music-list" aria-label="播放列表">
+            {PLAYLIST.map((track, index) => <button key={`${track.title}-${index}`} aria-current={index === currentTrackIndex ? "true" : undefined} onClick={() => audio.selectTrack(index)}>
+              <span>{String(index + 1).padStart(2, "0")}</span><img src={track.cover} alt="" loading="lazy" />
+              <span><strong>{track.title}</strong><small>{track.artist}</small></span>
+              {index === currentTrackIndex && <span className="music-list__active">{isPlaying ? <Pause size={12} /> : <Play size={12} />}</span>}
+            </button>)}
+          </div>}
+        </div>
+      </motion.div>}
+    </AnimatePresence>
+  </>;
 }

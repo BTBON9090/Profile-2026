@@ -40,31 +40,31 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
     rows: 16,
     // 桌面端 4.3，移动端 3.0（见下方 MOBILE_OVERRIDE）
     cellSize: 4.3,
-    gap: 0,
+    gap: 0.045,
     depth: 4.0,
   },
   geometry: {
     bevelMode: "real",
-    bevelRadius: 0.02,
+    bevelRadius: 0.1,
     fakeBevelIntensity: 0.3,
   },
   material: {
     preset: "matteWall",
-    blockColor: "#000d31",
-    glowColor: "#00ffdd",
-    glowDensity: 0.05,
-    glowIntensity: 0.14,
-    hoverBoost: 0,
+    blockColor: "#151a22",
+    glowColor: "#91b7d4",
+    glowDensity: 0.035,
+    glowIntensity: 0.1,
+    hoverBoost: 0.12,
     opacity: 1,
     transmission: 0,
-    roughness: 0.66,
-    metalness: 0,
-    clearcoat: 0,
+    roughness: 0.48,
+    metalness: 0.18,
+    clearcoat: 0.24,
     ior: 1.4,
   },
   lighting: {
-    ambientColor: "#00ffe0",
-    ambientIntensity: 2.55,
+    ambientColor: "#c7d7ed",
+    ambientIntensity: 0.7,
     keyColor: "#ffffff",
     keyIntensity: 1.55,
     keyX: 8.5,
@@ -85,8 +85,8 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
   animation: {
     autoFlipEnabled: true,
     hoverEnabled: true,
-    flipMaxConcurrent: 3,
-    flipTriggerInterval: 0.45,
+    flipMaxConcurrent: 2,
+    flipTriggerInterval: 0.9,
     flipDurationMin: 1,
     flipDurationMax: 2,
     hoverRetreat: 0.2,
@@ -130,7 +130,7 @@ function HomeV1() {
   const handleReset = useCallback(() => {
     const isMobile =
       typeof window !== "undefined" ? window.innerWidth < 768 : false;
-    setConfig((prev) => {
+    setConfig(() => {
       const base = JSON.parse(
         JSON.stringify(HOME_BLOCK_WALL_CONFIG)
       ) as BlockWallConfig;

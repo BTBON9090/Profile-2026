@@ -1,0 +1,626 @@
+{
+  "body-1": {
+    "file": "body-1.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 22332,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-1": {
+    "file": "hat-1.png",
+    "width": 96,
+    "height": 67,
+    "bytes": 4723
+  },
+  "body-2": {
+    "file": "body-2.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 26834,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-2": {
+    "file": "hat-2.png",
+    "width": 96,
+    "height": 74,
+    "bytes": 5268
+  },
+  "body-3": {
+    "file": "body-3.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 28488,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-3": {
+    "file": "hat-3.png",
+    "width": 96,
+    "height": 84,
+    "bytes": 6216
+  },
+  "body-4": {
+    "file": "body-4.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 24070,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-4": {
+    "file": "hat-4.png",
+    "width": 96,
+    "height": 76,
+    "bytes": 5969
+  },
+  "body-5": {
+    "file": "body-5.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 27810,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-5": {
+    "file": "hat-5.png",
+    "width": 96,
+    "height": 73,
+    "bytes": 5019
+  },
+  "body-6": {
+    "file": "body-6.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 26207,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-6": {
+    "file": "hat-6.png",
+    "width": 96,
+    "height": 74,
+    "bytes": 5581
+  },
+  "body-7": {
+    "file": "body-7.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 23301,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-7": {
+    "file": "hat-7.png",
+    "width": 96,
+    "height": 74,
+    "bytes": 5779
+  },
+  "body-8": {
+    "file": "body-8.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 28501,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-8": {
+    "file": "hat-8.png",
+    "width": 96,
+    "height": 66,
+    "bytes": 3979
+  },
+  "body-9": {
+    "file": "body-9.png",
+    "width": 256,
+    "height": 256,
+    "bytes": 23377,
+    "anchor": {
+      "x": 128,
+      "y": 128,
+      "radius": 120
+    }
+  },
+  "hat-9": {
+    "file": "hat-9.png",
+    "width": 96,
+    "height": 68,
+    "bytes": 5283
+  },
+  "eye-0-0": {
+    "file": "eye-0-0.png",
+    "width": 96,
+    "height": 83,
+    "bytes": 6441
+  },
+  "brow-0-0": {
+    "file": "brow-0-0.png",
+    "width": 48,
+    "height": 25,
+    "bytes": 1694
+  },
+  "eye-0-1": {
+    "file": "eye-0-1.png",
+    "width": 96,
+    "height": 84,
+    "bytes": 6374
+  },
+  "brow-0-1": {
+    "file": "brow-0-1.png",
+    "width": 48,
+    "height": 26,
+    "bytes": 1590
+  },
+  "eye-1-0": {
+    "file": "eye-1-0.png",
+    "width": 96,
+    "height": 70,
+    "bytes": 5147
+  },
+  "brow-1-0": {
+    "file": "brow-1-0.png",
+    "width": 48,
+    "height": 30,
+    "bytes": 1940
+  },
+  "eye-1-1": {
+    "file": "eye-1-1.png",
+    "width": 96,
+    "height": 71,
+    "bytes": 5063
+  },
+  "brow-1-1": {
+    "file": "brow-1-1.png",
+    "width": 48,
+    "height": 32,
+    "bytes": 1914
+  },
+  "eye-2-0": {
+    "file": "eye-2-0.png",
+    "width": 96,
+    "height": 45,
+    "bytes": 3668
+  },
+  "brow-2-0": {
+    "file": "brow-2-0.png",
+    "width": 48,
+    "height": 32,
+    "bytes": 1939
+  },
+  "eye-2-1": {
+    "file": "eye-2-1.png",
+    "width": 96,
+    "height": 46,
+    "bytes": 3626
+  },
+  "brow-2-1": {
+    "file": "brow-2-1.png",
+    "width": 48,
+    "height": 30,
+    "bytes": 1716
+  },
+  "eye-3-0": {
+    "file": "eye-3-0.png",
+    "width": 94,
+    "height": 96,
+    "bytes": 4185
+  },
+  "brow-3-0": {
+    "file": "brow-3-0.png",
+    "width": 48,
+    "height": 32,
+    "bytes": 1763
+  },
+  "eye-3-1": {
+    "file": "eye-3-1.png",
+    "width": 93,
+    "height": 96,
+    "bytes": 4342
+  },
+  "brow-3-1": {
+    "file": "brow-3-1.png",
+    "width": 48,
+    "height": 32,
+    "bytes": 1975
+  },
+  "eye-4-0": {
+    "file": "eye-4-0.png",
+    "width": 96,
+    "height": 82,
+    "bytes": 6207
+  },
+  "brow-4-0": {
+    "file": "brow-4-0.png",
+    "width": 48,
+    "height": 30,
+    "bytes": 1925
+  },
+  "eye-4-1": {
+    "file": "eye-4-1.png",
+    "width": 96,
+    "height": 84,
+    "bytes": 6378
+  },
+  "brow-4-1": {
+    "file": "brow-4-1.png",
+    "width": 48,
+    "height": 31,
+    "bytes": 1847
+  },
+  "eye-5-0": {
+    "file": "eye-5-0.png",
+    "width": 96,
+    "height": 66,
+    "bytes": 5152
+  },
+  "brow-5-0": {
+    "file": "brow-5-0.png",
+    "width": 48,
+    "height": 30,
+    "bytes": 1925
+  },
+  "eye-5-1": {
+    "file": "eye-5-1.png",
+    "width": 96,
+    "height": 69,
+    "bytes": 5058
+  },
+  "brow-5-1": {
+    "file": "brow-5-1.png",
+    "width": 48,
+    "height": 31,
+    "bytes": 1847
+  },
+  "mouth-0": {
+    "file": "mouth-0.png",
+    "width": 72,
+    "height": 51,
+    "bytes": 3704
+  },
+  "face-fx-0": {
+    "file": "face-fx-0.png",
+    "width": 64,
+    "height": 45,
+    "bytes": 2062
+  },
+  "mouth-1": {
+    "file": "mouth-1.png",
+    "width": 72,
+    "height": 51,
+    "bytes": 3735
+  },
+  "face-fx-1": {
+    "file": "face-fx-1.png",
+    "width": 64,
+    "height": 63,
+    "bytes": 3725
+  },
+  "mouth-2": {
+    "file": "mouth-2.png",
+    "width": 57,
+    "height": 72,
+    "bytes": 4228
+  },
+  "face-fx-2": {
+    "file": "face-fx-2.png",
+    "width": 37,
+    "height": 64,
+    "bytes": 2917
+  },
+  "mouth-3": {
+    "file": "mouth-3.png",
+    "width": 72,
+    "height": 39,
+    "bytes": 3219
+  },
+  "face-fx-3": {
+    "file": "face-fx-3.png",
+    "width": 50,
+    "height": 64,
+    "bytes": 3681
+  },
+  "mouth-4": {
+    "file": "mouth-4.png",
+    "width": 72,
+    "height": 36,
+    "bytes": 3054
+  },
+  "face-fx-4": {
+    "file": "face-fx-4.png",
+    "width": 48,
+    "height": 64,
+    "bytes": 3376
+  },
+  "mouth-5": {
+    "file": "mouth-5.png",
+    "width": 72,
+    "height": 33,
+    "bytes": 2720
+  },
+  "face-fx-5": {
+    "file": "face-fx-5.png",
+    "width": 64,
+    "height": 52,
+    "bytes": 2408
+  },
+  "ability-pop-body": {
+    "file": "ability-pop-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 18281,
+    "group": "pop",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-pop-hat": {
+    "file": "ability-pop-hat.png",
+    "width": 96,
+    "height": 45,
+    "bytes": 4187,
+    "group": "pop"
+  },
+  "ability-transform-body": {
+    "file": "ability-transform-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 18418,
+    "group": "transform",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-transform-hat": {
+    "file": "ability-transform-hat.png",
+    "width": 96,
+    "height": 65,
+    "bytes": 4312,
+    "group": "transform"
+  },
+  "ability-blast-body": {
+    "file": "ability-blast-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 16017,
+    "group": "blast",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-blast-hat": {
+    "file": "ability-blast-hat.png",
+    "width": 96,
+    "height": 71,
+    "bytes": 4829,
+    "group": "blast"
+  },
+  "ability-expand-body": {
+    "file": "ability-expand-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 19556,
+    "group": "expand",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-expand-hat": {
+    "file": "ability-expand-hat.png",
+    "width": 96,
+    "height": 89,
+    "bytes": 5981,
+    "group": "expand"
+  },
+  "ability-enlarge-body": {
+    "file": "ability-enlarge-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 22764,
+    "group": "enlarge",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-enlarge-hat": {
+    "file": "ability-enlarge-hat.png",
+    "width": 96,
+    "height": 59,
+    "bytes": 5116,
+    "group": "enlarge"
+  },
+  "ability-inflate-body": {
+    "file": "ability-inflate-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 19381,
+    "group": "inflate",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-inflate-hat": {
+    "file": "ability-inflate-hat.png",
+    "width": 96,
+    "height": 83,
+    "bytes": 6452,
+    "group": "inflate"
+  },
+  "ability-trickster-body": {
+    "file": "ability-trickster-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 14129,
+    "group": "trickster",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-trickster-hat": {
+    "file": "ability-trickster-hat.png",
+    "width": 96,
+    "height": 45,
+    "bytes": 3978,
+    "group": "trickster"
+  },
+  "ability-magic-body": {
+    "file": "ability-magic-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 20228,
+    "group": "magic",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-magic-hat": {
+    "file": "ability-magic-hat.png",
+    "width": 96,
+    "height": 76,
+    "bytes": 5902,
+    "group": "magic"
+  },
+  "ability-parachute-body": {
+    "file": "ability-parachute-body.png",
+    "width": 192,
+    "height": 192,
+    "bytes": 15653,
+    "group": "parachute",
+    "anchor": {
+      "x": 96,
+      "y": 96,
+      "radius": 90
+    }
+  },
+  "ability-parachute-hat": {
+    "file": "ability-parachute-hat.png",
+    "width": 96,
+    "height": 58,
+    "bytes": 5307,
+    "group": "parachute"
+  },
+  "forest": {
+    "file": "forest.jpg",
+    "width": 640,
+    "height": 1295,
+    "bytes": 89546
+  },
+  "rail-left": {
+    "file": "rail-left.png",
+    "width": 54,
+    "height": 860,
+    "bytes": 29813
+  },
+  "rail-right": {
+    "file": "rail-right.png",
+    "width": 54,
+    "height": 860,
+    "bytes": 30329
+  },
+  "rail-bottom": {
+    "file": "rail-bottom.png",
+    "width": 640,
+    "height": 84,
+    "bytes": 27778
+  },
+  "pipe": {
+    "file": "pipe.png",
+    "width": 75,
+    "height": 128,
+    "bytes": 7107
+  },
+  "potion": {
+    "file": "potion.png",
+    "width": 95,
+    "height": 128,
+    "bytes": 9701
+  },
+  "swap": {
+    "file": "swap.png",
+    "width": 128,
+    "height": 118,
+    "bytes": 11627
+  },
+  "book": {
+    "file": "book.png",
+    "width": 124,
+    "height": 128,
+    "bytes": 11777
+  },
+  "pause": {
+    "file": "pause.png",
+    "width": 79,
+    "height": 96,
+    "bytes": 5921
+  },
+  "basket": {
+    "file": "basket.png",
+    "width": 160,
+    "height": 104,
+    "bytes": 13926
+  },
+  "button-green": {
+    "file": "button-green.png",
+    "width": 320,
+    "height": 108,
+    "bytes": 14249
+  },
+  "button-wood": {
+    "file": "button-wood.png",
+    "width": 320,
+    "height": 102,
+    "bytes": 17913
+  },
+  "panel": {
+    "file": "panel.png",
+    "width": 512,
+    "height": 484,
+    "bytes": 103248
+  },
+  "plaque": {
+    "file": "plaque.png",
+    "width": 320,
+    "height": 89,
+    "bytes": 13763
+  }
+}

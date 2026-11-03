@@ -1,0 +1,18 @@
+.viewer-heading { height: 128px; margin-bottom: -128px; padding: 23px 90px 60px 32px; isolation: isolate; }
+.viewer-heading > :not(.viewer-heading__blur) { position: relative; z-index: 1; }
+.viewer-heading__blur { position: absolute; inset: 0; z-index: 0; background: linear-gradient(to bottom, #080a10bb 0%, #080a1033 58%, transparent 100%); }
+.viewer-heading__blur i { position: absolute; inset: 0; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom,#000 0%,#000 65%,transparent 100%); }
+.viewer-heading__blur i:nth-child(2) { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); mask-image: linear-gradient(to bottom,#000 0%,#000 48%,transparent 83%); }
+.viewer-heading__blur i:nth-child(3) { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); mask-image: linear-gradient(to bottom,#000 0%,#000 30%,transparent 67%); }
+.viewer-heading__blur i:nth-child(4) { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); mask-image: linear-gradient(to bottom,#000 0%,#000 15%,transparent 50%); }
+.viewer-heading__blur i:nth-child(5) { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); mask-image: linear-gradient(to bottom,#000,transparent 36%); }
+.viewer-heading__blur i:nth-child(6) { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); mask-image: linear-gradient(to bottom,#000,transparent 20%); }
+.viewer-thumbnails__shell { max-width: 92vw; background: transparent; }
+.viewer-thumbnails__strip { gap: 12px; padding: 22px 16px; max-width: min(700px, 92vw); scrollbar-width: none; }
+.viewer-thumbnails__strip::-webkit-scrollbar { display: none; }
+.viewer-thumbnails__item { width: 96px; height: 68px; border-radius: 10px; border: 1px solid #ffffff66; background: #d9dee5; box-shadow: 0 12px 30px #0005, 0 3px 8px #0003; opacity: .9; }
+.viewer-thumbnails__item:hover { transform: translateY(-4px); opacity: 1; }
+.viewer-thumbnails__item.is-current { outline: 2px solid #64a6ff; outline-offset: 3px; opacity: 1; transform: translateY(-4px); }
+.viewer-thumbnails__item:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+@media (max-width: 640px) { .viewer-heading { height: 112px; margin-bottom: -112px; padding: 20px 76px 45px 18px; } .viewer-thumbnails__item { width: 80px; height: 58px; } .viewer-thumbnails__strip { gap: 10px; } }
+@media (prefers-reduced-motion: reduce) { .viewer-thumbnails, .viewer-thumbnails__item { transition: none !important; transform: none !important; } }

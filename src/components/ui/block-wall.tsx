@@ -65,6 +65,7 @@ export default function BlockWall({
     if (!mount) return;
 
     const cfg = configRef.current;
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     // Scene
     const scene = new THREE.Scene();
@@ -431,7 +432,7 @@ export default function BlockWall({
     let flipTimer = 0;
     function maybeTriggerFlips(dt: number) {
       const c = configRef.current;
-      if (!c.animation.autoFlipEnabled) return;
+      if (!c.animation.autoFlipEnabled || motionPreference.matches) return;
       flipTimer += dt;
       if (flipTimer < c.animation.flipTriggerInterval) return;
       flipTimer = 0;      let active = 0;
@@ -490,7 +491,7 @@ export default function BlockWall({
       // 移动端 tiltActive 时优先用重力数据，否则用鼠标
       // 移动端晃动幅度比桌面端大 2.5 倍（parallaxAmt × 2.5），响应速度略快
       const useTilt = tiltActive;
-      const parallaxScale = useTilt ? 2.5 : 1;
+      const parallaxScale = motionPreference.matches ? 0 : useTilt ? 2.5 : 1;
       const followSpeed = useTilt ? 0.1 : 0.06;
       const tx = useTilt ? tiltTarget.x : pointerTarget.x;
       const ty = useTilt ? tiltTarget.y : pointerTarget.y;
@@ -498,14 +499,14 @@ export default function BlockWall({
       pointer.y += (ty - pointer.y) * followSpeed;
       camera.position.x = pointer.x * c.scene.parallaxAmt * parallaxScale;
       camera.position.y = pointer.y * c.scene.parallaxAmt * parallaxScale;
-      camera.position.x += Math.sin(time * c.scene.driftSpeed) * c.scene.driftRange;
-      camera.position.y += Math.cos(time * c.scene.driftSpeed * 0.75) * c.scene.driftRange * 0.66;
+      camera.position.x += Math.sin(time * c.scene.driftSpeed) * (motionPreference.matches ? 0 : c.scene.driftRange);
+      camera.position.y += Math.cos(time * c.scene.driftSpeed * 0.75) * (motionPreference.matches ? 0 : c.scene.driftRange) * 0.66;
       camera.lookAt(0, 0, 0);
 
       // hover 检测：移动端用重力映射的 NDC 做命中
       const hoverNDC = useTilt ? tiltNDC : mouseNDC;
       const hoverInside = useTilt ? tiltActive : mouseInside;
-      if (interactiveRef.current && c.animation.hoverEnabled && hoverInside && mesh) {
+      if (!motionPreference.matches && interactiveRef.current && c.animation.hoverEnabled && hoverInside && mesh) {
         raycaster.setFromCamera(hoverNDC, camera);
         const hit = raycaster.intersectObject(mesh);
         let hoveredId = -1;

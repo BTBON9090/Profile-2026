@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Boxes,
@@ -13,7 +13,6 @@ import {
   Heart,
   LayoutGrid,
   MessageCircle,
-  PackageOpen,
   Puzzle,
   Search,
   Sparkles,
@@ -27,6 +26,10 @@ import {
 } from "@/data/appbox";
 import FeedbackBoard from "@/components/appbox/feedback-board";
 
+import "./featured-stage.css";
+
+import type { ProductRelease } from "@/lib/product-releases";
+
 type Filter = "all" | AppBoxKind;
 
 type ProductStat = {
@@ -38,14 +41,16 @@ type ProductStat = {
 const filters: { value: Filter; label: string; icon?: typeof Search }[] = [
   { value: "all", label: "全部" },
   { value: "app", label: "应用", icon: LayoutGrid },
-  { value: "web", label: "在线工具", icon: Globe2 },
+  { value: "web", label: "在线体验", icon: Globe2 },
   { value: "plugin", label: "插件", icon: Puzzle },
+  { value: "skill", label: "Skill", icon: Sparkles },
 ];
 
 const kindIcons = {
   app: LayoutGrid,
   web: Globe2,
   plugin: Puzzle,
+  skill: Sparkles,
 };
 
 // 精选栏目轮播的产品顺序
@@ -76,7 +81,63 @@ function ProductIcon({ product, large = false }: { product: AppBoxProduct; large
   );
 }
 
+function FeaturedScene({ product }: { product: AppBoxProduct }) {
+  return (
+    <div className="appbox-stage__scene" data-product={product.id} aria-hidden="true">
+      <div className="appbox-stage__halo" />
+      <div className="appbox-stage__floor" />
+      {product.id === "launchpad" ? (
+        <div className="appbox-stage__launcher">
+          <div className="appbox-stage__windowbar"><i /><i /><i /><span>LaunchPad</span></div>
+          <div className="appbox-stage__search"><Search size={12} /> 搜索应用</div>
+          <div className="appbox-stage__apps">
+            {appBoxProducts.filter(p => p.icon && p.id !== "launchpad").slice(0, 8).map((item, index) => (
+              <div key={item.id} style={{ animationDelay: `${index * 90}ms` }}>
+                <ProductIcon product={item} /><span>{item.name}</span>
+              </div>
+            ))}
+          </div>
+          <div className="appbox-stage__pages"><i /><i /><i /></div>
+        </div>
+      ) : product.id === "aura" ? (
+        <div className="appbox-stage__vault">
+          <div className="appbox-stage__memory appbox-stage__memory--back"><span>只留给自己</span></div>
+          <div className="appbox-stage__memory appbox-stage__memory--front"><span>PRIVATE COLLECTION</span><div className="appbox-stage__silk" /></div>
+          <div className="appbox-stage__glass"><ProductIcon product={product} large /><span>你的影像，你的边界。</span></div>
+        </div>
+      ) : (
+        <div className="appbox-stage__commands">
+          <div className="appbox-stage__command-head"><ProductIcon product={product} /><span>AllinOne<small>让创作，更进一步</small></span><span className="appbox-stage__shortcut">⌘</span></div>
+          <div className="appbox-stage__command"><span className="appbox-stage__symbol">Aa</span><span>多语言翻译<small>让设计跨越语言</small></span><ArrowRight size={15} /></div>
+          <div className="appbox-stage__command"><span className="appbox-stage__symbol">✦</span><span>AI 说明书<small>把设计意图说明白</small></span><ArrowRight size={15} /></div>
+          <div className="appbox-stage__command"><span className="appbox-stage__symbol">▦</span><span>图层管理<small>把时间留给创作</small></span><ArrowRight size={15} /></div>
+        </div>
+      )}
+      <span className="appbox-stage__caption"><CheckCircle2 size={13} />{product.featureNotes?.[0] ?? product.platform}</span>
+    </div>
+  );
+}
+
 export default function AppBoxPage() {
+  const reduceMotion = useReducedMotion();
+  const stageRef = useRef<HTMLElement>(null);
+  const stageInView = useInView(stageRef, { amount: 0.2 });
+  const [motionPaused, setMotionPaused] = useState(false);
+  const [stageHovered, setStageHovered] = useState(false);
+  const [stageFocused, setStageFocused] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
+  const stagePaused = motionPaused || !!reduceMotion || !stageInView || !pageVisible;
+  useEffect(() => {
+    const update = () => setPageVisible(document.visibilityState === "visible");
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, []);
+  const [releases, setReleases] = useState<Record<string, ProductRelease>>({});
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/releases", { cache: "no-store", signal: controller.signal }).then(r => r.ok ? r.json() : {}).then(setReleases).catch(() => {});
+    return () => controller.abort();
+  }, []);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [productStats, setProductStats] = useState<Record<string, ProductStat>>({});
@@ -93,12 +154,12 @@ export default function AppBoxPage() {
   const featured = featuredProducts[featuredIndex % featuredProducts.length] ?? appBoxProducts[0];
 
   useEffect(() => {
-    if (featuredProducts.length <= 1) return;
+    if (featuredProducts.length <= 1 || stagePaused || stageHovered || stageFocused) return;
     const timer = window.setInterval(() => {
       setFeaturedIndex((current) => (current + 1) % featuredProducts.length);
-    }, 6000);
+    }, 8000);
     return () => window.clearInterval(timer);
-  }, [featuredProducts.length, carouselCycle]);
+  }, [featuredProducts.length, carouselCycle, stagePaused, stageHovered, stageFocused]);
 
   const showFeatured = (index: number) => {
     setFeaturedIndex(((index % featuredProducts.length) + featuredProducts.length) % featuredProducts.length);
@@ -170,81 +231,70 @@ export default function AppBoxPage() {
               App<span>Box</span>
             </h1>
             <p className="appbox-hero__lead">
-              这里汇集我为真实工作与日常需求构建的应用、插件和在线工具，
-              帮助用户提升效率、保护隐私，并更顺畅地完成专业任务。
+              一些解决问题的工具，一些让生活有趣的小玩意。
+              应用、插件、Skill 和游戏，都是把想法做出来的尝试。
             </p>
           </div>
 
-          <article className="appbox-feature" data-tone={featured.tone}>
-            <AnimatePresence mode="wait">
+          <article
+            ref={stageRef}
+            className="appbox-stage"
+            data-product={featured.id}
+            data-paused={stagePaused}
+            aria-label="精选产品"
+            aria-roledescription="轮播"
+            onMouseEnter={() => setStageHovered(true)}
+            onMouseLeave={() => setStageHovered(false)}
+            onFocusCapture={() => setStageFocused(true)}
+            onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setStageFocused(false); }}
+          >
+            <div className="appbox-stage__topline"><span><i /> 精选作品</span><span>MADE TO BE USED.</span></div>
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={featured.id}
-                className="appbox-feature__slide"
-                initial={{ opacity: 0, y: 14 }}
+                className="appbox-stage__slide"
+                initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
+                transition={{ duration: reduceMotion ? 0 : 0.28 }}
+                aria-roledescription="幻灯片"
+                aria-label={`${featuredIndex + 1} / ${featuredProducts.length}：${featured.name}`}
               >
-                <div className="appbox-feature__copy">
-                  <span className="appbox-feature__eyebrow">
-                    <span>FEATURED DROP</span>
-                    <span>{String(featuredIndex % featuredProducts.length + 1).padStart(2, "0")} / {String(featuredProducts.length).padStart(2, "0")}</span>
-                  </span>
-                  <ProductIcon product={featured} large />
-                  <div>
-                    <p>{featured.platform} · {featured.version}</p>
-                    <h2>{featured.name}</h2>
-                    <h3>{featured.subtitle}</h3>
-                  </div>
-                  <p className="appbox-feature__description">{featured.description}</p>
-                  <div className="appbox-feature__actions">
-                    <Link
-                      href={`/appbox/${featured.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="appbox-button appbox-button--primary"
-                    >
-                      阅读产品介绍 <ArrowRight size={14} />
-                    </Link>
-                  </div>
+                <div className="appbox-stage__copy">
+                  <span className="appbox-stage__platform">{featured.platform} <i /> {releases[featured.id]?.version ?? featured.version}</span>
+                  <h2>{featured.name}</h2>
+                  <h3>{featured.subtitle}</h3>
+                  <p>{featured.description}</p>
+                  <Link href={`/appbox/${featured.id}`} className="appbox-stage__link">探索 {featured.name}<ArrowRight size={17} /></Link>
                 </div>
-                <div className="appbox-feature__visual" aria-hidden="true">
-                  <div className="appbox-orbit appbox-orbit--one" />
-                  <div className="appbox-orbit appbox-orbit--two" />
-                  <ProductIcon product={featured} large />
-                  <span className="appbox-feature__note appbox-feature__note--top">
-                    <CheckCircle2 size={13} /> {featured.featureNotes?.[0] ?? "Independent software"}
-                  </span>
-                  <span className="appbox-feature__note appbox-feature__note--bottom">
-                    <PackageOpen size={13} /> {featured.featureNotes?.[1] ?? "Ready to use"}
-                  </span>
-                </div>
+                <FeaturedScene product={featured} />
               </motion.div>
             </AnimatePresence>
-            <div className="appbox-feature__switch" aria-label="切换精选产品">
-              <button type="button" onClick={() => showFeatured(featuredIndex - 1)} aria-label="上一个精选产品"><ChevronLeft size={15} /></button>
-              {featuredProducts.map((product, index) => (
-                <button
-                  key={product.id}
-                  type="button"
-                  data-active={index === featuredIndex % featuredProducts.length}
-                  aria-label={`查看精选产品 ${product.name}`}
-                  onClick={() => showFeatured(index)}
-                />
-              ))}
-              <button type="button" onClick={() => showFeatured(featuredIndex + 1)} aria-label="下一个精选产品"><ChevronRight size={15} /></button>
+            <div className="appbox-stage__footer">
+              <div className="appbox-stage__tabs" aria-label="切换精选产品">
+                {featuredProducts.map((product, index) => (
+                  <button key={product.id} type="button" aria-pressed={index === featuredIndex % featuredProducts.length} onClick={() => showFeatured(index)}>
+                    <span className="appbox-stage__tab-index">0{index + 1}</span><span>{product.name}</span><span className="appbox-stage__tab-line" />
+                  </button>
+                ))}
+              </div>
+              <div className="appbox-stage__controls">
+                <button type="button" className="appbox-stage__pause" onClick={() => setMotionPaused(value => !value)} aria-pressed={motionPaused} disabled={!!reduceMotion} aria-label={motionPaused ? "播放动效与自动轮播" : "暂停动效与自动轮播"}>{reduceMotion ? "静态浏览" : motionPaused ? "播放" : "暂停"}</button>
+                <button type="button" onClick={() => showFeatured(featuredIndex - 1)} aria-label="上一个精选产品"><ChevronLeft size={16} /></button>
+                <button type="button" onClick={() => showFeatured(featuredIndex + 1)} aria-label="下一个精选产品"><ChevronRight size={16} /></button>
+              </div>
             </div>
           </article>
         </div>
       </header>
 
-      <main className="appbox-catalog">
+      <section className="appbox-catalog" aria-labelledby="appbox-catalog-title">
         <div className="appbox-shell">
           <div className="appbox-catalog__heading">
             <div>
               <span className="appbox-section-index">02 / CATALOG</span>
-              <h2>找到适合你的工具</h2>
-              <p>按获取方式筛选，也可以直接搜索名称、平台或功能。</p>
+              <h2 id="appbox-catalog-title">发现实用，也发现好玩</h2>
+              <p>按产品类型筛选，也可以直接搜索名称、平台或功能。</p>
             </div>
             <span className="appbox-catalog__count">
               {String(visibleProducts.length).padStart(2, "0")} products
@@ -260,7 +310,7 @@ export default function AppBoxPage() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="搜索应用、平台或功能"
+                placeholder="搜索产品、Skill、平台或功能"
               />
               <kbd>⌘ K</kbd>
             </label>
@@ -321,7 +371,7 @@ export default function AppBoxPage() {
                       </div>
                       <div className="appbox-card__meta">
                         <span>{product.platform}</span>
-                        <span>{product.version}</span>
+                        <span>{releases[product.id]?.version ?? product.version}</span>
                       </div>
                     </div>
                   </Link>
@@ -331,7 +381,7 @@ export default function AppBoxPage() {
           ) : (
             <div className="appbox-empty">
               <Boxes size={28} />
-              <h3>暂时没有匹配的工具</h3>
+              <h3>暂时没有匹配的产品</h3>
               <p>换一个关键词，或查看全部产品。</p>
               <button type="button" onClick={() => { setQuery(""); setFilter("all"); }}>
                 清除筛选
@@ -341,17 +391,17 @@ export default function AppBoxPage() {
 
           <section className="appbox-community">
             <header className="appbox-community__header">
-              <h2>AppBox 还会继续增加新工具。</h2>
+              <h2>AppBox 还会有更多新点子。</h2>
               <p>告诉我你希望解决的问题，也可以回复或点赞其他人的建议。</p>
             </header>
             <FeedbackBoard
               scope="appbox"
-              title="你希望新增什么工具？"
+              title="你希望下一个做什么？"
               description="留下具体需求。其他用户可以补充使用场景，也可以点赞支持。"
             />
           </section>
         </div>
-      </main>
+      </section>
     </div>
   );
 }

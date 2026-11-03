@@ -1,8 +1,9 @@
+import DownloadButton from "@/components/appbox/download-button";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Download } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import FeedbackBoard from "@/components/appbox/feedback-board";
 import ProductLikeButton from "@/components/appbox/product-like-button";
 import ScrollReset from "@/components/ui/scroll-reset";
@@ -37,26 +38,8 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
     : "";
   const isOnlineTool = product.kind === "web";
   const hasPrimaryAction = Boolean(product.actionHref);
-  const hasDetailAction = Boolean(detailHref);
-  // 站内 API 下载链接（如 /api/eaglecp/download）：用普通 a 标签直接跳转，
-  // 避免 Next 客户端路由拦截，也不新开标签页
-  const isApiAction = product.actionHref.startsWith("/api/");
-
-  const primaryAction = !isOnlineTool && hasPrimaryAction ? (
-    isApiAction ? (
-      <a href={product.actionHref} className="app-article__primary">
-        <Download size={16} /> {product.actionLabel}
-      </a>
-    ) : product.actionExternal ? (
-      <a href={product.actionHref} target="_blank" rel="noopener noreferrer" className="app-article__primary">
-        <Download size={16} /> {product.actionLabel}
-      </a>
-    ) : (
-      <Link href={product.actionHref} className="app-article__primary">
-        <Download size={16} /> {product.actionLabel}
-      </Link>
-    )
-  ) : null;
+  const hasDetailAction = Boolean(detailHref) && product.detailsHref !== articlePath;
+  const primaryAction = !isOnlineTool && hasPrimaryAction ? <DownloadButton product={product} /> : null;
 
   return (
     <div className="app-article-page">
@@ -123,20 +106,10 @@ export default async function AppBoxArticlePage({ params }: PageProps) {
           <aside className="app-article__end-actions">
             <div>
               <h2>准备好使用了吗？</h2>
-              <p>可以直接获取产品，也可以继续查看完整的交互专题。</p>
+              <p>{isOnlineTool ? "直接在浏览器中打开，无需下载安装。" : product.kind === "skill" ? "下载 skill 文件包，按照上方说明添加到你的 AI 工具。" : "获取产品，或继续了解完整的交互与功能。"}</p>
             </div>
             <div>
-              {!isOnlineTool && product.actionExternal && hasPrimaryAction && (
-                isApiAction ? (
-                  <a href={product.actionHref} className="app-article__primary">
-                    {product.actionLabel} <ArrowUpRight size={15} />
-                  </a>
-                ) : (
-                  <a href={product.actionHref} target="_blank" rel="noopener noreferrer" className="app-article__primary">
-                    {product.actionLabel} <ArrowUpRight size={15} />
-                  </a>
-                )
-              )}
+              {primaryAction}
               {hasDetailAction && (
                 <Link href={detailHref} className="app-article__secondary">
                   {isOnlineTool ? "在线打开" : "打开完整专题"} <ArrowRight size={15} />

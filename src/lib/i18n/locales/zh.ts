@@ -240,16 +240,16 @@ export const zh = {
     },
     title: '设计',
     titleSuffix: '不止于交付',
-    description: '设计不止于交付，是逻辑的可视化与落地的预演。\n\n我是一名具备全栈视角的 B 端体验设计师。\n\n在 AI 重塑生产力的 2026 年，单纯的"视觉交付"已不再是设计的终点。我主张将 **工程思维-Engineering Thinking** 前置到设计阶段——利用 AI 辅助构建高保真原型与提效工具，在开发介入前验证技术可行性，规避逻辑漏洞。\n\n我不替代工程师，但我能大幅降低设计与研发之间的"翻译损耗"，确保产品从概念到代码的精准落地。',
+    description: '我是倪城，专注 B 端体验设计。\n\n用设计系统理清复杂业务，用 AI 原型验证想法，让设计真正落地。',
     downloadResume: '下载简历',
     capabilities: {
       systemArchitect: {
         title: '设计系统 × 业务解构',
-        description: 'B 端设计的核心是逻辑自洽。擅长将复杂业务流拆解为原子化组件，通过 Variables 统一 Token 体系，构建跨端一致的设计系统。独立维护 Web + Mobile 双侧组件库，研发复用率提升 60%。',
+        description: '拆解复杂业务，构建跨端一致、可复用的组件与设计系统。',
       },
       aiEngineer: {
         title: 'Vibe Coding × AI 原生',
-        description: '用 AI 重塑设计工作流。熟练运用 Trae / Gemini / ZCode 进行氛围编程，曾独立开发 Figma 和 Chrome 扩展。可在设计阶段验证技术可行性，将"设计稿→代码"的翻译损耗降至最低。',
+        description: '用 AI 开发原型与插件，在设计阶段验证交互和技术可行性。',
       },
     },
     techStack: '技术栈与工具库',
@@ -268,7 +268,7 @@ export const zh = {
         category: '工具链',
         icon: 'Wrench',
         // 图标展示，名称 hover 显示
-        items: ['Figma', 'Sketch', 'Photoshop', 'Illustrator', 'After Effects', 'Git', 'Trae IDE', 'zcode'],
+        items: ['Figma', 'Sketch', 'Photoshop', 'Illustrator', 'Git', 'ChatGPT Codex'],
       },
     },
     experience: {
@@ -277,11 +277,20 @@ export const zh = {
       initialCommit: '参加工作',
       items: [
         {
+          id: 7,
+          role: 'UX 设计师',
+          company: '万联易达',
+          logo: '',
+          time: '2026.08 - 至今',
+          description: [],
+          tech: ['AI 招聘 Agent', '灵活用工', '人力资源', 'vibe coding'],
+        },
+        {
           id: 1,
           role: 'Product Designer',
           company: '北京雪诺科技',
           logo: 'https://cdn.btbon.cn/images/snowtech.webp',
-          time: '2024.08 - Present',
+          time: '2024.08 - 2026.04',
           description: [
             '主导了从 0 到 1 的企业安全浏览器及工作空间控制台的全链路设计',
             '建立和维护双侧组件库，利用 AI 辅助设计提效',

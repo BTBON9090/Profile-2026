@@ -1,0 +1,145 @@
+/* A continuous product stage, with individual scenes instead of a split banner. */
+.appbox-stage {
+  --stage-accent: #a9c6ff;
+  --stage-glow: #24428b;
+  position: relative;
+  isolation: isolate;
+  margin-top: clamp(3rem, 6vw, 5rem);
+  overflow: hidden;
+  border: 1px solid #ffffff1c;
+  border-radius: 24px;
+  color: #f6f7fc;
+  background: #101522;
+  box-shadow: 0 26px 65px -25px #15213c66, inset 0 1px #ffffff12;
+}
+.appbox-stage[data-product="aura"] { --stage-accent: #dfc9f9; --stage-glow: #6d477e; }
+.appbox-stage[data-product="allinone"] { --stage-accent: #d3bcff; --stage-glow: #6342a8; }
+.appbox-stage::before { content: ""; position: absolute; z-index: -1; inset: 0; background: radial-gradient(ellipse at 85% 40%, var(--stage-glow), transparent 66%); opacity: .6; transition: background .5s; }
+.appbox-stage__topline { display: flex; justify-content: space-between; padding: 28px 38px 0; font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .13em; color: #9ba4b6; }
+.appbox-stage__topline > span:first-child { display: flex; align-items: center; gap: 9px; color: #d2d9e5; letter-spacing: .06em; }
+.appbox-stage__topline i { width: 5px; height: 5px; border-radius: 50%; background: var(--stage-accent); box-shadow: 0 0 12px var(--stage-accent); }
+.appbox-stage__slide { display: grid; grid-template-columns: 1fr 1.08fr; min-height: 410px; }
+.appbox-stage__copy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 42px 0 48px clamp(28px, 4vw, 58px); }
+.appbox-stage__platform { display: flex; align-items: center; gap: 10px; margin-bottom: 23px; color: var(--stage-accent); font-family: var(--font-mono), monospace; font-size: 11px; }
+.appbox-stage__platform i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: .5; }
+.appbox-stage__copy h2 { font-size: clamp(42px, 4.5vw, 66px); line-height: 1.05; font-weight: 650; letter-spacing: -.05em; }
+.appbox-stage__copy h3 { margin-top: 15px; font-size: clamp(15px, 1.4vw, 18px); font-weight: 450; color: #e2e6ef; }
+.appbox-stage__copy > p { max-width: 360px; margin-top: 22px; font-size: 13px; line-height: 1.9; color: #a5aec0; }
+.appbox-stage__link { display: inline-flex; align-items: center; gap: 28px; min-height: 44px; margin-top: 27px; padding: 0 20px; border: 1px solid #ffffff2b; border-radius: 8px; background: #ffffff0c; color: #f5f7ff; font-size: 12px; transition: background .2s, border-color .2s; }
+.appbox-stage__link:hover { background: #ffffff19; border-color: #ffffff65; }
+.appbox-stage__link svg { transition: transform .2s; }
+.appbox-stage__link:hover svg { transform: translateX(3px); }
+.appbox-stage :is(button, a):focus-visible { outline: 2px solid var(--stage-accent); outline-offset: 5px; }
+.appbox-stage__scene { position: relative; display: grid; place-items: center; min-width: 0; padding: 30px 45px 55px 10px; perspective: 1000px; }
+.appbox-stage__halo { position: absolute; inset: 15% 12%; border-radius: 50%; background: radial-gradient(ellipse, var(--stage-glow), transparent 70%); opacity: .7; }
+.appbox-stage__floor { position: absolute; width: 90%; height: 120px; bottom: 23px; border: 1px solid #ffffff0c; border-radius: 50%; transform: rotateX(60deg); background: radial-gradient(ellipse, #00000033, transparent 70%); }
+.appbox-stage__caption { position: absolute; left: 15px; right: 30px; bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 7px; color: #c5cce0; font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .03em; }
+.appbox-stage__caption svg { opacity: .7; }
+.appbox-stage__launcher { position: relative; width: min(100%, 365px); padding: 17px 22px 14px; border: 1px solid #c9dcff38; border-radius: 20px; background: linear-gradient(135deg, #9cbbef26, #354d7e32); box-shadow: 20px 30px 60px #00000040, inset 0 1px #ffffff25; transform: rotateY(-12deg) rotateX(7deg) rotateZ(3deg); animation: appbox-launcher-float 8s ease-in-out infinite; }
+.appbox-stage__windowbar { display: flex; align-items: center; gap: 5px; margin-bottom: 20px; }
+.appbox-stage__windowbar i { width: 6px; height: 6px; border-radius: 50%; background: #ffffff40; }
+.appbox-stage__windowbar span { margin-left: auto; font-size: 9px; color: #c3cce0; letter-spacing: .08em; }
+.appbox-stage__search { display: flex; align-items: center; gap: 7px; height: 28px; margin: 0 25px 23px; padding: 0 10px; border: 1px solid #ffffff12; border-radius: 7px; background: #070c1f29; color: #bac5dc; font-size: 9px; }
+.appbox-stage__search kbd { margin-left: auto; font-size: 8px; opacity: .7; }
+.appbox-stage__apps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 12px; }
+.appbox-stage__apps > div { display: grid; justify-items: center; gap: 8px; min-width: 0; animation: appbox-app-arrive .7s both cubic-bezier(.2,.8,.2,1); }
+.appbox-stage__apps .appbox-product-icon { width: clamp(34px, 4vw, 49px); height: clamp(34px, 4vw, 49px); border-radius: 12px; box-shadow: 0 5px 10px #00000035; }
+.appbox-stage__apps > div > span:last-child { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #c9d4ec; font-size: 8px; }
+.appbox-stage__pages { display: flex; justify-content: center; gap: 5px; margin-top: 23px; }
+.appbox-stage__pages i { width: 4px; height: 4px; border-radius: 50%; background: #ffffff35; }
+.appbox-stage__pages i:first-child { background: #ffffffb3; }
+.appbox-stage__vault { position: relative; width: 320px; height: 280px; transform: rotate(-5deg); }
+.appbox-stage__memory { position: absolute; width: 185px; height: 237px; top: 5px; border: 1px solid #ffffff36; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px #00000030; }
+.appbox-stage__memory span { position: absolute; top: 16px; left: 16px; z-index: 1; color: #f1e5ffb3; font-family: var(--font-mono), monospace; font-size: 8px; letter-spacing: .1em; }
+.appbox-stage__memory--back { left: 15px; background: linear-gradient(135deg, #c8aaca, #453c6a 45%, #a28ca9); transform: rotate(-17deg); animation: appbox-memory-drift 9s ease-in-out infinite; }
+.appbox-stage__memory--front { right: 9px; background: #443755; transform: rotate(15deg); animation: appbox-memory-drift 9s -4s ease-in-out infinite reverse; }
+.appbox-stage__silk { position: absolute; width: 200px; height: 250px; top: 52px; left: 18px; border-radius: 50%; border: 28px solid #dac9e6; background: #725f85; box-shadow: inset 12px 15px 25px #2f224d90, -9px -10px 25px #c4b5dd55; transform: rotate(-40deg) skewY(18deg); }
+.appbox-stage__glass { position: absolute; inset: 50px 52px -5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; border: 1px solid #ffffff45; border-radius: 23px; background: linear-gradient(135deg, #ece2ff30, #b89cc111); backdrop-filter: blur(14px); box-shadow: 0 25px 55px #100b243d, inset 0 1px #ffffff36; animation: appbox-glass-breathe 9s ease-in-out infinite; }
+.appbox-stage__glass .appbox-product-icon { width: 95px; height: 95px; border-radius: 23px; box-shadow: 0 10px 30px #27183750; }
+.appbox-stage__glass > span:last-child { font-size: 10px; color: #f0e6f6; letter-spacing: .03em; }
+.appbox-stage__commands { position: relative; width: min(100%, 330px); padding: 20px; border: 1px solid #e6d6ff35; border-radius: 18px; background: linear-gradient(135deg, #77628b55, #201a3540); box-shadow: 20px 30px 60px #00000040, inset 0 1px #ffffff25; transform: rotateY(-9deg) rotateZ(4deg); animation: appbox-launcher-float 8s -2s ease-in-out infinite; }
+.appbox-stage__command-head { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; font-size: 17px; font-weight: 600; }
+.appbox-stage__command-head .appbox-product-icon { width: 42px; height: 42px; border-radius: 11px; }
+.appbox-stage__command-head small { display: block; font-size: 9px; color: #b4a8c8; margin-top: 4px; font-weight: 400; }
+.appbox-stage__shortcut { margin-left: auto; color: #b4a8c8; }
+.appbox-stage__command { display: flex; align-items: center; gap: 12px; padding: 13px 12px; border: 1px solid #ffffff12; border-radius: 9px; margin-top: 8px; background: #ffffff06; animation: appbox-command-highlight 9s ease-in-out infinite; }
+.appbox-stage__command:nth-child(3) { animation-delay: 3s; }
+.appbox-stage__command:nth-child(4) { animation-delay: 6s; }
+.appbox-stage__symbol { display: grid; place-items: center; width: 28px; height: 28px; background: #d9c0ff16; border-radius: 6px; color: #dfc7ff; font-size: 14px; }
+.appbox-stage__command > span:nth-child(2) { font-size: 11px; color: #f1eafa; }
+.appbox-stage__command small { display: block; margin-top: 3px; font-size: 9px; color: #b5a9c7; }
+.appbox-stage__command > svg { margin-left: auto; color: #aa96c4; }
+.appbox-stage__footer { position: relative; display: flex; justify-content: space-between; gap: 20px; min-height: 76px; margin: 0 38px; border-top: 1px solid #ffffff17; }
+.appbox-stage__tabs { display: flex; gap: clamp(22px, 3.5vw, 48px); }
+.appbox-stage__tabs button { position: relative; display: flex; align-items: center; gap: 10px; padding: 22px 0; color: #8994aa; font-size: 12px; transition: color .2s; cursor: pointer; }
+.appbox-stage__tabs button[aria-pressed="true"], .appbox-stage__tabs button:hover { color: #f5f7ff; }
+.appbox-stage__tab-index { color: #72809b; font-family: var(--font-mono), monospace; font-size: 9px; }
+.appbox-stage__tab-line { position: absolute; top: -1px; left: 0; width: 100%; height: 2px; background: var(--stage-accent); opacity: 0; transform: scaleX(.3); transition: transform .3s, opacity .3s; transform-origin: left; }
+.appbox-stage__tabs button[aria-pressed="true"] .appbox-stage__tab-line { opacity: 1; transform: scaleX(1); }
+.appbox-stage__controls { display: flex; align-items: center; gap: 5px; }
+.appbox-stage__controls button { display: grid; min-width: 36px; min-height: 36px; place-items: center; border-radius: 50%; color: #b8c0d2; cursor: pointer; transition: background .2s; }
+.appbox-stage__controls button:hover { background: #ffffff12; color: #fff; }
+.appbox-stage__controls .appbox-stage__pause { min-width: 48px; border-radius: 6px; font-size: 10px; }
+.appbox-stage__controls button:disabled { cursor: default; color: #7c879c; }
+.appbox-stage[data-paused="true"] *, .appbox-stage[data-paused="true"] *::before { animation-play-state: paused !important; }
+@keyframes appbox-launcher-float { 0%, 100% { transform: rotateY(-12deg) rotateX(7deg) rotateZ(3deg) translateY(0); } 50% { transform: rotateY(-6deg) rotateX(3deg) rotateZ(1deg) translateY(-9px); } }
+@keyframes appbox-app-arrive { from { opacity: 0; transform: translateY(12px) scale(.85); } to { opacity: 1; transform: none; } }
+@keyframes appbox-memory-drift { 50% { translate: 0 -10px; rotate: 4deg; } }
+@keyframes appbox-glass-breathe { 50% { transform: translateY(6px) rotate(3deg); } }
+@keyframes appbox-command-highlight { 0%, 35%, 100% { background: #ffffff06; border-color: #ffffff12; } 10%, 25% { background: #cfafff18; border-color: #d1b2ff55; } }
+@media (max-width: 960px) {
+  .appbox-stage__slide { grid-template-columns: 1fr 1fr; }
+  .appbox-stage__copy { padding: 32px 0 40px 30px; }
+  .appbox-stage__copy h2 { font-size: 43px; }
+  .appbox-stage__copy > p { max-width: 290px; }
+  .appbox-stage__scene { padding: 30px 25px 55px 25px; }
+  .appbox-stage__vault { transform: scale(.85) rotate(-5deg); }
+  .appbox-stage__launcher { padding-inline: 15px; }
+  .appbox-stage__search { margin-inline: 0; }
+  .appbox-stage__apps { column-gap: 8px; }
+}
+@media (max-width: 700px) {
+  .appbox-stage { margin-top: 40px; border-radius: 18px; }
+  .appbox-stage__topline { padding: 23px 24px 0; font-size: 8px; }
+  .appbox-stage__slide { grid-template-columns: 1fr; }
+  .appbox-stage__copy { min-height: 300px; padding: 33px 26px 12px; }
+  .appbox-stage__platform { margin-bottom: 15px; font-size: 10px; }
+  .appbox-stage__copy h2 { font-size: 45px; }
+  .appbox-stage__copy h3 { font-size: 15px; margin-top: 10px; }
+  .appbox-stage__copy > p { max-width: 100%; font-size: 12px; margin-top: 15px; }
+  .appbox-stage__link { margin-top: 20px; min-height: 42px; }
+  .appbox-stage__scene { min-height: 285px; padding: 20px 40px 52px; overflow: hidden; }
+  .appbox-stage__launcher { max-width: 290px; }
+  .appbox-stage__apps .appbox-product-icon { width: 40px; height: 40px; }
+  .appbox-stage__apps { row-gap: 16px; }
+  .appbox-stage__windowbar { margin-bottom: 13px; }
+  .appbox-stage__search { margin-bottom: 16px; }
+  .appbox-stage__pages { margin-top: 15px; }
+  .appbox-stage__vault { transform: scale(.78) rotate(-5deg); height: 245px; margin-top: -12px; }
+  .appbox-stage__glass { bottom: -25px; }
+  .appbox-stage__commands { max-width: 280px; padding: 15px; }
+  .appbox-stage__command-head { margin-bottom: 12px; }
+  .appbox-stage__command { padding: 8px 10px; }
+  .appbox-stage__caption { bottom: 20px; left: 15px; right: 15px; font-size: 9px; }
+  .appbox-stage__footer { flex-wrap: wrap; gap: 0; margin: 0 24px; padding-bottom: 10px; }
+  .appbox-stage__tabs { width: 100%; justify-content: space-between; gap: 10px; }
+  .appbox-stage__tabs button { min-height: 48px; padding: 18px 0 12px; font-size: 11px; gap: 7px; }
+  .appbox-stage__controls { width: 100%; justify-content: flex-end; }
+  .appbox-stage__controls button { min-width: 40px; min-height: 40px; }
+  .appbox-stage__controls .appbox-stage__pause { margin-right: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .appbox-stage *, .appbox-stage *::before { animation: none !important; transition: none !important; }
+}
+
+/* Text marks have the same visual weight as illustrated app icons. */
+.appbox-page .appbox-product-icon[data-has-image="false"] {
+  border: 1px solid #ffffff20;
+  background: linear-gradient(145deg, #293e9e, #14215a);
+  color: #e6edff;
+  box-shadow: inset 0 1px #ffffff24, 0 8px 20px #17264b20;
+}
+.appbox-page .appbox-product-icon[data-has-image="false"] > span { font-size: 26px; font-weight: 550; letter-spacing: -.07em; }
+.appbox-page .appbox-product-icon[data-tone="graphite"][data-has-image="false"] { background: linear-gradient(145deg, #293a36, #101c19); color: #d1e8de; }
+.appbox-page .appbox-product-icon[data-tone="graphite"][data-has-image="false"]::before { border-color: #d1e8de35; box-shadow: none; inset: 8px; border-radius: 4px; }
+.appbox-page .appbox-product-icon[data-product="btdesign"]::before { content: ""; position: absolute; inset: 8px; border: 1px solid #b8caff38; border-radius: 4px; }

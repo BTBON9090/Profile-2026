@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#EDF1E5" />
+  <meta name="description" content="合成巨型史莱姆：点击挤出软乎乎的史莱姆，同级融合，收集你的巨型大福。" />
+  <title>合成巨型史莱姆 · 森林温泉工坊</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a href="/appbox" class="wordmark" aria-label="返回 AppBox"><span class="logo-dot"></span> SLIME CLUB <span class="wordmark-cn">森林温泉工坊</span></a>
+    <div class="header-actions"><button data-action="help">玩法说明</button><button data-action="quality" id="quality-button">画质 清晰</button><button data-action="sound" id="sound-button" aria-pressed="true">声音 开</button></div>
+  </header>
+  <main class="layout">
+    <section class="intro" aria-labelledby="page-title">
+      <div class="edition"><span></span> 森林深处，软乎乎的奇遇</div>
+      <h1 id="page-title">合成<br/><span>史莱姆</span><small>MERGE SLIME</small></h1>
+      <p class="intro-copy">小小一只，慢慢长大。<br/>把今天的快乐，合成大大的。</p>
+      <canvas id="mascot" width="560" height="380" aria-label="薄荷、桃桃和戴皇冠的巨型大福史莱姆插画" role="img"></canvas>
+      <div class="how-to"><span class="step-number">01</span><p><b>点一下，挤出一只</b><br/>黏住、收拢，噗叽一下长大</p></div>
+      <div class="how-to"><span class="step-number">02</span><p><b>收集第 9 级「大福」</b><br/>自动入藏，腾出空间继续合成</p></div>
+      <button class="material-entry" data-action="materials"><span>原味 · 滑溜 · 超粘</span> 认识三种小性格 ↗</button>
+      <button class="material-entry" data-action="practice"><span>先熟悉软弹手感</span> 去练习场试试手感 ↗</button>
+      <button class="material-entry" data-action="stageSelect" id="stage-test-entry" hidden><span>临时功能 · 不计成绩</span> 切换测试关卡 ↗</button>
+      <button class="material-entry" data-action="specials"><span>缩小 · 膨胀 · 捣蛋 · 魔法 · 空降</span> 认识惊喜伙伴 ↗</button>
+      <div class="keyboard-tip"><kbd>←</kbd><kbd>→</kbd> 移动 <kbd>空格</kbd> 投放 <kbd>P</kbd> 暂停</div>
+    </section>
+    <section class="game-column" aria-label="合成巨型史莱姆游戏">
+      <div class="game-shell"><canvas id="game" width="840" height="1700" tabindex="0" aria-label="合成巨型史莱姆操作区。点击开始合成，使用左右方向键移动管口，空格投放。P 暂停，H 查看玩法。" aria-describedby="game-status"></canvas></div>
+      <div class="below-game"><span class="status-dot"></span> 随时停下来，进度会自动保存 <span>每关 3 只大福 · 十关一轮</span></div>
+      <p id="game-status" class="sr-only" aria-live="polite">准备开始。</p>
+      <div id="stage-test-controls" class="sr-only" hidden aria-label="关卡选择"></div>
+      <div id="special-controls" class="sr-only" aria-label="特殊史莱姆能力"></div>
+      <div id="choose-controls" class="sr-only" hidden><button data-action="choose1">管口换成 1 级</button><button data-action="choose2">管口换成 2 级</button><button data-action="choose3">管口换成 3 级</button></div>
+      <div id="practice-controls" class="sr-only" hidden><button data-action="practiceSlope">练习坡面手感</button><button data-action="practiceChain">练习连续融合</button><button data-action="practiceFire">练习火焰</button><button data-action="fireOpen">观察火势增长</button><button data-action="fireWater">观察水润冷却</button><button data-action="fireSeal">观察超粘密封</button><button data-action="practiceNormal">观察原味</button><button data-action="practiceSlick">观察滑溜</button><button data-action="practiceSticky">观察超粘</button><button data-action="practiceReplay">重新观察或继续练习</button></div>
+      <div class="sr-only"><button data-action="start">开始游戏</button><button data-action="pause">暂停游戏</button><button data-action="close">关闭面板或继续游戏</button><button data-action="drop">投放一只史莱姆</button><button data-action="fluid">下一只使用流体道具</button><button data-action="swap">选择管口这只的等级</button><button data-action="book">打开成长图鉴</button><button data-action="restart">开始下一局</button></div>
+    </section>
+    <aside class="sidebar" aria-label="成长图鉴与本机纪录">
+      <section class="record-ticket">
+        <div class="ticket-label">我的最佳战绩（含本局） <span>PERSONAL BEST</span></div>
+        <div class="best-count"><strong id="best-giants">0</strong><span>只巨型大福</span></div>
+        <div class="record-bottom"><span>积分 <b id="best-score">0</b></span><button data-action="rank">查看纪录 ↗</button></div>
+      </section>
+      <section class="evolution">
+        <div class="section-label"><h2>软乎乎家族</h2><span>01 — 09</span></div>
+        <p>每次相遇，都长大一点。</p>
+        <div id="level-list" class="level-list"></div>
+        <div class="giant-note"><b>大福入藏，额外 +5,000 分</b><span>巨型数量越多，排名越靠前</span></div>
+      </section>
+    </aside>
+  </main>
+  <footer class="site-footer"><span>软软的，也是有力量的。</span><span>合成巨型史莱姆 · 1.8.2 清晰画质</span></footer>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>

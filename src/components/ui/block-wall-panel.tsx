@@ -9,7 +9,7 @@
  * 通过 config + onChange 受控，调用方负责把变更写回 state。
  */
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   SlidersHorizontal,
@@ -25,6 +25,7 @@ import type {
   MaterialPreset,
 } from "./block-wall-types";
 import { DEFAULT_CONFIG, PRESET_MATERIAL } from "./block-wall-types";
+import "./home-refinements.css";
 
 /* ------------------------------------------------------------------ */
 /* 小工具：受控字段的 set                                               */
@@ -129,6 +130,9 @@ function Toggle({
       <span className="text-[10px] font-mono text-zinc-400">{label}</span>
       <button
         type="button"
+        role="switch"
+        aria-checked={value}
+        aria-label={label}
         onClick={() => onChange(!value)}
         className={`relative w-8 h-4 rounded-full transition-colors ${
           value ? "bg-blue-500/80" : "bg-zinc-700"
@@ -191,6 +195,7 @@ function Section({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
         className="w-full flex items-center justify-between py-2 group"
       >
         <span className="text-[11px] font-mono font-bold text-zinc-300 tracking-wider group-hover:text-white">
@@ -233,6 +238,26 @@ export default function BlockWallPanel({
 }) {
   const [collapsed, setCollapsed] = useState(true);
   const [copied, setCopied] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (collapsed) return;
+    panelRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setCollapsed(true); requestAnimationFrame(() => triggerRef.current?.focus()); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [collapsed]);
+
+  function applyLook(look: "graphite" | "ceramic" | "midnight") {
+    const colors = { graphite: ["#20232a", "#a9c5e5"], ceramic: ["#6e747d", "#e2e9f5"], midnight: ["#102239", "#78aeea"] }[look];
+    onChange({ ...config,
+      geometry: { ...config.geometry, bevelMode: "real", bevelRadius: 0.1 },
+      grid: { ...config.grid, gap: 0.045 },
+      material: { ...config.material, ...PRESET_MATERIAL.standard, preset: "standard", blockColor: colors[0], glowColor: colors[1], roughness: look === "ceramic" ? 0.3 : 0.48, metalness: 0.18, clearcoat: 0.24, hoverBoost: 0.12 },
+    });
+  }
 
   /** 复制当前全部参数（JSON）到剪贴板 */
   async function handleCopy() {
@@ -272,10 +297,10 @@ export default function BlockWallPanel({
   return (
     // 左侧、下移到导航下方，避开顶部 navbar
     // 移动端隐藏：调参面板为桌面端调试工具，移动端屏幕狭窄且易遮挡内容。
-    <div className="fixed top-20 left-2 z-50 font-mono select-none hidden md:block">
+    <div className="block-studio fixed top-20 left-2 z-50 select-none">
       <motion.div
         initial={false}
-        animate={{ width: collapsed ? 44 : 300 }}
+        animate={{ width: collapsed ? 44 : 320 }}
         transition={{ duration: 0.25, ease: "easeInOut" }}
         className="relative"
       >
@@ -283,22 +308,25 @@ export default function BlockWallPanel({
         {collapsed ? (
           <button
             type="button"
+            ref={triggerRef}
+            aria-label="打开方块墙调参面板"
+            aria-expanded={false}
             onClick={() => setCollapsed(false)}
-            className="w-8 h-8 rounded-lg bg-zinc-900/85 flex items-center justify-center text-zinc-300 hover:text-white hover:border-blue-500/60 transition-colors"
+            className="block-studio__trigger flex items-center justify-center"
             title="展开调参面板"
           >
             <SlidersHorizontal className="w-4 h-4" />
           </button>
         ) : (
-          <div className="rounded-lg bg-zinc-900/85 backdrop-blur-md border border-zinc-700/80 shadow-2xl shadow-black/50 overflow-hidden">
+          <div ref={panelRef} tabIndex={-1} role="region" aria-label="方块墙外观设置" className="block-studio__panel">
             {/* 标题栏 */}
-            <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800/80 bg-zinc-950/40">
+            <div className="block-studio__header flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="w-3.5 h-3.5 text-blue-400" />
                 <span className="text-[11px] font-bold text-zinc-200 tracking-wider">
                   方块墙
                 </span>
-                <span className="text-[9px] text-zinc-600">调参</span>
+                <span className="text-[9px] text-zinc-500">实时预览</span>
               </div>
               <div className="flex items-center gap-1">
                 {onReset && (
@@ -339,11 +367,16 @@ export default function BlockWallPanel({
             </div>
 
             {/* 滚动区 */}
-            <div className="max-h-[70vh] overflow-y-auto px-3 py-1
+            <div className="block-studio__body overflow-y-auto
                             [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent
                             [&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full">
+              <div className="block-studio__looks" aria-label="外观预设">
+                <button type="button" onClick={() => applyLook("graphite")}><i style={{ background: "linear-gradient(135deg,#626b7b,#171b23)" }} />石墨</button>
+                <button type="button" onClick={() => applyLook("ceramic")}><i style={{ background: "linear-gradient(135deg,#e5e9f1,#657080)" }} />冷瓷</button>
+                <button type="button" onClick={() => applyLook("midnight")}><i style={{ background: "linear-gradient(135deg,#567da7,#0b1b34)" }} />墨蓝</button>
+              </div>
               {/* 场景 */}
-              <Section title="场景" defaultOpen>
+              <Section title="场景">
                 <ColorRow
                   label="背景色"
                   value={config.scene.bgColor}
@@ -812,10 +845,7 @@ export default function BlockWallPanel({
                 />
               </Section>
 
-              {/* 底部说明 */}
-              <div className="py-2 text-[9px] text-zinc-600 leading-relaxed">
-                切换材质预设 / 网格 / 倒角会重建几何体，可能短暂卡顿。灯光与动画参数实时生效。
-              </div>
+
             </div>
           </div>
         )}

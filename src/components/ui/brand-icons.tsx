@@ -109,6 +109,11 @@ export const BRAND_ICONS: Record<string, React.FC<IconProps>> = {
   ),
 
   // Trae IDE — 字节跳动 Trae，使用官方品牌色（紫色渐变简化为单紫）+ 方块 T 字标
+  "ChatGPT Codex": ({ className, title }) => (
+    // Iconify thesvg:codex-openai, kept as the original brand asset.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/icons/codex.svg" alt={title ?? "ChatGPT Codex"} className={className ?? "w-4 h-4"} style={{ filter: "invert(0.8)" }} />
+  ),
   "Trae IDE": ({ className, title }) => (
     <Multi className={className} title={title}>
       <path fill="#cececeff" d="M3.2 0h17.6A3.2 3.2 0 0 1 24 3.2v17.6a3.2 3.2 0 0 1-3.2 3.2H3.2A3.2 3.2 0 0 1 0 20.8V3.2A3.2 3.2 0 0 1 3.2 0z" />

@@ -1,6 +1,6 @@
 // src/components/sections/work-snapshots.tsx
 "use client";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -19,8 +19,6 @@ const fadeUp = {
   }),
 };
 
-const serif = { fontFamily: "'Songti SC', 'Noto Serif SC', 'STSong', serif" };
-const mono = { fontFamily: "var(--font-mono), 'JetBrains Mono', monospace" };
 
 /* ─── Project tile data (9 items)
    12-col grid, explicit placement.  gap: 1px.
@@ -42,25 +40,31 @@ const TILES: { n: string; e: string; img: string; gc: string; gr: string; mobile
 ];
 
 /* ─── Cube-flip tile component ─── */
-function FlipTile({ name, eng, img, icon, forceFlipped, onClick }: {
+function FlipTile({ name, eng, img, icon, forceFlipped, horizontal = false, onClick }: {
   name: string; eng: string; img: string; icon: React.ReactNode; forceFlipped: boolean;
-  onClick: () => void;
+  horizontal?: boolean; onClick: () => void;
 }) {
+  const reduceMotion = useReducedMotion();
+  const axis = horizontal ? "Y" : "X";
   const [f, setF] = useState(false);
   useEffect(() => { setF(forceFlipped); }, [forceFlipped]);
   const enter = useCallback(() => setF(true), []);
   const leave = useCallback(() => setF(false), []);
   return (
-    <div
-      className="relative w-full h-full overflow-hidden cursor-pointer group"
+    <button
+      type="button"
+      aria-label={`浏览 ${name}`}
+      className="relative w-full h-full overflow-hidden cursor-pointer group focus-visible:outline-2 focus-visible:outline-blue-400 focus-visible:outline-offset-[-2px]"
       style={{ perspective: "800px" }}
       onPointerEnter={enter}
       onPointerLeave={leave}
       onClick={onClick}
+      onFocus={enter}
+      onBlur={leave}
     >
       <div
         className="relative w-full h-full transition-transform duration-700"
-        style={{ transformStyle: "preserve-3d", transform: f ? "rotateX(-180deg)" : "rotateX(0deg)" }}
+        style={{ transformStyle: "preserve-3d", transform: `rotate${axis}(${f ? -180 : 0}deg)`, transitionDuration: reduceMotion ? "0s" : "700ms" }}
       >
         {/* front */}
         <div className="absolute inset-0 bg-neutral-300" style={{ backfaceVisibility: "hidden" }}>
@@ -70,22 +74,24 @@ function FlipTile({ name, eng, img, icon, forceFlipped, onClick }: {
         {/* back */}
         <div
           className="absolute inset-0 flex flex-col items-center justify-center gap-1 md:gap-2 p-2 md:p-4 text-center bg-zinc-950/40 backdrop-blur-2xl text-white"
-          style={{ backfaceVisibility: "hidden", transform: "rotateX(180deg)" }}
+          style={{ backfaceVisibility: "hidden", transform: `rotate${axis}(180deg)` }}
         >
           <span className="text-white/50 [&_svg]:w-4 [&_svg]:h-4 md:[&_svg]:w-6 md:[&_svg]:h-6">{icon}</span>
           <h3 className="text-xs md:text-base lg:text-lg font-bold leading-tight tracking-tight">{name}</h3>
           <p className="text-[10px] md:text-xs tracking-[0.08em] uppercase text-zinc-400 font-mono">{eng}</p>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
 /* ─── Auto-flip hook — only one tile flipped at a time ─── */
 function useAutoFlip(intervalMs: number, tileCount: number) {
+  const reduceMotion = useReducedMotion();
   const [flipped, setFlipped] = useState<number | null>(null);
 
   useEffect(() => {
+    if (reduceMotion) return;
     const id = setInterval(() => {
       setFlipped((prev) => {
         if (prev !== null) return null; // unflip current
@@ -93,7 +99,7 @@ function useAutoFlip(intervalMs: number, tileCount: number) {
       });
     }, intervalMs);
     return () => clearInterval(id);
-  }, [intervalMs, tileCount]);
+  }, [intervalMs, tileCount, reduceMotion]);
 
   return flipped;
 }
@@ -173,7 +179,7 @@ export default function WorkSnapshots() {
                   className="tile-cell"
                   style={{ "--gc": tile.gc, "--gr": tile.gr } as React.CSSProperties}
                 >
-                  <FlipTile name={tile.n} eng={tile.e} img={tile.img} icon={tile.icon} forceFlipped={autoFlip === i} onClick={() => openTile(i)} />
+                  <FlipTile horizontal={tile.slug === "all-in-one" || tile.slug === "enterplorer"} name={tile.n} eng={tile.e} img={tile.img} icon={tile.icon} forceFlipped={autoFlip === i} onClick={() => openTile(i)} />
                 </motion.div>
               ))}
             </div>
@@ -188,7 +194,7 @@ export default function WorkSnapshots() {
                   className="tile-cell-mobile"
                   style={{ "--m-gc": tile.mobileGc, "--m-gr": tile.mobileGr } as React.CSSProperties}
                 >
-                  <FlipTile name={tile.n} eng={tile.e} img={tile.img} icon={tile.icon} forceFlipped={autoFlip === i} onClick={() => openTile(i)} />
+                  <FlipTile horizontal={tile.slug === "all-in-one" || tile.slug === "enterplorer"} name={tile.n} eng={tile.e} img={tile.img} icon={tile.icon} forceFlipped={autoFlip === i} onClick={() => openTile(i)} />
                 </motion.div>
               ))}
             </div>

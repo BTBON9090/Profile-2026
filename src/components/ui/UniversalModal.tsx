@@ -1,10 +1,11 @@
 // src/components/ui/UniversalModal.tsx
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Layers, ArrowUpRight } from "lucide-react";
-import { useState, useEffect, useRef, useCallback, type PointerEvent as ReactPointerEvent } from "react";
+import { X, ChevronLeft, ChevronRight, Layers, ArrowUpRight } from "lucide-react";
+import { useState, useEffect, useRef, useCallback, useSyncExternalStore, type PointerEvent as ReactPointerEvent } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import "./viewer-refinements.css";
 import { useCopilotProject } from "@/lib/copilot-context";
 import type { ProjectResource } from "@/data/project-resources";
 
@@ -42,6 +43,10 @@ function buildFigmaEmbedUrl(href: string) {
   }
 }
 
+const subscribeToHydration = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+
 export default function UniversalModal({
   isOpen,
   onClose,
@@ -56,7 +61,7 @@ export default function UniversalModal({
   isCompanyProject,
   resources = [],
 }: ModalProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(subscribeToHydration, clientSnapshot, serverSnapshot);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState<Record<number, boolean>>({});
   const [showThumbnails, setShowThumbnails] = useState(false);
@@ -83,13 +88,17 @@ export default function UniversalModal({
 
   // 切换项目时重置状态
   useEffect(() => {
+    const frame = requestAnimationFrame(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTo({ top: 0, behavior: "instant" });
       setCurrentImageIndex(0);
       setImageLoaded({});
       setThumbnailsRendered(false);
+      setShowThumbnails(false);
       setActiveResourceIndex(0);
     }
+    });
+    return () => cancelAnimationFrame(frame);
   }, [title]);
 
   // 延迟渲染 thumbnails — 优化性能
@@ -101,12 +110,17 @@ export default function UniversalModal({
     }
   }, [showThumbnails, thumbnailsRendered]);
 
-  // 底部控件消失时（滚动到底部），自动关闭 thumbnails
+  // Clicking the artwork closes only the thumbnail strip, leaving the project open.
   useEffect(() => {
-    if (isAtBottom && showThumbnails) {
-      setShowThumbnails(false);
-    }
-  }, [isAtBottom, showThumbnails]);
+    if (!showThumbnails) return;
+    const closeOutside = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Element && !target.closest("[data-thumbnail-control]")) setShowThumbnails(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, [showThumbnails]);
+
 
   // 滚动监听 — 计算当前图片索引
   useEffect(() => {
@@ -147,6 +161,7 @@ export default function UniversalModal({
             const maxScroll = scrollHeight - viewportHeight;
             const distanceToBottom = maxScroll - scrollTop;
             setIsAtBottom(distanceToBottom < 600);
+            if (distanceToBottom < 600) setShowThumbnails(false);
 
             ticking = false;
           });
@@ -159,14 +174,10 @@ export default function UniversalModal({
       return () => container.removeEventListener("scroll", handleScroll);
     };
 
-    const timeoutId = setTimeout(initObserver, 100);
-    return () => clearTimeout(timeoutId);
+    let cleanup: (() => void) | undefined;
+    const timeoutId = setTimeout(() => { cleanup = initObserver(); }, 100);
+    return () => { clearTimeout(timeoutId); cleanup?.(); };
   }, [isOpen, images, mounted]);
-
-  // Portal 客户端渲染
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // 锁定底层滚动 — 同时锁定 html 和 body
   useEffect(() => {
@@ -187,7 +198,8 @@ export default function UniversalModal({
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        if (showThumbnails) setShowThumbnails(false);
+        else onClose();
       } else if (e.key === "ArrowLeft" && hasPrev) {
         e.preventDefault();
         onPrev();
@@ -200,7 +212,7 @@ export default function UniversalModal({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, hasPrev, hasNext, onClose, onPrev, onNext]);
+  }, [isOpen, hasPrev, hasNext, onClose, onPrev, onNext, showThumbnails]);
 
   // 跳转到指定图片
   const scrollToImage = useCallback((index: number) => {
@@ -208,7 +220,7 @@ export default function UniversalModal({
     const container = scrollContainerRef.current;
     if (target && container) {
       container.scrollTo({
-        top: target.offsetTop - 80,
+        top: target.offsetTop - 116,
         behavior: "smooth"
       });
     }
@@ -300,7 +312,8 @@ export default function UniversalModal({
               {/* ========================================== */}
               {/* 顶部标题栏 — 严谨的算色对比                  */}
               {/* ========================================== */}
-              <div className="sticky top-0.5 z-30 w-full px-4 py-3 md:px-8 md:py-4 pointer-events-none flex items-center justify-between bg-zinc-950/80 backdrop-blur-md">
+              <div className="viewer-heading sticky top-0.5 z-30 w-full pointer-events-none flex items-start justify-between">
+                <div className="viewer-heading__blur" aria-hidden="true">{[1, 2, 3, 4, 5, 6].map(level => <i key={level} />)}</div>
                 {/* 左侧：项目标题 */}
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="min-w-0">
@@ -571,6 +584,7 @@ export default function UniversalModal({
                 {totalImages > 1 && (
                   <>
                     <button
+                      data-thumbnail-control
                       onClick={() => setShowThumbnails(!showThumbnails)}
                       aria-label={showThumbnails ? "隐藏缩略图" : "显示缩略图"}
                       aria-pressed={showThumbnails}
@@ -612,24 +626,13 @@ export default function UniversalModal({
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: 80, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute bottom-28 left-1/2 -translate-x-1/2 z-40 pointer-events-auto"
+                  data-thumbnail-control
+                  className="viewer-thumbnails absolute bottom-28 left-1/2 -translate-x-1/2 z-40 pointer-events-auto"
                 >
-                  <div className="bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 rounded-2xl p-3 shadow-none max-w-[90vw]">
-                    <div className="flex items-center gap-2 px-2 pb-2 mb-2 border-b border-zinc-700/50">
-                      <ImageIcon className="w-3.5 h-3.5 text-blue-400" />
-                      <span className="font-mono text-[10px] text-zinc-400 tracking-widest uppercase">Thumbnails</span>
-                      <span className="ml-auto font-mono text-[10px] text-zinc-600">{totalImages} images</span>
-                      <button
-                        onClick={() => setShowThumbnails(false)}
-                        aria-label="关闭缩略图"
-                        className="ml-1 w-6 h-6 rounded-full flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/10 transition-all duration-200"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                  <div className="viewer-thumbnails__shell">
                     <div
                       ref={thumbnailStripRef}
-                      className="flex gap-2 overflow-x-auto max-w-[80vw] md:max-w-[600px] pb-1 custom-scrollbar cursor-grab data-[dragging=true]:cursor-grabbing select-none touch-pan-y"
+                      className="viewer-thumbnails__strip flex overflow-x-auto custom-scrollbar cursor-grab data-[dragging=true]:cursor-grabbing select-none touch-pan-y"
                       aria-label="可左右拖拽的缩略图导航"
                       onPointerDown={handleThumbnailPointerDown}
                       onPointerMove={handleThumbnailPointerMove}
@@ -650,10 +653,11 @@ export default function UniversalModal({
                             setShowThumbnails(false);
                           }}
                           aria-label={`跳转到第 ${idx + 1} 张图片`}
-                          className={`relative flex-shrink-0 w-20 h-14 md:w-24 md:h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                          aria-current={idx === currentImageIndex ? "true" : undefined}
+                          className={`viewer-thumbnails__item relative flex-shrink-0 overflow-hidden transition-all duration-300 ${
                             idx === currentImageIndex
-                              ? "border-blue-500 ring-2 ring-blue-500/30"
-                              : "border-zinc-700 hover:border-zinc-500 opacity-60 hover:opacity-100"
+                              ? "is-current"
+                              : ""
                           }`}
                         >
                           {thumbnailsRendered ? (
