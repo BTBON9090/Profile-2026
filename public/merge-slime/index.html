@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#EDF1E5" />
   <meta name="description" content="合成巨型史莱姆：点击挤出软乎乎的史莱姆，同级融合，收集你的巨型大福。" />
   <title>合成巨型史莱姆 · 森林温泉工坊</title>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style.css?v=1.9.0-2e2baaf246cd" />
 </head>
 <body>
   <header class="site-header">
@@ -20,7 +20,8 @@
       <p class="intro-copy">小小一只，慢慢长大。<br/>把今天的快乐，合成大大的。</p>
       <canvas id="mascot" width="560" height="380" aria-label="薄荷、桃桃和戴皇冠的巨型大福史莱姆插画" role="img"></canvas>
       <div class="how-to"><span class="step-number">01</span><p><b>点一下，挤出一只</b><br/>黏住、收拢，噗叽一下长大</p></div>
-      <div class="how-to"><span class="step-number">02</span><p><b>收集第 9 级「大福」</b><br/>自动入藏，腾出空间继续合成</p></div>
+      <div class="how-to"><span class="step-number">02</span><p><b>从小目标，合成大福</b><br/>合成攒能量，连合更快获得扩容</p></div>
+      <button class="material-entry" data-action="journey"><span>已解锁关卡自动保存</span> 我的森林旅程 ↗</button>
       <button class="material-entry" data-action="materials"><span>原味 · 滑溜 · 超粘</span> 认识三种小性格 ↗</button>
       <button class="material-entry" data-action="practice"><span>先熟悉软弹手感</span> 去练习场试试手感 ↗</button>
       <button class="material-entry" data-action="stageSelect" id="stage-test-entry" hidden><span>临时功能 · 不计成绩</span> 切换测试关卡 ↗</button>
@@ -29,13 +30,14 @@
     </section>
     <section class="game-column" aria-label="合成巨型史莱姆游戏">
       <div class="game-shell"><canvas id="game" width="840" height="1700" tabindex="0" aria-label="合成巨型史莱姆操作区。点击开始合成，使用左右方向键移动管口，空格投放。P 暂停，H 查看玩法。" aria-describedby="game-status"></canvas></div>
-      <div class="below-game"><span class="status-dot"></span> 随时停下来，进度会自动保存 <span>每关 3 只大福 · 十关一轮</span></div>
+      <div class="below-game"><span class="status-dot"></span> 随时停下来，进度会自动保存 <span>失败重试当前关 · 合成充能</span></div>
       <p id="game-status" class="sr-only" aria-live="polite">准备开始。</p>
       <div id="stage-test-controls" class="sr-only" hidden aria-label="关卡选择"></div>
+      <div id="journey-controls" class="sr-only" hidden aria-label="我的旅程"></div>
       <div id="special-controls" class="sr-only" aria-label="特殊史莱姆能力"></div>
       <div id="choose-controls" class="sr-only" hidden><button data-action="choose1">管口换成 1 级</button><button data-action="choose2">管口换成 2 级</button><button data-action="choose3">管口换成 3 级</button></div>
       <div id="practice-controls" class="sr-only" hidden><button data-action="practiceSlope">练习坡面手感</button><button data-action="practiceChain">练习连续融合</button><button data-action="practiceFire">练习火焰</button><button data-action="fireOpen">观察火势增长</button><button data-action="fireWater">观察水润冷却</button><button data-action="fireSeal">观察超粘密封</button><button data-action="practiceNormal">观察原味</button><button data-action="practiceSlick">观察滑溜</button><button data-action="practiceSticky">观察超粘</button><button data-action="practiceReplay">重新观察或继续练习</button></div>
-      <div class="sr-only"><button data-action="start">开始游戏</button><button data-action="pause">暂停游戏</button><button data-action="close">关闭面板或继续游戏</button><button data-action="drop">投放一只史莱姆</button><button data-action="fluid">下一只使用流体道具</button><button data-action="swap">选择管口这只的等级</button><button data-action="book">打开成长图鉴</button><button data-action="restart">开始下一局</button></div>
+      <div class="sr-only"><button data-action="start">开始游戏</button><button data-action="pause">暂停游戏</button><button data-action="close">关闭面板或继续游戏</button><button data-action="drop">投放一只史莱姆</button><button data-action="fluid">下一只使用流体道具</button><button data-action="swap">选择管口这只的等级</button><button data-action="book">打开成长图鉴</button><button data-action="restart">重试当前关</button><button data-action="nextLevel">进入下一关</button></div>
     </section>
     <aside class="sidebar" aria-label="成长图鉴与本机纪录">
       <section class="record-ticket">
@@ -51,7 +53,7 @@
       </section>
     </aside>
   </main>
-  <footer class="site-footer"><span>软软的，也是有力量的。</span><span>合成巨型史莱姆 · 1.8.2 清晰画质</span></footer>
-  <script type="module" src="./game.js"></script>
+  <footer class="site-footer"><span>软软的，也是有力量的。</span><span>合成巨型史莱姆 · 1.9.0 森林旅程</span></footer>
+  <script type="module" src="./game.js?v=1.9.0-39a7a5d4870b"></script>
 </body>
 </html>
