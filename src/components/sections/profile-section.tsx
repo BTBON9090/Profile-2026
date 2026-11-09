@@ -1,17 +1,18 @@
 // src/components/sections/profile-section.tsx
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { Download, Layers, Terminal, FileText, MapPin, Briefcase, GraduationCap, Clock, ChevronRight, Award } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Download, FileText, MapPin, Briefcase, GraduationCap, Clock, ChevronRight, PanelsTopLeft, SquareCode } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { getBrandIcon } from "@/components/ui/brand-icons";
+import "./profile-section.css";
+import WorkflowCanvas from "./workflow-canvas";
 
 export default function ProfileSection() {
-  const { t } = useI18n();
-  const [hoveredExp, setHoveredExp] = useState<number | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{ top: number; left: number; rowHeight: number }>({ top: 0, left: 0, rowHeight: 0 });
-  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { t, locale } = useI18n();
+  const [selectedExp, setSelectedExp] = useState(7);
+  const isZh = locale === "zh";
+  const experiences = t.about.experience.items.filter((exp) => exp.id !== 4);
+  const selected = experiences.find((exp) => exp.id === selectedExp) ?? experiences[0];
   // 响应式：跟踪当前是否桌面端（≥768px），用于切换照片参数
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -61,18 +62,6 @@ export default function ProfileSection() {
 
   const photoCfg = isDesktop ? PHOTO.desktop : PHOTO.mobile;
 
-  const updateTooltipPos = (index: number) => {
-    const row = rowRefs.current[index];
-    if (!row) return;
-    const rect = row.getBoundingClientRect();
-    // 用视口坐标 + position:fixed，避免被祖先 section 的定位上下文影响
-    setTooltipPos({
-      top: rect.top,
-      left: rect.left,
-      rowHeight: rect.height,
-    });
-  };
-
   return (
     <>
     <section
@@ -105,7 +94,7 @@ export default function ProfileSection() {
           className="mb-10 md:mb-14"
         >
           <div
-            className="relative rounded-xl overflow-hidden bg-black"
+            className="profile-hero relative rounded-3xl overflow-hidden bg-black"
             style={{ minHeight: PHOTO.cardMinH[isDesktop ? "desktop" : "mobile"] }}
           >
 
@@ -133,9 +122,6 @@ export default function ProfileSection() {
               {/* 移动端：上→下渐变变深，顶部可见人物，底部变深承载下方文字 */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/40 to-zinc-950 md:hidden"></div>
             </div>
-
-            {/* 编号标签 */}
-            <span className="absolute top-4 left-4 z-10 font-mono text-[10px] text-zinc-400 border border-white/10 rounded px-2 py-0.5 bg-black/40">01</span>
 
             {/* 文字层
                 桌面端：叠加在照片上，靠下排布（justify-end），左侧对齐
@@ -206,251 +192,57 @@ export default function ProfileSection() {
           </div>
         </motion.div>
 
-        {/* 设计哲学陈述 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-8 md:mt-0 mb-20 md:mb-24 max-w-4xl"
-        >
-          <h2 className="text-2xl md:text-4xl font-black text-zinc-100 tracking-tight leading-[1.2] mb-5">
-            设计不止于交付<span className="text-blue-500">.</span>
-            <br />
-            <span className="text-zinc-600">是逻辑的可视化与落地的预演</span>
-          </h2>
-          <p className="text-sm md:text-base text-zinc-400 leading-relaxed max-w-2xl">
-            在 AI 重塑生产力的当下，单纯的"视觉交付"已不再是设计终点。
-            我将<span className="text-blue-400">工程思维</span>前置到设计阶段——
-            利用 Vibe Coding 构建可交互原型与提效工具，在开发介入前验证技术可行性，
-            将设计稿到代码的<span className="text-blue-400">翻译损耗降至最低</span>。
-          </p>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20 md:mb-24">
+          <div className="mb-7 max-w-3xl">
+            <h2 className="text-xl md:text-2xl font-bold text-zinc-100 mb-3">{isZh ? "我的工作方式" : "How I work"}</h2>
+            <p className="text-sm md:text-base text-zinc-400 leading-relaxed">{isZh ? "从需求文档出发，结合设计 Skill 与 AI 探索方案，完成界面、交互、前端实现和交付。" : "Starting with a PRD, I use AI and my design skills to explore, implement, review and deliver interfaces."}</p>
+          </div>
+          <WorkflowCanvas isZh={isZh} />
         </motion.div>
 
-        {/* 技术栈与工具库 — Bento Grid 重设计 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-20"
-        >
-          {/* 区块标题 — 移动端文字与图标阵列上下两行 */}
-          <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-xs text-blue-500">$</span>
-              <span className="font-mono text-xs text-zinc-400 tracking-[0.15em] uppercase">{t.about.techStack}</span>
-            </div>
-            {/* 工具链 — 彩色徽标阵列，极简留白，hover 浮层显示名称 */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-              className="col-span-12 relative"
-            >
-
-              {/* 图标阵列 — 品牌色原生呈现，hover 浮层名称 */}
-              <div className="relative flex flex-wrap gap-1.5">
-                {t.about.techStackData.tools.items.map((item: string, i: number) => {
-                  const Icon = getBrandIcon(item);
-                  return (
-                    <div
-                      key={i}
-                      className="group/tool relative inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:border-zinc-700/50 hover:bg-zinc-900/30 active:border-zinc-700/50 active:bg-zinc-900/30 transition-all duration-200 cursor-default select-none"
-                      title={item}
-                    >
-                      <Icon className="w-4 h-4 transition-transform duration-200 group-hover/tool:scale-110 group-active/tool:scale-110 opacity-60 group-hover/tool:opacity-100 group-active/tool:opacity-100" title={item} />
-                      {/* hover / 长按浮层名称 */}
-                      <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/tool:opacity-100 group-active/tool:opacity-100 pointer-events-none whitespace-nowrap px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 text-[10px] font-mono text-zinc-300 transition-opacity duration-200 z-20">
-                        {item}
-                      </span>
-                    </div>
-                  );
-                })}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20 md:mb-24">
+          <h2 className="text-xl md:text-2xl font-bold text-zinc-100 mb-3">{isZh ? "工具" : "Tools"}</h2>
+          <div className="profile-tools">
+            {[
+              { title: "Design System", variant: "design", icon: PanelsTopLeft, description: isZh ? "擅长用 Figma 构建设计组件库，统一设计语言。" : "Building design component libraries in Figma to unify the design language.", tools: ["Figma", "Sketch", "Photoshop", "Illustrator"] },
+              { title: "Vibe Coding", variant: "coding", icon: SquareCode, description: isZh ? "借助先进模型探索多版设计方案，并实现前端功能。" : "Using advanced models to explore design alternatives and implement frontend features.", tools: ["DeepSeek harness", "Zcode", "Gemini", "Codex", "Trae", "Qoder"] },
+            ].map((group) => (
+              <div key={group.title} className={`profile-tools__group profile-tools__group--${group.variant}`}>
+                <group.icon className="profile-tools__icon" aria-hidden="true" />
+                <h3>{group.title}</h3>
+                <p>{group.description}</p>
+                <div className="profile-tools__list">{group.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
               </div>
-            </motion.div>
-          </div>
-
-          {/* Bento Grid 容器 */}
-          <div className="grid grid-cols-12 gap-3 md:gap-4">
-            {/* 核心能力 1 — 设计系统架构 (大卡片，跨6列) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              className="col-span-12 md:col-span-6 row-span-2 relative border border-zinc-900/80 rounded-xl p-6 bg-gradient-to-br from-blue-500/[0.03] to-transparent hover:border-blue-500/30 transition-all duration-300 group overflow-hidden"
-            >
-              {/* 装饰光晕 */}
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-blue-500/5 blur-3xl rounded-full group-hover:bg-blue-500/10 transition-colors duration-500"></div>
-              <div className="relative">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Layers className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <span className="font-mono text-[10px] text-zinc-700">01</span>
-                </div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2 leading-snug">
-                  {t.about.capabilities.systemArchitect.title}
-                </h3>
-                <p className="text-xs text-zinc-500 leading-relaxed mb-4">
-                  {t.about.capabilities.systemArchitect.description}
-                </p>
-                {/* 核心能力标签 */}
-                <div className="flex flex-wrap gap-1.5">
-                  {t.about.techStackData.coreCompetency.items.map((item: string, i: number) => (
-                    <span key={i} className="px-2 py-1 bg-blue-500/5 border border-blue-500/20 rounded-md text-[10px] font-mono text-blue-300/80">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* 核心能力 2 — Vibe Coding (大卡片，跨6列) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="col-span-12 md:col-span-6 row-span-2 relative border border-zinc-900/80 rounded-xl p-6 bg-gradient-to-br from-purple-500/[0.03] to-transparent hover:border-purple-500/30 transition-all duration-300 group overflow-hidden"
-            >
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-purple-500/5 blur-3xl rounded-full group-hover:bg-purple-500/10 transition-colors duration-500"></div>
-              <div className="relative">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Terminal className="w-5 h-5 text-purple-400" />
-                  </div>
-                  <span className="font-mono text-[10px] text-zinc-700">02</span>
-                </div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2 leading-snug">
-                  {t.about.capabilities.aiEngineer.title}
-                </h3>
-                <p className="text-xs text-zinc-500 leading-relaxed mb-4">
-                  {t.about.capabilities.aiEngineer.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {t.about.techStackData.techEmpoweredWorkflow.items.map((item: string, i: number) => (
-                    <span key={i} className="px-2 py-1 bg-purple-500/5 border border-purple-500/20 rounded-md text-[10px] font-mono text-purple-300/80">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+            )).reduce<React.ReactNode[]>((nodes, group, index) => {
+              if (index) nodes.push(<div className="profile-tools__connection" aria-hidden="true" key="connection"><span></span><span></span></div>);
+              nodes.push(group);
+              return nodes;
+            }, [])}
           </div>
         </motion.div>
 
-        {/* 下半区 — 工作经历（紧凑表格） */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="flex-1 flex flex-col"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-xs text-blue-500">$</span>
-              <span className="font-mono text-xs text-zinc-400 tracking-[0.15em] uppercase">{t.profile.experienceLabel}</span>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex-1">
+          <h2 className="text-xl md:text-2xl font-bold text-zinc-100 mb-6">{t.profile.experienceLabel}</h2>
+          <div className="profile-experience">
+            <div className="profile-experience__list" aria-label={isZh ? "选择工作经历" : "Select work experience"}>
+              {experiences.map((exp) => (
+                <button key={exp.id} type="button" onMouseEnter={() => setSelectedExp(exp.id)} onFocus={() => setSelectedExp(exp.id)} onClick={() => setSelectedExp(exp.id)} aria-pressed={selected.id === exp.id} className={selected.id === exp.id ? "is-selected" : ""}>
+                  <span className="profile-experience__time">{exp.time}</span>
+                  <span className="profile-experience__company">{exp.logo && <img src={exp.logo} alt="" className="profile-experience__list-logo" />}<span>{exp.company}</span></span>
+                  <ChevronRight size={16} aria-hidden="true" className="profile-experience__chevron" />
+                </button>
+              ))}
             </div>
-            <span className="font-mono text-[10px] text-zinc-700">{t.about.experience.items.length} entries</span>
-          </div>
-
-          {/* 表头 */}
-          <div className="hidden md:grid grid-cols-[130px_minmax(200px,1fr)_160px_1fr] gap-8 px-6 py-3 font-mono text-[10px] text-zinc-600 uppercase tracking-widest">
-            <span>Time</span>
-            <span>Company</span>
-            <span>Role</span>
-            <span>Tags</span>
-          </div>
-
-          {/* 经历列表 */}
-          <div className="flex-1">
-            {t.about.experience.items.map((exp: any, index: number) => (
-              <motion.div
-                key={exp.id}
-                ref={(el) => { rowRefs.current[index] = el; }}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.08 }}
-                onMouseEnter={() => { setHoveredExp(index); updateTooltipPos(index); }}
-                onMouseLeave={() => setHoveredExp(null)}
-                className="group grid grid-cols-1 md:grid-cols-[130px_minmax(200px,1fr)_160px_1fr] gap-4 md:gap-8 px-6 md:px-6 py-6 md:py-8 border-b border-zinc-800/40 md:border-hidden rounded-0 md:rounded-2xl  hover:bg-white/[0.03] transition-colors cursor-default relative"
-              >
-                <span className="font-mono text-xs text-zinc-500 tracking-wider whitespace-nowrap flex items-center">{exp.time}</span>
-                <div className="flex items-center gap-2">
-                  {exp.logo && (
-                    <img src={exp.logo} alt={exp.company} className="w-5 h-5 rounded object-cover flex-shrink-0" />
-                  )}
-                  <span className="text-sm text-zinc-200 font-medium group-hover:text-blue-400 transition-colors">
-                    {exp.company}
-                  </span>
-                  {/* hover 提示图标 */}
-                  <ChevronRight className={`w-3 h-3 text-zinc-600 transition-all duration-300 ${hoveredExp === index ? 'translate-x-0 opacity-100' : '-translate-x-1 opacity-0 group-hover:opacity-60 group-hover:translate-x-0'}`} />
-                </div>
-                <span className="text-xs text-zinc-400 flex items-center">{exp.role}</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {exp.tech.slice(0, 4).map((tag: string, i: number) => (
-                    <span key={i} className="h-auto flex px-2 py-0.5 bg-zinc-900/80 border border-zinc-800 rounded-md text-[10px] font-mono text-zinc-500 leading-normal">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
+            <div className="profile-experience__detail" aria-live="polite">
+              <div className="profile-experience__detail-heading"><div><span className="profile-experience__time">{selected.time}</span><h3>{selected.company}</h3><p>{selected.role}</p></div>{selected.logo && <img src={selected.logo} alt="" className="profile-experience__logo" />}</div>
+              <div className="profile-experience__tags">{selected.tech.map((tag) => <span key={tag}>{tag}</span>)}</div>
+              {selected.description.length > 0 ? <ul>{selected.description.map((desc) => <li key={desc}>{desc}</li>)}</ul> : selected.id === 7 ? <p className="profile-experience__summary">{isZh ? "围绕 AI 招聘 Agent 与灵活用工场景开展用户体验设计，结合 AI 和 Vibe Coding 探索、实现并迭代界面方案。" : "Designing user experiences for AI recruiting agents and flexible staffing, using AI and Vibe Coding to explore, implement and iterate on interfaces."}</p> : null}
+              {({ 1: "https://cdn.btbon.cn/snowspace/ssth3.webp", 2: "https://cdn.btbon.cn/Kwai-磁力聚星/Project03-01.webp", 3: "https://cdn.btbon.cn/AVIC-商网/Project07-01.webp", 5: "https://cdn.btbon.cn/YSP-AmazeUI/Project05-01.webp" } as Record<number, string>)[selected.id] && <img className="profile-experience__image" src={({ 1: "https://cdn.btbon.cn/snowspace/ssth3.webp", 2: "https://cdn.btbon.cn/Kwai-磁力聚星/Project03-01.webp", 3: "https://cdn.btbon.cn/AVIC-商网/Project07-01.webp", 5: "https://cdn.btbon.cn/YSP-AmazeUI/Project05-01.webp" } as Record<number, string>)[selected.id]} alt={isZh ? `${selected.company} 项目展示` : `${selected.company} project`} />}
+            </div>
           </div>
         </motion.div>
       </div>
-
     </section>
-
-      {/* 工作经历 Tooltip — Portal 到 body，脱离祖先 backdrop-blur/transform 的 containing block，
-          确保 position:fixed 真正相对视口定位，不被裁切 */}
-      {typeof document !== "undefined" && createPortal(
-        <AnimatePresence>
-          {hoveredExp !== null && t.about.experience.items[hoveredExp] && (
-            <WorkTooltip
-              exp={t.about.experience.items[hoveredExp]}
-              position={tooltipPos}
-            />
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
     </>
-  );
-}
-
-// 工作经历 Tooltip 组件 — 只展示公司名称 + 做过的事，极简
-function WorkTooltip({ exp, position }: { exp: any; position: { top: number; left: number; rowHeight: number } }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 6 }}
-      transition={{ duration: 0.15, ease: "easeOut" }}
-      style={{
-        position: "fixed",
-        top: `${position.top + position.rowHeight + 8}px`,
-        left: `${position.left}px`,
-        zIndex: 9999,
-      }}
-      className="w-[380px] max-w-[calc(100vw-32px)] pointer-events-none"
-    >
-      <div className="rounded-lg border border-zinc-800 bg-zinc-950/95 backdrop-blur-sm p-3 shadow-xl">
-        <div className="text-xs font-semibold text-zinc-100 mb-1.5">{exp.company}</div>
-        <ul className="space-y-1">
-          {exp.description.map((desc: string, i: number) => (
-            <li key={i} className="text-[11px] text-zinc-400 leading-relaxed flex gap-1.5">
-              <span className="text-zinc-600 mt-0.5">·</span>
-              <span>{desc}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </motion.div>
   );
 }

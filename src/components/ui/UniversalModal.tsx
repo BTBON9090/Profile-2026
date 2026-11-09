@@ -71,6 +71,8 @@ export default function UniversalModal({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const thumbnailStripRef = useRef<HTMLDivElement>(null);
+  const jumpTargetRef = useRef<number | null>(null);
+  const [requestedImageIndex, setRequestedImageIndex] = useState<number | null>(null);
   const thumbnailDragRef = useRef({
     pointerId: -1,
     startX: 0,
@@ -96,6 +98,8 @@ export default function UniversalModal({
       setThumbnailsRendered(false);
       setShowThumbnails(false);
       setActiveResourceIndex(0);
+      setRequestedImageIndex(null);
+      jumpTargetRef.current = null;
     }
     });
     return () => cancelAnimationFrame(frame);
@@ -113,12 +117,12 @@ export default function UniversalModal({
   // Clicking the artwork closes only the thumbnail strip, leaving the project open.
   useEffect(() => {
     if (!showThumbnails) return;
-    const closeOutside = (event: PointerEvent) => {
+    const closeOutside = (event: MouseEvent) => {
       const target = event.target;
       if (target instanceof Element && !target.closest("[data-thumbnail-control]")) setShowThumbnails(false);
     };
-    document.addEventListener("pointerdown", closeOutside);
-    return () => document.removeEventListener("pointerdown", closeOutside);
+    document.addEventListener("click", closeOutside, true);
+    return () => document.removeEventListener("click", closeOutside, true);
   }, [showThumbnails]);
 
 
@@ -161,7 +165,6 @@ export default function UniversalModal({
             const maxScroll = scrollHeight - viewportHeight;
             const distanceToBottom = maxScroll - scrollTop;
             setIsAtBottom(distanceToBottom < 600);
-            if (distanceToBottom < 600) setShowThumbnails(false);
 
             ticking = false;
           });
@@ -197,6 +200,7 @@ export default function UniversalModal({
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (["PageDown", "PageUp", "Home", "End", "ArrowDown", "ArrowUp", " "].includes(e.key)) jumpTargetRef.current = null;
       if (e.key === "Escape") {
         if (showThumbnails) setShowThumbnails(false);
         else onClose();
@@ -220,9 +224,12 @@ export default function UniversalModal({
     const container = scrollContainerRef.current;
     if (target && container) {
       container.scrollTo({
-        top: target.offsetTop - 116,
-        behavior: "smooth"
+        top: container.scrollTop + target.getBoundingClientRect().top - container.getBoundingClientRect().top - 80,
+        behavior: "instant"
       });
+      setCurrentImageIndex(index);
+      setRequestedImageIndex(index);
+      jumpTargetRef.current = index;
     }
   }, []);
 
@@ -235,17 +242,25 @@ export default function UniversalModal({
       startScrollLeft: strip.scrollLeft,
       didDrag: false,
     };
-    strip.setPointerCapture(event.pointerId);
-    strip.dataset.dragging = "true";
   }, []);
 
   const handleThumbnailPointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     const drag = thumbnailDragRef.current;
     if (drag.pointerId !== event.pointerId) return;
     const distance = event.clientX - drag.startX;
-    if (Math.abs(distance) > 4) drag.didDrag = true;
+    if (!drag.didDrag && Math.abs(distance) <= 6) return;
+    drag.didDrag = true;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.currentTarget.dataset.dragging = "true";
+    event.preventDefault();
     event.currentTarget.scrollLeft = drag.startScrollLeft - distance;
   }, []);
+
+  const scrollThumbnails = (direction: number) => {
+    const strip = thumbnailStripRef.current;
+    if (!strip) return;
+    strip.scrollBy({ left: direction * Math.max(160, strip.clientWidth * .65), behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+  };
 
   const stopThumbnailDrag = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     const strip = event.currentTarget;
@@ -289,6 +304,8 @@ export default function UniversalModal({
           {/* ========================================== */}
           <div
             ref={scrollContainerRef}
+            onWheel={() => { jumpTargetRef.current = null; }}
+            onPointerDown={() => { jumpTargetRef.current = null; }}
             className="absolute inset-0 overflow-y-auto overflow-x-hidden custom-scrollbar cursor-zoom-out"
             onClick={onClose}
             role="dialog"
@@ -409,6 +426,7 @@ export default function UniversalModal({
                       imageRefs.current[idx] = el;
                     }}
                     className="relative bg-zinc-950"
+                    style={{ minHeight: imageLoaded[idx] ? undefined : "50vw" }}
                   >
                     {/* 骨架屏 — 严谨的加载状态 */}
                     {!imageLoaded[idx] && (
@@ -428,8 +446,21 @@ export default function UniversalModal({
                     <img
                       src={img}
                       alt={`${safeTitle} 第 ${idx + 1} 张`}
-                      loading={idx === 0 ? "eager" : "lazy"}
-                      onLoad={() => setImageLoaded(prev => ({ ...prev, [idx]: true }))}
+                      loading={idx === 0 || (requestedImageIndex !== null && idx <= requestedImageIndex) ? "eager" : "lazy"}
+                      onLoad={() => {
+                        setImageLoaded(prev => ({ ...prev, [idx]: true }));
+                        requestAnimationFrame(() => {
+                          const jump = jumpTargetRef.current;
+                          if (jump !== null && idx <= jump) {
+                            scrollToImage(jump);
+                            const ready = imageRefs.current.slice(0, jump + 1).every(ref => {
+                              const image = ref?.querySelector("img");
+                              return image?.complete && image.naturalHeight > 0;
+                            });
+                            if (ready) jumpTargetRef.current = null;
+                          }
+                        });
+                      }}
                       className="w-full h-auto block m-0 p-0 transition-opacity duration-500"
                       style={{ opacity: imageLoaded[idx] ? 1 : 0 }}
                     />
@@ -637,9 +668,11 @@ export default function UniversalModal({
                       onPointerDown={handleThumbnailPointerDown}
                       onPointerMove={handleThumbnailPointerMove}
                       onPointerUp={stopThumbnailDrag}
-                      onPointerCancel={stopThumbnailDrag}
+                      onPointerCancel={(event) => { stopThumbnailDrag(event); thumbnailDragRef.current.didDrag = false; }}
+                      onPointerLeave={(event) => { if (!thumbnailDragRef.current.didDrag) stopThumbnailDrag(event); }}
+                      onDragStart={(event) => event.preventDefault()}
                       onClickCapture={(event) => {
-                        if (!thumbnailDragRef.current.didDrag) return;
+                        if (!thumbnailDragRef.current.didDrag || event.detail === 0) return;
                         event.preventDefault();
                         event.stopPropagation();
                         thumbnailDragRef.current.didDrag = false;
@@ -650,7 +683,6 @@ export default function UniversalModal({
                           key={idx}
                           onClick={() => {
                             scrollToImage(idx);
-                            setShowThumbnails(false);
                           }}
                           aria-label={`跳转到第 ${idx + 1} 张图片`}
                           aria-current={idx === currentImageIndex ? "true" : undefined}
@@ -669,19 +701,17 @@ export default function UniversalModal({
                               sizes="96px"
                               className="object-cover"
                               loading={idx < 5 ? "eager" : "lazy"}
+                              draggable={false}
                             />
                           ) : (
                             <div className="w-full h-full bg-zinc-800" />
                           )}
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent">
-                            <span className="block text-center font-mono text-[9px] text-white py-0.5">
-                              {String(idx + 1).padStart(2, "0")}
-                            </span>
-                          </div>
                         </button>
                       ))}
                     </div>
                   </div>
+                  <button type="button" className="viewer-thumbnails__arrow viewer-thumbnails__arrow--left" aria-label="向左翻动预览图" onClick={() => scrollThumbnails(-1)}><ChevronLeft aria-hidden="true" /></button>
+                  <button type="button" className="viewer-thumbnails__arrow viewer-thumbnails__arrow--right" aria-label="向右翻动预览图" onClick={() => scrollThumbnails(1)}><ChevronRight aria-hidden="true" /></button>
                 </motion.div>
               )}
             </AnimatePresence>

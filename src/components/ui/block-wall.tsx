@@ -439,11 +439,12 @@ export default function BlockWall({
       for (let i = 0; i < blocks.length; i++) if (blocks[i].flipping) active++;
       if (active >= c.animation.flipMaxConcurrent) return;
       const n = 1 + Math.floor(Math.random() * 2);
-      for (let k = 0; k < n; k++) {
+      for (let k = 0; k < n && active < c.animation.flipMaxConcurrent; k++) {
         const idx = Math.floor(Math.random() * blocks.length);
         const b = blocks[idx];
         if (!b.flipping) {
           b.flipping = true;
+          active++;
           b.flipPhase = 0;
           b.flipDir = Math.random() < 0.5 ? 1 : -1;
           b.flipAxis = Math.random() < 0.5 ? "x" : "y";

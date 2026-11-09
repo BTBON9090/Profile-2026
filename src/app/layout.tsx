@@ -15,6 +15,7 @@ import { AudioProvider } from "@/lib/audio-context";
 import BackToTop from "@/components/ui/back-to-top";
 import { CopilotProjectProvider } from "@/lib/copilot-context";
 import { UIVersionProvider } from "@/lib/ui-version-context";
+import ScrollReset from "@/components/ui/scroll-reset";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const playfairDisplay = Playfair_Display({
@@ -70,6 +71,7 @@ export default function RootLayout({
               {SHOW_DOT_MATRIX && <DotMatrixBackground />}
               <div className="relative z-10 flex flex-col min-h-screen">
                 <Navbar />
+                <ScrollReset />
                 <Sidebar />
                 <VersionedFloatingTools />
                 <main className="relative z-10">

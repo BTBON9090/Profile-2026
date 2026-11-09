@@ -118,6 +118,19 @@ const enterpriseProjects: ProjectItem[] = [
   },
 ];
 
+const visualProjects: ProjectItem[] = [
+  {
+    id: "others",
+    title: "其他作品 · 平面设计",
+    description: "自驱项目、个人委托与日常练习中的视觉设计，集中收录于完整图集。",
+    image: "https://cdn.btbon.cn/Other/them09-01.webp",
+    date: "作品合集",
+    useModal: true,
+    dataSlug: "others",
+    tags: ["平面设计", "电商视觉", "设计练习"],
+  },
+];
+
 function ModalHandler({ modalList, setCurrentModalIndex }: { modalList: ModalItem[]; setCurrentModalIndex: (index: number | null) => void }) {
   const searchParams = useSearchParams();
   
@@ -148,7 +161,7 @@ function WorkProjectV1() {
 
   // 提取出所有支持 Modal 的项目，用于"上一篇/下一篇"切换
   const modalList = useMemo(() => {
-    return enterpriseProjects
+    return [...enterpriseProjects, ...visualProjects]
       .filter(item => item.useModal && item.dataSlug)
       .map(item => {
         const detailData = getProjectBySlug(item.dataSlug as string);
@@ -156,7 +169,7 @@ function WorkProjectV1() {
           id: item.id,
           title: item.title,
           images: detailData?.behanceSlices || [],
-          isCompanyProject: true,
+          isCompanyProject: enterpriseProjects.some(project => project.id === item.id),
         };
       });
   }, []);
@@ -198,7 +211,7 @@ function WorkProjectV1() {
             transition={{ duration: 0.5 }}
             className="flex items-center gap-3 mb-10"
           >
-            <span className="font-mono text-[11px] text-blue-400 tracking-[0.25em] uppercase font-medium">/ Enterprise Work</span>
+            <span className="font-mono text-[11px] text-blue-400 tracking-[0.25em] uppercase font-medium">/ Selected Work</span>
             <span className="h-px w-16 bg-gradient-to-r from-blue-500/40 to-transparent"></span>
             <span className="font-mono text-[11px] text-zinc-500 tracking-[0.2em] uppercase">Gallery · 2026</span>
           </motion.div>
@@ -211,7 +224,7 @@ function WorkProjectV1() {
             className="mb-6"
           >
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-zinc-50 tracking-tight leading-[0.95]">
-              Enterprise<span className="text-blue-500">.</span>
+              Selected Work<span className="text-blue-500">.</span>
             </h1>
           </motion.div>
 
@@ -230,21 +243,12 @@ function WorkProjectV1() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="flex flex-wrap gap-8 md:gap-12 pt-8 border-t border-zinc-800/80"
+            className="flex flex-wrap gap-x-6 gap-y-2 pt-6 border-t border-zinc-800/80 text-sm text-zinc-400"
           >
-            <div className="group">
-              <div className="text-3xl font-bold text-zinc-50 tabular-nums">0{enterpriseProjects.length}</div>
-              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.2em] mt-1.5">Selected Cases</div>
-            </div>
-            <div className="group">
-              {/* 时间线自动跟随当前年份：2016 至今 */}
-              <div className="text-3xl font-bold text-zinc-50 tabular-nums">2016-{new Date().getFullYear()}</div>
-              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.2em] mt-1.5">Timeline</div>
-            </div>
-            <div className="group">
-              <div className="text-3xl font-bold text-zinc-50 tabular-nums">B2B / B2C / B2G</div>
-              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.2em] mt-1.5">Product Context</div>
-            </div>
+            <span>{enterpriseProjects.length} 个工作项目</span>
+            <span>{visualProjects.length} 组视觉作品</span>
+            <span>2016—{new Date().getFullYear()}</span>
+            <span>企业服务 · 消费产品 · 政务服务</span>
           </motion.div>
         </div>
       </section>
@@ -268,7 +272,7 @@ function WorkProjectV1() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="group grid w-full overflow-hidden rounded-2xl border border-zinc-800/70 bg-zinc-900/45 text-left md:grid-cols-[1.45fr_0.75fr] hover:border-blue-500/35 transition-colors"
+              className="group grid w-full overflow-hidden rounded-3xl border border-zinc-800/70 bg-zinc-900/45 text-left md:grid-cols-[1.45fr_0.75fr] hover:border-blue-500/35 transition-colors"
             >
               <span className="relative min-h-[340px] md:min-h-[560px] overflow-hidden bg-zinc-900">
                 {!imageLoaded[enterpriseProjects[0].id] && <span className="absolute inset-0 bg-zinc-900 animate-pulse" />}
@@ -282,7 +286,7 @@ function WorkProjectV1() {
                   className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.025]"
                   onLoad={() => setImageLoaded(prev => ({ ...prev, [enterpriseProjects[0].id]: true }))}
                 />
-                <span className="absolute left-5 top-5 border border-white/15 bg-black/45 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] text-white/70 backdrop-blur-md">LEAD CASE</span>
+                <span className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/45 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] text-white/70 backdrop-blur-md">LEAD CASE</span>
               </span>
               <span className="flex min-h-[300px] md:min-h-[560px] flex-col p-6 md:p-9">
                 <span className="flex items-center justify-between font-mono text-[10px] tracking-[0.16em] text-zinc-500">
@@ -297,7 +301,7 @@ function WorkProjectV1() {
                 </span>
                 <span className="mt-7 flex items-end justify-between gap-4 border-t border-zinc-800 pt-5">
                   <span className="flex flex-wrap gap-1.5">
-                    {enterpriseProjects[0].tags?.map(tag => <span key={tag} className="border border-zinc-700/60 bg-zinc-800/50 px-2 py-1 font-mono text-[10px] text-zinc-500">{tag}</span>)}
+                    {enterpriseProjects[0].tags?.map(tag => <span key={tag} className="rounded-full border border-zinc-700/60 bg-zinc-800/50 px-3 py-1 font-mono text-[11px] text-zinc-400">{tag}</span>)}
                   </span>
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-zinc-700 text-zinc-300 group-hover:border-blue-500/60 group-hover:text-blue-400 transition-colors">
                     <ArrowRight className="h-4 w-4" />
@@ -316,7 +320,7 @@ function WorkProjectV1() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="group overflow-hidden rounded-xl border border-zinc-800/60 bg-zinc-900/35 text-left hover:border-zinc-600/80 hover:bg-zinc-900/60 transition-colors"
+                  className="group overflow-hidden rounded-3xl border border-zinc-800/60 bg-zinc-900/35 text-left hover:border-zinc-600/80 hover:bg-zinc-900/60 transition-colors"
                 >
                   <span className="relative block aspect-[16/8.5] overflow-hidden bg-zinc-900">
                     {!imageLoaded[project.id] && <span className="absolute inset-0 bg-zinc-900 animate-pulse" />}
@@ -340,13 +344,49 @@ function WorkProjectV1() {
                     </span>
                     <span className="mt-3 block text-[13px] leading-6 text-zinc-400">{project.description}</span>
                     <span className="mt-5 flex flex-wrap gap-1.5 border-t border-zinc-800/70 pt-4">
-                      {project.tags?.map(tag => <span key={tag} className="border border-zinc-700/50 bg-zinc-800/35 px-2 py-0.5 font-mono text-[10px] text-zinc-500">{tag}</span>)}
+                      {project.tags?.map(tag => <span key={tag} className="rounded-full border border-zinc-700/50 bg-zinc-800/35 px-3 py-1 font-mono text-[11px] text-zinc-400">{tag}</span>)}
                     </span>
                   </span>
                 </motion.button>
               ))}
             </div>
           </motion.div>
+
+          <section id="other-works" aria-labelledby="other-works-title" className="mt-24 scroll-mt-32 border-t border-zinc-800/70 pt-12 md:mt-32 md:pt-16">
+            <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <h2 id="other-works-title" className="text-2xl font-semibold tracking-tight text-zinc-100 md:text-3xl">其他作品 / 平面设计</h2>
+              <p className="text-sm text-zinc-400">从界面之外，看看更多视觉设计。</p>
+            </div>
+            {visualProjects.map(project => (
+              <button
+                type="button"
+                key={project.id}
+                onClick={() => openModal(project.id)}
+                aria-label={`查看 ${project.title} 完整图集`}
+                className="group grid w-full overflow-hidden rounded-3xl border border-zinc-800/70 bg-zinc-900/35 text-left transition-colors hover:border-zinc-600 hover:bg-zinc-900/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-400 md:grid-cols-[1.3fr_1fr]"
+              >
+                <span className="relative block aspect-[678/450] overflow-hidden bg-[#0a0a0a]">
+                  <Image
+                    src={project.image}
+                    alt="其他作品原始图集封面"
+                    fill
+                    unoptimized
+                    sizes="(max-width: 768px) 100vw, 55vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+                  />
+                </span>
+                <span className="flex flex-col justify-center p-6 md:p-10">
+                  <span className="text-xs text-zinc-500">{project.date}</span>
+                  <span className="mt-4 text-2xl font-semibold tracking-tight text-zinc-100 transition-colors group-hover:text-blue-400">{project.title}</span>
+                  <span className="mt-4 text-sm leading-7 text-zinc-400">{project.description}</span>
+                  <span className="mt-6 flex flex-wrap gap-2">
+                    {project.tags?.map(tag => <span key={tag} className="rounded-full border border-zinc-700/50 bg-zinc-800/35 px-3 py-1 font-mono text-[11px] text-zinc-400">{tag}</span>)}
+                  </span>
+                  <span className="mt-8 flex items-center gap-3 text-sm text-zinc-200">浏览完整图集 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                </span>
+              </button>
+            ))}
+          </section>
         </div>
       </div>
 

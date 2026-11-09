@@ -10,7 +10,7 @@ const homeSections = [
   { id: "profile", label: "Profile", sub: "个人简介" },
   { id: "work-snapshots", label: "Work", sub: "PROJECT" },
   { id: "snow-ecosystem", label: "Snowtech", sub: "雪诺生态" },
-  { id: "ai-plugins", label: "AI Plugins", sub: "AI 插件" },
+  { id: "ai-plugins", label: "Independent Products", sub: "独立产品" },
   { id: "footer", label: "Contact", sub: "联系" },
 ];
 const workSections = [

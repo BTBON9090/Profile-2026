@@ -19,9 +19,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  appBoxKindLabels,
   appBoxProducts,
-  type AppBoxKind,
   type AppBoxProduct,
 } from "@/data/appbox";
 import FeedbackBoard from "@/components/appbox/feedback-board";
@@ -30,21 +28,21 @@ import "./featured-stage.css";
 
 import type { ProductRelease } from "@/lib/product-releases";
 
-type Filter = "all" | AppBoxKind;
-
 type ProductStat = {
   likeCount: number;
   commentCount: number;
   liked: boolean;
 };
 
-const filters: { value: Filter; label: string; icon?: typeof Search }[] = [
-  { value: "all", label: "全部" },
-  { value: "app", label: "应用", icon: LayoutGrid },
-  { value: "web", label: "在线体验", icon: Globe2 },
-  { value: "plugin", label: "插件", icon: Puzzle },
-  { value: "skill", label: "Skill", icon: Sparkles },
-];
+const catalogGroups = [
+  { id: "app", label: "应用", description: "为桌面与手机打造的个人应用。", icon: LayoutGrid },
+  { id: "web", label: "在线工具", description: "打开浏览器，直接开始使用。", icon: Globe2 },
+  { id: "plugin", label: "插件", description: "在熟悉的工具里，少做一点重复工作。", icon: Puzzle },
+  { id: "skill", label: "Skill", description: "可复用的设计方法与思考方式。", icon: Sparkles },
+  { id: "game", label: "游戏", description: "工作之外，留一点时间给好玩。", icon: Boxes },
+] as const;
+const gameIds = new Set(["parking-master", "merge-slime"]);
+const productGroup = (product: AppBoxProduct) => gameIds.has(product.id) ? "game" : product.kind;
 
 const kindIcons = {
   app: LayoutGrid,
@@ -139,7 +137,6 @@ export default function AppBoxPage() {
     return () => controller.abort();
   }, []);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<Filter>("all");
   const [productStats, setProductStats] = useState<Record<string, ProductStat>>({});
   const searchRef = useRef<HTMLInputElement>(null);
   const featuredProducts = useMemo(
@@ -204,7 +201,6 @@ export default function AppBoxPage() {
   const visibleProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
     return appBoxProducts.filter((product) => {
-      const matchesKind = filter === "all" || product.kind === filter;
       const searchText = [
         product.name,
         product.subtitle,
@@ -214,19 +210,15 @@ export default function AppBoxPage() {
       ]
         .join(" ")
         .toLocaleLowerCase();
-      return matchesKind && (!normalizedQuery || searchText.includes(normalizedQuery));
+      return !normalizedQuery || searchText.includes(normalizedQuery);
     });
-  }, [filter, query]);
+  }, [query]);
 
   return (
     <div className="appbox-page">
       <header className="appbox-hero">
         <div className="appbox-shell">
           <div className="appbox-hero__intro">
-            <p className="appbox-kicker">
-              <span><Sparkles size={13} /></span>
-              Independent software · Made by btbon
-            </p>
             <h1>
               App<span>Box</span>
             </h1>
@@ -292,9 +284,8 @@ export default function AppBoxPage() {
         <div className="appbox-shell">
           <div className="appbox-catalog__heading">
             <div>
-              <span className="appbox-section-index">02 / CATALOG</span>
               <h2 id="appbox-catalog-title">发现实用，也发现好玩</h2>
-              <p>按产品类型筛选，也可以直接搜索名称、平台或功能。</p>
+              <p>按类别浏览，或搜索名称、平台与功能。</p>
             </div>
             <span className="appbox-catalog__count">
               {String(visibleProducts.length).padStart(2, "0")} products
@@ -302,6 +293,14 @@ export default function AppBoxPage() {
           </div>
 
           <div className="appbox-toolbar">
+            <nav className="appbox-category-nav" aria-label="产品类别导航">
+              <a href="#appbox-catalog-title">全部</a>
+              {catalogGroups.filter(group => visibleProducts.some(product => productGroup(product) === group.id)).map(({ id, label, icon: Icon }) => (
+                <a key={id} href={`#appbox-${id}`}>
+                  <Icon size={16} aria-hidden="true" />{label}
+                </a>
+              ))}
+            </nav>
             <label className="appbox-search">
               <Search size={17} aria-hidden="true" />
               <span className="sr-only">搜索产品</span>
@@ -314,49 +313,41 @@ export default function AppBoxPage() {
               />
               <kbd>⌘ K</kbd>
             </label>
-            <div className="appbox-filters" role="group" aria-label="按产品类型筛选">
-              {filters.map((item) => {
-                const Icon = item.icon;
-                const count = item.value === "all"
-                  ? appBoxProducts.length
-                  : appBoxProducts.filter((product) => product.kind === item.value).length;
-                return (
-                  <button
-                    key={item.value}
-                    type="button"
-                    aria-pressed={filter === item.value}
-                    onClick={() => setFilter(item.value)}
-                  >
-                    {Icon && <Icon size={14} aria-hidden="true" />}
-                    {item.label}<sup>{count}</sup>
-                  </button>
-                );
-              })}
-            </div>
+
           </div>
 
           {visibleProducts.length > 0 ? (
-            <div className="appbox-grid">
-              {visibleProducts.map((product, index) => {
-                const KindIcon = kindIcons[product.kind];
+            <div id="appbox-products" className="appbox-groups">
+              {catalogGroups.map((group) => {
+                const products = visibleProducts.filter(product => productGroup(product) === group.id);
+                if (!products.length) return null;
                 return (
-                  <Link
-                    href={`/appbox/${product.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="appbox-card"
-                    data-tone={product.tone}
-                    key={product.id}
-                    aria-label={`阅读 ${product.name} 产品介绍`}
-                  >
-                    <div className="appbox-card__topline">
-                      <span>{String(index + 1).padStart(2, "0")}</span>
-                      <span><KindIcon size={13} /> {appBoxKindLabels[product.kind]}</span>
+                  <section key={group.id} id={`appbox-${group.id}`} className="appbox-product-group" aria-labelledby={`appbox-${group.id}-title`}>
+                    <header className="appbox-product-group__heading">
+                      <h3 id={`appbox-${group.id}-title`}>{group.label}</h3>
+                      <p>{group.description}</p>
+                    </header>
+                    <div className="appbox-grid">
+                      {products.map((product, index) => {
+                        const KindIcon = gameIds.has(product.id) ? Boxes : kindIcons[product.kind];
+                        return (
+                          <Link
+                            href={`/appbox/${product.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="appbox-card"
+                            data-tone={product.tone}
+                            key={product.id}
+                            aria-label={`阅读 ${product.name} 产品介绍`}
+                          >
+                            <div className="appbox-card__topline">
+                              <span>{String(index + 1).padStart(2, "0")}</span>
+                              <span><KindIcon size={13} /> {group.label}</span>
                     </div>
                     <div className="appbox-card__identity">
                       <ProductIcon product={product} />
                       <div>
-                        <h3>{product.name}</h3>
+                        <h4>{product.name}</h4>
                         <p>{product.subtitle}</p>
                       </div>
                     </div>
@@ -377,13 +368,17 @@ export default function AppBoxPage() {
                   </Link>
                 );
               })}
+                    </div>
+                  </section>
+                );
+              })}
             </div>
           ) : (
             <div className="appbox-empty">
               <Boxes size={28} />
               <h3>暂时没有匹配的产品</h3>
               <p>换一个关键词，或查看全部产品。</p>
-              <button type="button" onClick={() => { setQuery(""); setFilter("all"); }}>
+              <button type="button" onClick={() => setQuery("")}>
                 清除筛选
               </button>
             </div>

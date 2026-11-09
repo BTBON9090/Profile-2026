@@ -1,0 +1,6 @@
+.snow-design-points { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; padding-block: 24px; border-block: 1px solid #ffffff18; }
+.snow-design-points > div + div { padding-left: 24px; border-left: 1px solid #ffffff18; }
+.snow-design-points dt { color: #f4f4f5; font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+.snow-design-points dt span { display: block; margin-top: 6px; color: #82b6f4; font: 10px var(--font-mono), monospace; letter-spacing: .04em; }
+.snow-design-points dd { margin: 14px 0 0; color: #a1a1aa; font-size: 13px; line-height: 1.8; }
+@media (max-width: 400px) { .snow-design-points { gap: 16px; } .snow-design-points > div + div { padding-left: 16px; } }

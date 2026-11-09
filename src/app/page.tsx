@@ -1,7 +1,7 @@
 // src/app/page.tsx
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Hero from "@/components/sections/hero";
 import ProfileSection from "@/components/sections/profile-section";
@@ -38,7 +38,6 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
   grid: {
     cols: 26,
     rows: 16,
-    // 桌面端 4.3，移动端 3.0（见下方 MOBILE_OVERRIDE）
     cellSize: 4.3,
     gap: 0.045,
     depth: 4.0,
@@ -57,8 +56,8 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
     hoverBoost: 0.12,
     opacity: 1,
     transmission: 0,
-    roughness: 0.48,
-    metalness: 0.18,
+    roughness: 0.62,
+    metalness: 0.04,
     clearcoat: 0.24,
     ior: 1.4,
   },
@@ -85,11 +84,11 @@ const HOME_BLOCK_WALL_CONFIG: BlockWallConfig = {
   animation: {
     autoFlipEnabled: true,
     hoverEnabled: true,
-    flipMaxConcurrent: 2,
-    flipTriggerInterval: 0.9,
+    flipMaxConcurrent: 3,
+    flipTriggerInterval: 0.45,
     flipDurationMin: 1,
-    flipDurationMax: 2,
-    hoverRetreat: 0.2,
+    flipDurationMax: 3,
+    hoverRetreat: 0.85,
     hoverScale: 0.06,
     flipRetreat: 0,
     flipScaleReduce: 0.18,
@@ -103,40 +102,12 @@ export default function Home() {
 }
 
 function HomeV1() {
-  // 桌面端用 HOME_BLOCK_WALL_CONFIG（cellSize 4.3），
-  // 移动端覆盖为 cellSize 3.0（更小方格、更高密度）。
   const [config, setConfig] = useState<BlockWallConfig>(
-    () => JSON.parse(JSON.stringify(HOME_BLOCK_WALL_CONFIG)) as BlockWallConfig
+    () => structuredClone(HOME_BLOCK_WALL_CONFIG)
   );
 
-  // 响应式：根据视口宽度切换 cellSize，避免 SSR/首屏 hydration mismatch
-  useEffect(() => {
-    const applyResponsive = () => {
-      setConfig((prev) => {
-        const isMobile = window.innerWidth < 768;
-        const targetCellSize = isMobile ? 3.0 : 4.3;
-        if (prev.grid.cellSize === targetCellSize) return prev;
-        return {
-          ...prev,
-          grid: { ...prev.grid, cellSize: targetCellSize },
-        };
-      });
-    };
-    applyResponsive();
-    window.addEventListener("resize", applyResponsive);
-    return () => window.removeEventListener("resize", applyResponsive);
-  }, []);
-
   const handleReset = useCallback(() => {
-    const isMobile =
-      typeof window !== "undefined" ? window.innerWidth < 768 : false;
-    setConfig(() => {
-      const base = JSON.parse(
-        JSON.stringify(HOME_BLOCK_WALL_CONFIG)
-      ) as BlockWallConfig;
-      base.grid.cellSize = isMobile ? 3.0 : 4.3;
-      return base;
-    });
+    setConfig(structuredClone(HOME_BLOCK_WALL_CONFIG));
   }, []);
 
   return (

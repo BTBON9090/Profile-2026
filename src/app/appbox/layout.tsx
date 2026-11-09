@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./catalog-refinements.css";
 
 export const metadata: Metadata = {
   title: "AppBox | Independent Apps & Tools | BTBON.Design",

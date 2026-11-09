@@ -46,20 +46,20 @@ function FlipTile({ name, eng, img, icon, forceFlipped, horizontal = false, onCl
 }) {
   const reduceMotion = useReducedMotion();
   const axis = horizontal ? "Y" : "X";
-  const [f, setF] = useState(false);
-  useEffect(() => { setF(forceFlipped); }, [forceFlipped]);
-  const enter = useCallback(() => setF(true), []);
-  const leave = useCallback(() => setF(false), []);
+  const [interacting, setInteracting] = useState(false);
+  const f = interacting || forceFlipped;
+  const enter = useCallback(() => setInteracting(true), []);
+  const leave = useCallback(() => setInteracting(false), []);
   return (
     <button
       type="button"
       aria-label={`浏览 ${name}`}
-      className="relative w-full h-full overflow-hidden cursor-pointer group focus-visible:outline-2 focus-visible:outline-blue-400 focus-visible:outline-offset-[-2px]"
+      className="relative w-full h-full overflow-hidden rounded-2xl md:rounded-3xl cursor-pointer group focus-visible:outline-2 focus-visible:outline-blue-400 focus-visible:outline-offset-[-2px]"
       style={{ perspective: "800px" }}
-      onPointerEnter={enter}
-      onPointerLeave={leave}
+      onPointerEnter={(event) => { if (event.pointerType === "mouse") enter(); }}
+      onPointerLeave={(event) => { if (event.pointerType === "mouse") leave(); }}
       onClick={onClick}
-      onFocus={enter}
+      onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) enter(); }}
       onBlur={leave}
     >
       <div
@@ -69,7 +69,8 @@ function FlipTile({ name, eng, img, icon, forceFlipped, horizontal = false, onCl
         {/* front */}
         <div className="absolute inset-0 bg-neutral-300" style={{ backfaceVisibility: "hidden" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={img} alt={name} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <img src={img} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <span className="tile-touch-label absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-3 pt-8 text-left text-xs font-semibold text-white">{name}</span>
         </div>
         {/* back */}
         <div
@@ -91,7 +92,7 @@ function useAutoFlip(intervalMs: number, tileCount: number) {
   const [flipped, setFlipped] = useState<number | null>(null);
 
   useEffect(() => {
-    if (reduceMotion) return;
+    if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const id = setInterval(() => {
       setFlipped((prev) => {
         if (prev !== null) return null; // unflip current
@@ -163,7 +164,7 @@ export default function WorkSnapshots() {
               <span className="text-zinc-600">PROJECTS</span>
             </h2>
             <p className="text-sm md:text-base text-zinc-500 max-w-xl">
-              悬停翻转查看项目，点击浏览完整案例
+              点击浏览完整案例
             </p>
           </motion.div>
 
@@ -200,6 +201,8 @@ export default function WorkSnapshots() {
             </div>
 
             <style>{`
+              .tile-touch-label { display: none; }
+              @media (hover: none), (pointer: coarse) { .tile-touch-label { display: block; } }
               @media (min-width: 801px) {
                 .tile-grid {
                   grid-template-columns: repeat(12, 1fr);
@@ -257,8 +260,8 @@ export default function WorkSnapshots() {
           images={modalData.images}
           hasPrev={modal !== null && modal > 0}
           hasNext={modal !== null && modal < TILES.length - 1}
-          onPrev={() => setModal((m) => (m !== null && m > 0 ? m - 1 : m))}
-          onNext={() => setModal((m) => (m !== null && m < TILES.length - 1 ? m + 1 : m))}
+          onPrev={() => { if (modal !== null && modal > 0) openTile(modal - 1); }}
+          onNext={() => { if (modal !== null && modal < TILES.length - 1) openTile(modal + 1); }}
           projectId={modalData.tile.slug}
           nextTitle={modalData.nextTitle}
         />
