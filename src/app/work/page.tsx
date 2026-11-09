@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useState, useMemo, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import UniversalModal from "@/components/ui/UniversalModal";
 import { getProjectBySlug } from "@/data/projects";
 import Footer from "@/components/layout/footer";
@@ -46,6 +46,15 @@ const enterpriseProjects: ProjectItem[] = [
     useModal: true,
     dataSlug: "snownewtab",
     tags: ["B端", "安全", "浏览器"],
+  },
+  {
+    id: "zlqx",
+    title: "智聘千寻 · AI 招聘工作台",
+    description: "串联职位、候选人、面试与 Offer，将 AI 招聘助手融入工作流。可直接体验的高保真交互原型。",
+    image: "/project-assets/zhipin-qianxun.jpg",
+    date: "2026",
+    link: "/work/zlqx",
+    tags: ["AI Agent", "人力资源", "交互原型"],
   },
   {
     id: "snowspace",
@@ -132,6 +141,7 @@ export default function WorkProject() {
 }
 
 function WorkProjectV1() {
+  const router = useRouter();
   const { t } = useI18n();
   const [currentModalIndex, setCurrentModalIndex] = useState<number | null>(null);
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
@@ -301,7 +311,7 @@ function WorkProjectV1() {
                 <motion.button
                   type="button"
                   key={project.id}
-                  onClick={() => openModal(project.id)}
+                  onClick={() => project.link ? router.push(project.link) : openModal(project.id)}
                   aria-label={`查看 ${project.title} 详情`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

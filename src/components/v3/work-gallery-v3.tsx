@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Check, Copy } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import UniversalModal from "@/components/ui/UniversalModal";
 import { getProjectBySlug } from "@/data/projects";
 import { getProjectResources } from "@/data/project-resources";
@@ -18,6 +18,7 @@ type IndexProject = {
   year: string;
   image: string;
   dataSlug: string;
+  link?: string;
 };
 
 type ProjectGroup = {
@@ -33,9 +34,9 @@ const projectGroups: ProjectGroup[] = [
   {
     id: "secure-workspace",
     index: "01",
-    title: "安全工作入口",
-    en: "Secure workspace",
-    description: "从浏览器入口到管理后台，把复杂安全策略转化为可理解、可执行的办公体验。",
+    title: "企业工作台",
+    en: "Enterprise workspace",
+    description: "从安全访问到 AI 招聘，把复杂业务转化为可理解、可执行的工作流程。",
     projects: [
       {
         id: "snownewtab",
@@ -45,6 +46,11 @@ const projectGroups: ProjectGroup[] = [
         year: "2024—2026",
         image: "https://cdn.btbon.cn/snownewtab/AI-NEWTAB.webp",
         dataSlug: "snownewtab",
+      },
+      {
+        id: "zlqx", title: "智聘千寻 · AI 招聘工作台", en: "AI Recruitment Workspace",
+        description: "串联职位、候选人、面试与 Offer 的高保真交互原型。",
+        year: "2026", image: "/project-assets/zhipin-qianxun.jpg", dataSlug: "zlqx", link: "/work/zlqx",
       },
       {
         id: "snowspace",
@@ -129,7 +135,7 @@ function ModalParamHandler({ onOpen }: { onOpen: (slug: string) => void }) {
 
   useEffect(() => {
     const slug = searchParams.get("project");
-    if (slug && indexProjects.some((project) => project.dataSlug === slug)) {
+    if (slug && indexProjects.some((project) => project.dataSlug === slug && !project.link)) {
       onOpen(slug);
     }
   }, [searchParams, onOpen]);
@@ -138,6 +144,7 @@ function ModalParamHandler({ onOpen }: { onOpen: (slug: string) => void }) {
 }
 
 export default function WorkGalleryV3() {
+  const router = useRouter();
   const [modalId, setModalId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -151,7 +158,8 @@ export default function WorkGalleryV3() {
   const modalProject = modalId ? getProjectBySlug(modalId) : null;
 
   const changeModal = (direction: -1 | 1) => {
-    const next = modalIndex + direction;
+    let next = modalIndex + direction;
+    while (next >= 0 && next < indexProjects.length && indexProjects[next].link) next += direction;
     if (next >= 0 && next < indexProjects.length) {
       setModalId(indexProjects[next].dataSlug);
     }
@@ -214,7 +222,7 @@ export default function WorkGalleryV3() {
                     <button
                       type="button"
                       className="v3-project"
-                      onClick={() => setModalId(project.dataSlug)}
+                      onClick={() => project.link ? router.push(project.link) : setModalId(project.dataSlug)}
                     >
                       <span className="v3-project__index">{String(projectIndex + 1).padStart(2, "0")}</span>
                       <span className="v3-project__thumb">

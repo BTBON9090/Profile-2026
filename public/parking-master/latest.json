@@ -1,43 +1,43 @@
 {
-  "version": "0.26.0",
-  "date": "2026-10-28",
-  "githubRelease": "https://github.com/BTBON9090/parking-master-pro-v2.0/releases/tag/v0.26.0",
-  "notes": "0.26.0 体验测试版：更名《老司机是怎样炼成的》，新增履带驾驶演示、矿用自卸车和 22 轮长头半挂；改进半挂与 NPC 质量碰撞、加速转向、驾驶舱与轮辐、P 挡起步、车库试听、小地图缩放和 ABS 状态；重排五条挑战路线，扩展高速弯线、隧道与事故路段，优化场景资源复用。模型和物理参数为风格化游戏标定。Mac / Windows 未签名；iOS 提供工程，暂无 IPA。",
+  "version": "0.32.0",
+  "date": "2026-10-31",
+  "githubRelease": "https://github.com/BTBON9090/parking-master-pro-v2.0/releases/tag/v0.32.0",
+  "notes": "# 0.32.0 · 高速车流与驾驶体验\n\n- 高速主线四条车道的无障碍目标速度由左至右为 110、100、90、80 km/h；跟车、弯道、事故等情况会减速。修复护栏导致 NPC 错误停车，并改善变道检查。\n- 减少隐藏俯瞰画面的额外渲染；触屏自动画质降低后视镜和阴影的渲染开销。实际帧率随设备和场景变化。\n- 左右转向灯增加闪烁同步提示音。发射、飞行和爆炸采用真实录音剪辑：航天飞机发射和受控爆破录音用于游戏效果，并非导弹或核爆实录；素材来源和授权随应用提供。\n- 导弹可在全局俯瞰地图缩放、选点并确认后发射；移除行车提示中多余的非铺装传送按钮。\n- 建议覆盖安装并保留原应用数据。Mac/Windows 安装包未签名；Android 延用原签名；iPhone/iPad ZIP 是 Xcode 工程，尚非可直接安装的版本。\n",
   "assets": [
     {
       "platform": "mac-arm64",
-      "name": "Parking-Master-Pro-0.26.0-mac-arm64.dmg",
-      "size": 164492252,
-      "sha256": "dbfb2408ad3d426a732e6524b46895411890156c3741d43cda55e2f399e564d1",
-      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.26.0/Parking-Master-Pro-0.26.0-mac-arm64.dmg"
+      "name": "Parking-Master-Pro-0.32.0-mac-arm64.dmg",
+      "size": 173266352,
+      "sha256": "d381f7f0889fc8867e1feace4c504d11cdc4e68e28e5b54772ccfd78765750ce",
+      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.32.0/Parking-Master-Pro-0.32.0-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
-      "name": "Parking-Master-Pro-0.26.0-mac-x64.dmg",
-      "size": 168743626,
-      "sha256": "d43e0d06aa5be07422c5fc7d90f7b2b83410289affccdb412162eeb60c338589",
-      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.26.0/Parking-Master-Pro-0.26.0-mac-x64.dmg"
+      "name": "Parking-Master-Pro-0.32.0-mac-x64.dmg",
+      "size": 177511701,
+      "sha256": "2be6d8e7337239cd4f1227caa0333d27e4fbd320472fb841aeba42da158af20d",
+      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.32.0/Parking-Master-Pro-0.32.0-mac-x64.dmg"
     },
     {
       "platform": "windows-x64",
-      "name": "Parking-Master-Pro-0.26.0-win-x64.exe",
-      "size": 153713127,
-      "sha256": "25f8921420dcdad353b75eee75d5bf105beb1f01ba47dc9c97e8f03b926f97d0",
-      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.26.0/Parking-Master-Pro-0.26.0-win-x64.exe"
+      "name": "Parking-Master-Pro-0.32.0-win-x64.exe",
+      "size": 161501195,
+      "sha256": "5246a44deeae910bf57659447ef70ada3fc7760593691e912d36b9dd83725d62",
+      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.32.0/Parking-Master-Pro-0.32.0-win-x64.exe"
     },
     {
       "platform": "android",
-      "name": "Parking-Master-Pro-0.26.0-android.apk",
-      "size": 26989027,
-      "sha256": "a7ce46d40f15f0e5c85440837425e268fd3f2e93dda52b49b930350439d3e895",
-      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.26.0/Parking-Master-Pro-0.26.0-android.apk"
+      "name": "Parking-Master-Pro-0.32.0-android.apk",
+      "size": 36606846,
+      "sha256": "a3b46691ad42e3da1f94c0e6992a4bc5e631219269166867f0313f4ac47251b3",
+      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.32.0/Parking-Master-Pro-0.32.0-android.apk"
     },
     {
       "platform": "ios-source",
-      "name": "Parking-Master-Pro-0.26.0-iOS-Project.zip",
-      "size": 25212921,
-      "sha256": "b947837041c11d5b9dead95ce80a2795651ad9818941649c28e0e8de42f72f24",
-      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.26.0/Parking-Master-Pro-0.26.0-iOS-Project.zip"
+      "name": "Parking-Master-Pro-0.32.0-iOS-Project.zip",
+      "size": 33986925,
+      "sha256": "683f28ef74c00af40eb093a95f1b1bbbe9a9d2674996b2a006c7fd75544d0c78",
+      "url": "https://my-portfolio-1317980685.cos.ap-guangzhou.myqcloud.com/parking-master/releases/0.32.0/Parking-Master-Pro-0.32.0-iOS-Project.zip"
     }
   ]
 }

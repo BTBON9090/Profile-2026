@@ -20,7 +20,7 @@
    const url=new URL(asset.url);if(![cos,cdn].includes(url.origin)||url.pathname!==`/parking-master/releases/${release.version}/${asset.name}`||!/^[\w.-]+$/.test(asset.name))continue;
    link.href=backup?`https://github.com/BTBON9090/parking-master-pro-v2.0/releases/download/v${release.version}/${asset.name}`:cdn+url.pathname;link.classList.remove('disabled');link.removeAttribute('aria-disabled');link.removeAttribute('download');link.setAttribute('referrerpolicy','no-referrer');link.title=`${Math.round(asset.size/1024/1024)} MB · SHA-256 ${asset.sha256}`;
   }
-  status.textContent='可直接下载安装包。'+(release.notes||'');
+  status.textContent='Android 安装包已更新至 v'+release.version+'。iPhone / iPad 暂无安装版，可直接在线体验。';
   document.getElementById('checksums').href='https://github.com/BTBON9090/parking-master-pro-v2.0/releases/tag/v'+release.version;
  }catch{status.textContent='在线版本检查暂不可用，下方已发布的安装包链接仍可直接下载。';}
 })();
