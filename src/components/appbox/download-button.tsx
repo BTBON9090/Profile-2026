@@ -14,7 +14,7 @@ export default function DownloadButton({ product }: { product: AppBoxProduct }) 
       .catch(() => {});
     return () => controller.abort();
   }, [product.id]);
-  return <a href={release.downloadUrl} className="app-article__primary">
+  return <a href={release.downloadUrl} data-product-action={product.id} className="app-article__primary">
     <Download size={16} /> {product.actionLabel}{product.kind !== "skill" && <> · {/^v/i.test(release.version) ? release.version : `v${release.version}`}</>}
   </a>;
 }

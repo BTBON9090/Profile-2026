@@ -15,7 +15,7 @@ export type StoredFeedback = {
   visitorId?: string;
 };
 
-export type PublicFeedback = Omit<StoredFeedback, "likedBy"> & {
+export type PublicFeedback = Omit<StoredFeedback, "likedBy" | "visitorId"> & {
   likeCount: number;
   liked: boolean;
   mine: boolean;
@@ -150,12 +150,12 @@ function mutate<T>(operation: (database: FeedbackDatabase) => Promise<T> | T): P
 }
 
 function toPublic(entry: StoredFeedback, visitorId?: string): PublicFeedback {
-  const { likedBy, ...feedback } = entry;
+  const { likedBy, visitorId: ownerId, ...feedback } = entry;
   return {
     ...feedback,
     likeCount: likedBy.length,
     liked: Boolean(visitorId && likedBy.includes(visitorId)),
-    mine: Boolean(visitorId && entry.visitorId && entry.visitorId === visitorId),
+    mine: Boolean(visitorId && ownerId && ownerId === visitorId),
   };
 }
 
