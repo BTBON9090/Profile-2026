@@ -4,7 +4,7 @@
 @media(min-width:1450px){.layout{grid-template-columns:260px 420px 260px;gap:65px;max-width:1120px;padding:0}.intro{padding-top:74px}.sidebar{padding-top:57px}.site-header{height:107px}}
 @media(max-width:1120px){.layout{grid-template-columns:minmax(160px,1fr) 370px minmax(190px,1fr);gap:28px;padding:0 30px}h1{font-size:50px}.record-ticket{padding:18px 15px}.best-count{gap:8px}.intro{padding-top:40px}.wordmark-cn{display:none}.below-game>span:last-child{display:none}}
 @media(max-width:940px){.layout{grid-template-columns:1fr 400px;max-width:770px;gap:40px}.sidebar{display:none}.intro{padding-top:70px}.site-header{padding:0 30px}.site-footer{max-width:720px}.header-actions{gap:16px}}
-@media(max-width:680px){body{background:#f4f5e9}.site-header,.intro,.sidebar,.site-footer,.below-game{display:none}.layout{display:block;margin:0 auto;padding:0;width:min(100vw,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * .49412));max-width:440px;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}.game-shell{border:0;border-radius:0;box-shadow:none}.game-shell:before{display:none}#game{width:100%;height:auto}}
+@media(max-width:680px), (pointer:coarse), (hover:none) and (any-pointer:coarse){body{background:#f4f5e9}.site-header,.intro,.sidebar,.site-footer,.below-game{display:none}.layout{display:block;margin:0 auto;padding:0;width:min(100vw,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * .49412));max-width:440px;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}.game-shell{border:0;border-radius:0;box-shadow:none}.game-shell:before{display:none}#game{width:100%;height:auto}}
 /* Forest-spring art direction: painted scenery, parchment and carved brass. */
 body{background:linear-gradient(90deg,#102d29ba,#163f2a66 50%,#102d29ad),url('./assets/game/forest.jpg') center 43%/cover fixed;color:#f3eccb}
 .site-header{border-bottom-color:#e9cc8640}.wordmark-cn,.header-actions{color:#eee4be}.header-actions button:last-child{border-color:#dbc27c80;background:#183e3099}
@@ -16,7 +16,7 @@ h1{color:#fff5d2;text-shadow:0 3px 0 #715b25,0 8px 22px #102e25}h1 span{color:#d
 .evolution{background:url('./assets/game/panel.png') center/100% 100%;padding:27px 25px 25px;margin-top:22px;color:#3a5136;filter:drop-shadow(0 7px 14px #092b2460)}.level-points,.level-num,.evolution>p,.section-label>span,.giant-note span{color:#747f5d}.level-list:before{border-left-color:#b1ad7780}.level{gap:9px}.level:hover{color:#8b5f26}.section-label h2{font-size:15px}.giant-note{border-top-color:#b0aa7860}
 .site-footer{color:#d0dab7;border-top-color:#d6ca8a40}.layout{margin-top:28px}.intro{padding-top:32px}.sidebar{padding-top:22px}
 :root{background:#234e3c}body{min-height:100dvh}.record-ticket,.evolution{border:22px solid transparent;border-image:url('./assets/game/panel.png') 62 fill stretch;background:none;padding:6px 7px 10px}.evolution{padding-top:8px}.record-ticket:after{bottom:63px}
-@media(max-width:680px){body{background:#234e3c url('./assets/game/forest.jpg') center/cover}.layout{margin-top:0}.game-shell{border:0;border-radius:0;box-shadow:none}}
+@media(max-width:680px), (pointer:coarse), (hover:none) and (any-pointer:coarse){body{background:#234e3c url('./assets/game/forest.jpg') center/cover}.layout{margin-top:0}.game-shell{border:0;border-radius:0;box-shadow:none}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
 /* Canvas backing pixels follow its displayed size; preserve the logical aspect ratio. */
@@ -24,3 +24,7 @@ h1{color:#fff5d2;text-shadow:0 3px 0 #715b25,0 8px 22px #102e25}h1 span{color:#d
 @media(max-width:600px){.header-actions{gap:10px}.header-actions button{white-space:nowrap}#quality-button{display:none}}
 
 [hidden]{display:none!important}
+
+/* vh fallback for older iOS; dvh follows the browser chrome when supported. */
+@media(max-width:680px), (pointer:coarse), (hover:none) and (any-pointer:coarse) { .layout { width:min(100vw,calc((var(--game-height,100vh) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * .49412)); } }
+@supports(height:100dvh) { :root { --game-height:100dvh; } }

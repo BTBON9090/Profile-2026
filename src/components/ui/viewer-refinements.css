@@ -26,3 +26,9 @@
 .viewer-thumbnails__arrow:focus-visible { outline: 2px solid #8abaff; outline-offset: 4px; }
 .viewer-thumbnails__arrow svg { width: 20px; height: 20px; }
 @media (max-width: 640px) { .viewer-thumbnails__strip { padding-inline: 60px; } .viewer-thumbnails__arrow--left { left: 8px; } .viewer-thumbnails__arrow--right { right: 8px; } }
+
+/* Keep rounded clipping on Safari when a selected thumbnail is composited. */
+.viewer-thumbnails__item { isolation: isolate; clip-path: inset(0 round 16px); -webkit-clip-path: inset(0 round 16px); }
+.viewer-thumbnails__item img { border-radius: inherit; }
+.viewer-thumbnails__strip { -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; }
+@media (hover: none) { .viewer-thumbnails__item:hover { transform: none; } .viewer-thumbnails__item.is-current { transform: translateY(-4px); } }

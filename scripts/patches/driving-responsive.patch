@@ -1,0 +1,102 @@
+diff --git a/App.tsx b/App.tsx
+index 62981ba..7cde373 100644
+--- a/App.tsx
++++ b/App.tsx
+@@ -1,3 +1,4 @@
++import {MobileSession} from './components/MobileSession';
+ import {DrivingQA} from './components/DrivingQA';
+ import {prepareScene,clearPreparedScene} from './three/preparedScene';
+ import {MAP_PORTALS} from './utils/mapPortals';
+@@ -1125,6 +1126,7 @@ function App() {
+ 
+   return (
+     <div className="w-full h-full overflow-hidden relative select-none cursor-crosshair" style={{ background: 'var(--bg)' }}>
++      <MobileSession />
+       {(import.meta as any).env.DEV&&isInGame&&new URLSearchParams(location.search).has("qa44")&&<DrivingQA car={handleSetCar} input={p=>updateInput(v=>({...v,...p}))} settings={p=>setSettings(v=>({...v,...p}))} pause={setIsPaused} locate={(id,p)=>{if(levelData?.levelId===id)window.dispatchEvent(new CustomEvent("test-teleport",{detail:{...p,deckHeight:p.elevation}}));else{const data=GENERATE_LEVEL(id);data.startPos=p;setLevel(id);playLevelData(data);}}}/>}
+       {/* 地图编辑器：编辑中正常显示；测试游玩期间隐藏挂载以保留地图状态（inactive 关闭其全局热键/画布循环） */}
+       {(editorMode || gameFromEditor) && (
+diff --git a/components/UIOverlay.tsx b/components/UIOverlay.tsx
+index cc8ebd4..d253be5 100644
+--- a/components/UIOverlay.tsx
++++ b/components/UIOverlay.tsx
+@@ -1499,6 +1499,10 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
+       </div>
+ 
+       {/* ===== 设置抽屉（语言 + 按键指南 已迁移至此） ===== */}
++      {!touch&&<div className="desktop-indicators" data-ui-control aria-label="转向灯">
++        <button type="button" aria-label="左转向灯" aria-pressed={inputState.indicator===-1} onClick={()=>setInputState(v=>({...v,indicator:v.indicator===-1?0:-1}))}>← 左转向灯 <kbd>[</kbd></button>
++        <button type="button" aria-label="右转向灯" aria-pressed={inputState.indicator===1} onClick={()=>setInputState(v=>({...v,indicator:v.indicator===1?0:1}))}>右转向灯 → <kbd>]</kbd></button>
++      </div>}
+       {touch&&<MobileControls absEnabled={settings.absEnabled} toggleAbs={()=>updateSettings({absEnabled:!settings.absEnabled})} speedKmh={Math.abs(liveCarSpeed)*15} input={inputState} update={setInputState} onTouchInput={onTouchInput} readInput={readInput} car={currentCarId} layout={layoutStyle} editing={layoutDraft!==null} disabled={showSettings||showGuide||portrait||layoutDraft!==null} settings={()=>setShowSettings(true)} camera={cycleCamera} cameraMenu={()=>setCameraMenuOpen(v=>!v)} seat={()=>{setSeatPanelOpen(v=>!v);if(!seatPanelOpen)onCameraViewChange('HOOD');}} seatOpen={seatPanelOpen} map={()=>setGlobalOverviewOpen(!globalOverviewOpen)} reset={resetLevel}/>}
+       {touch&&cameraMenuOpen&&<div className="mobile-camera-menu" data-ui-control>{cameraPresets.map(item=><button key={item.view} type="button" aria-pressed={cameraView===item.view} onClick={()=>{onCameraViewChange(item.view);setCameraMenuOpen(false);}}>{lang===Language.CN?item.cn:item.en}</button>)}</div>}
+       {touch&&portrait&&!showSettings&&<div className="rotate-device" role="status"><strong>请横屏驾驶</strong><p>转动手机，展开方向盘和踏板。</p><button onClick={()=>setShowSettings(true)}>打开设置</button></div>}
+diff --git a/index.css b/index.css
+index 159506e..8a7ef04 100644
+--- a/index.css
++++ b/index.css
+@@ -774,3 +774,19 @@ html,body,#root{overscroll-behavior:none}body{-webkit-touch-callout:none}button,
+ .missile-quick-controls{position:fixed;z-index:65;top:64px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;pointer-events:auto;color:#edf4ed;font-size:11px}
+ .missile-quick-controls button,.missile-quick-controls span{white-space:nowrap;padding:7px 10px;border:1px solid #8da29c;border-radius:6px;background:#14252ce8}
+ @media(max-height:550px){.missile-quick-controls{top:42px}.missile-quick-controls button,.missile-quick-controls span{padding:6px 8px;font-size:10px}}
++
++/* Desktop mirrors use their own lower, larger layout, independent of touch HUD. */
++.game-hud:not(.touch-hud)>.side-mirror-frame {top:auto!important;bottom:24px!important;width:clamp(220px,23vw,360px)!important;height:clamp(110px,11vw,174px)!important;max-width:360px!important}
++.game-hud:not(.touch-hud)>.side-mirror-frame:has([data-mirror-glass=left]) {left:20px!important}
++.game-hud:not(.touch-hud)>.side-mirror-frame:has([data-mirror-glass=right]) {right:20px!important}
++.desktop-indicators {position:absolute;bottom:210px;left:50%;transform:translateX(-50%);display:flex;gap:12px;pointer-events:auto;z-index:41}
++.desktop-indicators button {padding:10px 14px;border:1px solid #ffffff40;border-radius:8px;background:#141416ed;color:#f4f4f5;font-size:12px}
++.desktop-indicators button[aria-pressed=true] {background:#256045;border-color:#7ce5a3}
++.desktop-indicators kbd {margin-left:6px;color:#d1d5db}
++.desktop-indicators button:focus-visible {outline:2px solid #f5c842;outline-offset:3px}
++.mobile-session-rotate {position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;background:#0a0a0b;color:#f4f4f5;text-align:center}
++.mobile-session-rotate strong {font-size:25px}
++.mobile-session-rotate p {max-width:28em;line-height:1.8;color:#b9bec5}
++.mobile-session-rotate button,.mobile-session-fullscreen {padding:12px 18px;border:1px solid #ffffff40;border-radius:10px;background:#242429;color:#fff}
++.mobile-session-fullscreen {position:fixed;right:12px;bottom:12px;z-index:9999;font-size:12px}
++html[data-touch-game=true],html[data-touch-game=true] body,html[data-touch-game=true] #root {height:100%;height:100dvh}
+diff --git a/utils/device.ts b/utils/device.ts
+index 3790ef7..bf6fbc0 100644
+--- a/utils/device.ts
++++ b/utils/device.ts
+@@ -1,5 +1,5 @@
+ import {useEffect,useState} from 'react';
+-export function isTouchDevice(){return typeof window!=='undefined'&&(window.matchMedia('(pointer: coarse)').matches||new URLSearchParams(location.search).get('controls')==='touch');}
++export function isTouchDevice(){return typeof window!=='undefined'&&(window.matchMedia('(pointer: coarse)').matches||(navigator.maxTouchPoints>0 && (window.matchMedia('(hover: none)').matches || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)))||new URLSearchParams(location.search).get('controls')==='touch');}
+ export function useTouchControls(){
+  const [touch,setTouch]=useState(isTouchDevice);
+  useEffect(()=>{const query=matchMedia('(pointer: coarse)');const update=()=>setTouch(isTouchDevice());query.addEventListener('change',update);return()=>query.removeEventListener('change',update);},[]);
+diff --git a/components/MobileSession.tsx b/components/MobileSession.tsx
+new file mode 100644
+index 0000000..bcdd69f
+--- /dev/null
++++ b/components/MobileSession.tsx
+@@ -0,0 +1,29 @@
++import {useEffect,useState} from 'react';
++import {useTouchControls} from '../utils/device';
++
++// Fullscreen must originate in a user gesture; orientation changes alone cannot grant it.
++async function enterFullscreen() {
++  try {
++    if (!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
++    const orientation = screen.orientation as ScreenOrientation & {lock?: (mode: string) => Promise<void>};
++    if (document.fullscreenElement && orientation?.lock) await orientation.lock('landscape');
++  } catch { /* Keep the viewport-filling layout when the browser refuses. */ }
++}
++export function MobileSession() {
++  const touch = useTouchControls();
++  const [portrait,setPortrait] = useState(()=>innerHeight>innerWidth);
++  const [fullscreen,setFullscreen] = useState(false);
++  useEffect(()=>{
++    document.documentElement.dataset.touchGame=String(touch);
++    const update=()=>{setPortrait(innerHeight>innerWidth);setFullscreen(Boolean(document.fullscreenElement));};
++    const enter=()=>{if(touch)void enterFullscreen();};
++    window.addEventListener('resize',update);
++    document.addEventListener('fullscreenchange',update);
++    if(touch)document.addEventListener('pointerup',enter,{once:true});
++    return()=>{window.removeEventListener('resize',update);document.removeEventListener('fullscreenchange',update);document.removeEventListener('pointerup',enter);delete document.documentElement.dataset.touchGame;};
++  },[touch]);
++  if(!touch)return null;
++  if(portrait)return <div className="mobile-session-rotate" role="status"><strong>请旋转手机，横屏驾驶</strong><p>横屏后自动展开游戏。若画面没有旋转，请关闭手机的竖屏方向锁定。</p><button onClick={()=>void enterFullscreen()}>进入横屏游戏</button>{!document.documentElement.requestFullscreen&&<p>此浏览器会铺满可用画面；添加到主屏幕后打开，可隐藏浏览器工具栏。</p>}</div>;
++  if(!fullscreen&&document.documentElement.requestFullscreen)return <button className="mobile-session-fullscreen" onClick={()=>void enterFullscreen()}>全屏</button>;
++  return null;
++}

@@ -234,7 +234,10 @@ export default function UniversalModal({
   }, []);
 
   const handleThumbnailPointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return;
+    if (event.pointerType !== "mouse" || event.button !== 0) {
+      thumbnailDragRef.current.didDrag = false;
+      return;
+    }
     const strip = event.currentTarget;
     thumbnailDragRef.current = {
       pointerId: event.pointerId,
@@ -663,7 +666,7 @@ export default function UniversalModal({
                   <div className="viewer-thumbnails__shell">
                     <div
                       ref={thumbnailStripRef}
-                      className="viewer-thumbnails__strip flex overflow-x-auto custom-scrollbar cursor-grab data-[dragging=true]:cursor-grabbing select-none touch-pan-y"
+                      className="viewer-thumbnails__strip flex overflow-x-auto custom-scrollbar cursor-grab data-[dragging=true]:cursor-grabbing select-none touch-pan-x"
                       aria-label="可左右拖拽的缩略图导航"
                       onPointerDown={handleThumbnailPointerDown}
                       onPointerMove={handleThumbnailPointerMove}
@@ -686,7 +689,7 @@ export default function UniversalModal({
                           }}
                           aria-label={`跳转到第 ${idx + 1} 张图片`}
                           aria-current={idx === currentImageIndex ? "true" : undefined}
-                          className={`viewer-thumbnails__item relative flex-shrink-0 overflow-hidden transition-all duration-300 ${
+                          className={`viewer-thumbnails__item relative flex-shrink-0 overflow-hidden transition-[transform,box-shadow] duration-300 ${
                             idx === currentImageIndex
                               ? "is-current"
                               : ""

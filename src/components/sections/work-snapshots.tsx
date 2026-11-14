@@ -54,7 +54,7 @@ function FlipTile({ name, eng, img, icon, forceFlipped, horizontal = false, onCl
     <button
       type="button"
       aria-label={`浏览 ${name}`}
-      className="relative w-full h-full overflow-hidden rounded-2xl md:rounded-3xl cursor-pointer group focus-visible:outline-2 focus-visible:outline-blue-400 focus-visible:outline-offset-[-2px]"
+      className="project-flip-tile relative w-full h-full overflow-hidden rounded-2xl md:rounded-3xl cursor-pointer group focus-visible:outline-2 focus-visible:outline-blue-400 focus-visible:outline-offset-[-2px]"
       style={{ perspective: "800px" }}
       onPointerEnter={(event) => { if (event.pointerType === "mouse") enter(); }}
       onPointerLeave={(event) => { if (event.pointerType === "mouse") leave(); }}
@@ -63,19 +63,19 @@ function FlipTile({ name, eng, img, icon, forceFlipped, horizontal = false, onCl
       onBlur={leave}
     >
       <div
-        className="relative w-full h-full transition-transform duration-700"
+        className="project-flip-tile__rotor relative w-full h-full transition-transform duration-700"
         style={{ transformStyle: "preserve-3d", transform: `rotate${axis}(${f ? -180 : 0}deg)`, transitionDuration: reduceMotion ? "0s" : "700ms" }}
       >
         {/* front */}
-        <div className="absolute inset-0 bg-neutral-300" style={{ backfaceVisibility: "hidden" }}>
+        <div className="project-flip-tile__front absolute inset-0 bg-neutral-300" style={{ WebkitBackfaceVisibility: "hidden", backfaceVisibility: "hidden" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={img} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
           <span className="tile-touch-label absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-3 pt-8 text-left text-xs font-semibold text-white">{name}</span>
         </div>
         {/* back */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center gap-1 md:gap-2 p-2 md:p-4 text-center bg-zinc-950/40 backdrop-blur-2xl text-white"
-          style={{ backfaceVisibility: "hidden", transform: `rotate${axis}(180deg)` }}
+          className="project-flip-tile__back absolute inset-0 flex flex-col items-center justify-center gap-1 md:gap-2 p-2 md:p-4 text-center bg-zinc-950/40 backdrop-blur-2xl text-white"
+          style={{ WebkitBackfaceVisibility: "hidden", backfaceVisibility: "hidden", transform: `rotate${axis}(180deg)` }}
         >
           <span className="text-white/50 [&_svg]:w-4 [&_svg]:h-4 md:[&_svg]:w-6 md:[&_svg]:h-6">{icon}</span>
           <h3 className="text-xs md:text-base lg:text-lg font-bold leading-tight tracking-tight">{name}</h3>
@@ -159,9 +159,9 @@ export default function WorkSnapshots() {
             className="mb-12 md:mb-16"
           >
             <h2 className="text-4xl md:text-6xl font-black text-zinc-100 tracking-tight leading-[0.9] mb-4">
-              FEATURED<span className="text-blue-500">.</span>
+              Featured<span className="text-blue-500">.</span>
               <br />
-              <span className="text-zinc-600">PROJECTS</span>
+              <span className="text-zinc-600">Projects</span>
             </h2>
             <p className="text-sm md:text-base text-zinc-500 max-w-xl">
               点击浏览完整案例
@@ -202,6 +202,12 @@ export default function WorkSnapshots() {
 
             <style>{`
               .tile-touch-label { display: none; }
+              @media (max-width: 800px), (hover: none), (pointer: coarse) {
+                .project-flip-tile { perspective: none !important; }
+                .project-flip-tile__rotor { transform: none !important; transform-style: flat !important; }
+                .project-flip-tile__back { display: none; }
+                .project-flip-tile__front { transform: none; }
+              }
               @media (hover: none), (pointer: coarse) { .tile-touch-label { display: block; } }
               @media (min-width: 801px) {
                 .tile-grid {

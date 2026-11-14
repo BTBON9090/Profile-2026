@@ -1,5 +1,7 @@
 {
   "repository": "https://github.com/BTBON9090/parking-master-pro-v2.0",
   "commit": "4d35b41f1dcf73b5667c7b78d14f585d49247b73",
-  "basePath": "/parking-master/play/"
+  "basePath": "/parking-master/play/",
+  "localPatch": "scripts/patches/driving-responsive.patch",
+  "localPatchSha256": "4ce309d15b36c77718153955cfadc2575f48302dfee1846b755ea26aacca794e"
 }
